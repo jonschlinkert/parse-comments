@@ -48,6 +48,7 @@
     "arrayify-compact": "^0.1.0",
     "code-context": "^0.1.0",
     "count-lines": "^0.1.2",
-    "extract-range": "^0.1.0"
+    "extract-range": "^0.1.0",
+    "lodash": "^2.4.1"
   }
 }

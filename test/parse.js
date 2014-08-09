@@ -31,9 +31,9 @@ var comment = [
   ' * {%= docs("example-parser.md") %}',
   ' *',
   ' * @param {String} `alpha`',
-  // ' * @param {Object|Array} `arr` Object or array of replacement patterns to associate.',
-  // ' *   @property {String|RegExp} [arr] `pattern`',
-  // ' *   @property {String|Function} [arr] `replacement`',
+  ' * @param {Object|Array} `arr` Object or array of replacement patterns to associate.',
+  ' *   @property {String|RegExp} [arr] `pattern`',
+  ' *   @property {String|Function} [arr] `replacement`',
   ' * @param {String} `beta`',
   ' *   @property {Array} [beta] `foo` This is foo option.',
   ' *   @property {Array} [beta] `bar` This is bar option',
@@ -44,36 +44,35 @@ var comment = [
 
 
 describe('when a string is passed:', function () {
-  // it('should parse a string', function () {
-  //   var actual = parser('/**\n@foo {Object} `bar`\n*/');
-  //   actual.comments.length.should.equal(1);
-  //   actual.comments[0].should.have.property('foo');
-  // });
+  it('should parse a string', function () {
+    var actual = parser('/**\n@foo {Object} `bar`\n*/');
+    actual.comments.length.should.equal(1);
+    actual.comments[0].should.have.property('foo');
+  });
 
   it('should parse a string', function () {
     var actual = parser(comment)
-    // console.log(inspect(actual));
     actual.comments.length.should.equal(1);
     actual.comments[0].should.have.property('param');
   });
 
-  // it('should parse @params', function () {
-  //   var actual = utils.fixture('params');
-  //   actual.comments.length.should.equal(1);
-  //   actual.comments[0].should.have.property('param');
-  // });
+  it('should parse @params', function () {
+    var actual = utils.fixture('params');
+    actual.comments.length.should.equal(1);
+    actual.comments[0].should.have.property('param');
+  });
 
-  // it('should parse @return', function () {
-  //   var actual = utils.fixture('return');
-  //   actual.comments.length.should.equal(1);
-  //   actual.comments[0].should.have.property('return');
-  //   actual.comments[0].should.have.property('returns');
-  // });
+  it('should parse @return', function () {
+    var actual = utils.fixture('return');
+    actual.comments.length.should.equal(1);
+    actual.comments[0].should.have.property('return');
+    actual.comments[0].should.have.property('returns');
+  });
 
-  // it('should parse @api', function () {
-  //   var actual = utils.fixture('api');
-  //   actual.comments.length.should.equal(1);
-  //   actual.comments[0].should.have.property('api');
-  // });
+  it('should parse @api', function () {
+    var actual = utils.fixture('api');
+    actual.comments.length.should.equal(1);
+    actual.comments[0].should.have.property('api');
+  });
 });
 
