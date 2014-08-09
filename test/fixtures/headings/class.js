@@ -1,9 +1,9 @@
 /**
- * ## Class
+ * ## CacheFoo
  *
- * Foo bar baz.
+ * I'm a constructor.
  *
- * @method `propstring`
+ * @method `Cache`
  * @param {String} `name`
  * @param {String} `propstring`
  * @return {Object} Instance of the current Strings object

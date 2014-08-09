@@ -1,9 +1,9 @@
 /**
- * ## aaa
+ * ## .writeFile
  *
  * Foo bar baz.
  *
- * @method `propstring`
+ * @method `writeFile`
  * @param {String} `name`
  * @param {String} `propstring`
  * @return {Object} Instance of the current Strings object

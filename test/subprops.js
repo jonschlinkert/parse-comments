@@ -49,6 +49,23 @@ var b = [
   ' */'
 ].join('\n');
 
+var c = [
+  '/**',
+  ' * @param {String} `alpha`',
+  ' * @param {Object|Array} `arr` Object or array of replacement patterns to associate.',
+  ' *   @a {String|RegExp} [arr] `pattern`',
+  ' * @a {String|Function} [arr] `replacement`',
+  ' *       @param {String} `beta`',
+  ' *   @b {Array} [beta] `foo` This is foo option.',
+  ' *    @b {Array} [beta] `bar` This is bar option',
+  ' * @param {String} `omega`',
+  ' *@c {Array} [omega] `a` This is option A.',
+  ' *                                            @c {Array} [omega] `b` This is option B',
+  ' *@return {Strings} to allow chaining',
+  ' * @api public',
+  ' */'
+].join('\n');
+
 
 describe('sub properties:', function () {
   it('should add sub-props to a parent parameter', function () {
@@ -74,7 +91,7 @@ describe('sub properties:', function () {
   });
 
 
-  xit('should allow custom sub-props to be defined.', function () {
+  it('should allow custom sub-props to be defined.', function () {
     var actual = parser(b, {
       subprops: {
         a: 'aa',
@@ -82,13 +99,28 @@ describe('sub properties:', function () {
         c: 'cc'
       }
     });
-        console.log(actual.comments)
 
-    // actual.comments[0].should.have.property('aa');
-    // actual.comments[0].should.have.property('bb');
-    // actual.comments[0].params[1].should.have.property('aa');
-    // actual.comments[0].params[2].should.have.property('bb');
-    // actual.comments[0].params[3].should.have.property('cc');
+    actual.comments[0].should.have.property('aa');
+    actual.comments[0].should.have.property('bb');
+    actual.comments[0].params[1].should.have.property('aa');
+    actual.comments[0].params[2].should.have.property('bb');
+    actual.comments[0].params[3].should.have.property('cc');
+  });
+
+  it('should use custom sub-props regardless of indent.', function () {
+    var actual = parser(c, {
+      subprops: {
+        a: 'aa',
+        b: 'bb',
+        c: 'cc'
+      }
+    });
+
+    actual.comments[0].should.have.property('aa');
+    actual.comments[0].should.have.property('bb');
+    actual.comments[0].params[1].should.have.property('aa');
+    actual.comments[0].params[2].should.have.property('bb');
+    actual.comments[0].params[3].should.have.property('cc');
   });
 
 });

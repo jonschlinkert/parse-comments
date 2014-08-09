@@ -1,9 +1,9 @@
 /**
- * ## .method
+ * ## .set
  *
- * Foo bar baz.
+ * I'm a method.
  *
- * @method `propstring`
+ * @method `set`
  * @param {String} `name`
  * @param {String} `propstring`
  * @return {Object} Instance of the current Strings object
