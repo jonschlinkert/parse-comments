@@ -45,6 +45,7 @@
   },
   "dependencies": {
     "code-context": "^0.1.0",
+    "count-lines": "^0.1.2",
     "extract-range": "^0.1.0"
   }
 }

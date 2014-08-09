@@ -8,6 +8,7 @@
 'use strict';
 
 var fs = require('fs');
+var inspect = require('util').inspect;
 var should = require('should');
 var jscomments = require('..');
 
@@ -43,12 +44,13 @@ var comment = [
 describe('when a string is passed:', function () {
   it('should parse comments and return an object', function () {
     var actual = jscomments('/**\n@foo {Object} `bar`\n*/');
-    actual.should.be.an.object;
+    actual.comments.should.be.an.object;
   });
 
   it('should parse comments and return an object', function () {
     var actual = jscomments(readFixture('strings'));
-    actual.should.be.an.object;
+    actual.comments.should.be.an.object;
   });
+
 });
 

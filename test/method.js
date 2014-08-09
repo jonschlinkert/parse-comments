@@ -15,8 +15,8 @@ describe('comment `method`:', function () {
 
   it('should get a method param.', function () {
     var actual = utils.fixture('method');
-    actual[0].should.have.property('method');
-    actual[0].method.should.equal('propstring');
+    actual.comments[0].should.have.property('method');
+    actual.comments[0].method.should.equal('propstring');
   });
 
 });
