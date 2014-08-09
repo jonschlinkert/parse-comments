@@ -74,7 +74,7 @@ describe('sub properties:', function () {
   });
 
 
-  it('should allow custom sub-props to be defined.', function () {
+  xit('should allow custom sub-props to be defined.', function () {
     var actual = parser(b, {
       subprops: {
         a: 'aa',
@@ -82,13 +82,12 @@ describe('sub properties:', function () {
         c: 'cc'
       }
     });
-    // console.log(JSON.stringify(actual, null, 2))
-
-    // actual.comments[0].should.have.property('params');
-    // actual.comments[0].should.have.property('properties');
-    // actual.comments[0].params[1].should.have.property('properties');
-    // actual.comments[0].params[2].should.have.property('properties');
-    // actual.comments[0].params[3].should.have.property('options');
+    console.log(JSON.stringify(actual, null, 2))
+    actual.comments[0].should.have.property('aa');
+    actual.comments[0].should.have.property('bb');
+    actual.comments[0].params[1].should.have.property('aa');
+    actual.comments[0].params[2].should.have.property('bb');
+    actual.comments[0].params[3].should.have.property('cc');
   });
 
 });
