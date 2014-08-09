@@ -10,13 +10,12 @@
 var fs = require('fs');
 var assert = require('assert');
 var should = require('should');
-var parse = require('..').parseParams;
+var parser = require('..').parseParams;
 
 
 describe('parse params:', function () {
-
   it('should parse @params', function () {
-    var actual = parse('{Object} `bar` This is a description.');
+    var actual = parser('{Object} `bar` This is a description.');
     actual.should.have.property('type');
     actual.type.should.equal('Object');
     actual.should.have.property('name');
@@ -26,7 +25,7 @@ describe('parse params:', function () {
   });
 
   it('should parse @params when `type` is missing', function () {
-    var actual = parse('`bar` This is a description.');
+    var actual = parser('`bar` This is a description.');
     actual.should.have.property('type');
     actual.should.have.property('name');
     actual.name.should.equal('bar');
@@ -35,7 +34,7 @@ describe('parse params:', function () {
   });
 
   it('should parse @params when `name` is missing', function () {
-    var actual = parse('{Object} This is a description.');
+    var actual = parser('{Object} This is a description.');
     actual.should.have.property('type');
     actual.type.should.equal('Object');
     actual.should.have.property('name');
@@ -45,7 +44,7 @@ describe('parse params:', function () {
   });
 
   it('should parse @params when `description` is missing', function () {
-    var actual = parse('{Object} `bar`');
+    var actual = parser('{Object} `bar`');
     actual.should.have.property('type');
     actual.type.should.equal('Object');
     actual.should.have.property('name');
@@ -54,7 +53,7 @@ describe('parse params:', function () {
   });
 
   it('should parse @params when `description` is missing', function () {
-    var actual = parse('{Object} `bar`');
+    var actual = parser('{Object} `bar`');
     actual.should.have.property('type');
     actual.type.should.equal('Object');
     actual.should.have.property('name');
