@@ -46,32 +46,32 @@ var comment = [
 describe('when a string is passed:', function () {
   it('should parse a string', function () {
     var actual = parser('/**\n@foo {Object} `bar`\n*/');
-    actual.comments.length.should.equal(1);
+    actual.comments.length.should.equal(2);
     actual.comments[0].should.have.property('foo');
   });
 
   it('should parse a string', function () {
     var actual = parser(comment)
-    actual.comments.length.should.equal(1);
+    actual.comments.length.should.equal(2);
     actual.comments[0].should.have.property('param');
   });
 
   it('should parse @params', function () {
     var actual = utils.fixture('params');
-    actual.comments.length.should.equal(1);
+    actual.comments.length.should.equal(2);
     actual.comments[0].should.have.property('param');
   });
 
   it('should parse @return', function () {
     var actual = utils.fixture('return');
-    actual.comments.length.should.equal(1);
+    actual.comments.length.should.equal(2);
     actual.comments[0].should.have.property('return');
     actual.comments[0].should.have.property('returns');
   });
 
   it('should parse @api', function () {
     var actual = utils.fixture('api');
-    actual.comments.length.should.equal(1);
+    actual.comments.length.should.equal(2);
     actual.comments[0].should.have.property('api');
   });
 });
