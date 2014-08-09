@@ -41,8 +41,7 @@
     "lodash": "^2.4.1",
     "mocha": "*",
     "should": "^4.0.4",
-    "verb": ">= 0.2.6",
-    "verb-tag-jscomments": ">= 0.1.4"
+    "verb": ">= 0.2.6"
   },
   "dependencies": {
     "arrayify-compact": "^0.1.0",
