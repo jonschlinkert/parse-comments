@@ -37,9 +37,14 @@
     "test": "mocha -R spec"
   },
   "devDependencies": {
+    "fs-utils": "^0.4.3",
     "mocha": "*",
     "should": "^4.0.4",
     "verb": ">= 0.2.6",
     "verb-tag-jscomments": ">= 0.1.4"
+  },
+  "dependencies": {
+    "code-context": "^0.1.0",
+    "extract-range": "^0.1.0"
   }
 }

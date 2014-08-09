@@ -10,16 +10,11 @@
 var fs = require('fs');
 var should = require('should');
 var parseComment = require('..');
-
-function readFixture(src) {
-  var str = fs.readFileSync('test/fixtures/' + src + '.js', 'utf8');
-  return parseComment(str);
-}
-
+var utils = require('./helpers/utils');
 
 describe('utils:', function () {
   it('should strip banners', function () {
-    var actual = readFixture('params');
+    var actual = utils.fixture('params');
 
     actual[0].should.have.property('param');
     actual[0].should.have.property('params');

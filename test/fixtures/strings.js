@@ -21,7 +21,9 @@ var utils = require('./lib/utils.js');
  *
  * Instantiate a new instance of Strings, optionally passing a default context to use.
  *
+ * @class Strings
  * @return {Object} Instance of a Strings object
+ * @constructor
  */
 
 function Strings(context) {
