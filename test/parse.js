@@ -45,34 +45,35 @@ var comment = [
 
 describe('when a string is passed:', function () {
   it('should parse a string', function () {
-    var actual = parser('/**\n@foo {Object} `bar`\n*/');
-    actual.comments.length.should.equal(2);
-    actual.comments[0].should.have.property('foo');
+    var actual = parser('/**\n@param {Object} `abc`\n@api public\n*/');
+    actual.length.should.equal(1);
+    actual[0].should.have.property('param');
+    actual[0].should.have.property('api');
   });
 
   it('should parse a string', function () {
     var actual = parser(comment)
-    actual.comments.length.should.equal(2);
-    actual.comments[0].should.have.property('param');
+    actual.length.should.equal(1);
+    actual[0].should.have.property('param');
   });
 
   it('should parse @params', function () {
     var actual = utils.fixture('params');
-    actual.comments.length.should.equal(2);
-    actual.comments[0].should.have.property('param');
+    actual.length.should.equal(2);
+    actual[0].should.have.property('param');
   });
 
   it('should parse @return', function () {
     var actual = utils.fixture('return');
-    actual.comments.length.should.equal(2);
-    actual.comments[0].should.have.property('return');
-    actual.comments[0].should.have.property('returns');
+    actual.length.should.equal(1);
+    actual[0].should.have.property('return');
+    actual[0].should.have.property('returns');
   });
 
   it('should parse @api', function () {
     var actual = utils.fixture('api');
-    actual.comments.length.should.equal(2);
-    actual.comments[0].should.have.property('api');
+    actual.length.should.equal(1);
+    actual[0].should.have.property('api');
   });
 });
 

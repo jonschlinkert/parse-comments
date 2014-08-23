@@ -1,14 +1,16 @@
 /*!
  * parse-comments <https://github.com/jonschlinkert/parse-comments>
- *
- * NOTE: Although substantially changed, this was
- * originally based on https://github.com/caolan/scrawl
+ * Originally based on https://github.com/caolan/scrawl
  *
  * Copyright (c) 2014 Jon Schlinkert, contributors
  * Licensed under the MIT License (MIT)
  */
 
 'use strict';
+
+/**
+ * Module dependencies
+ */
 
 var _ = require('lodash');
 var arrayify = require('arrayify-compact');
@@ -21,48 +23,40 @@ var utils = require('./lib/utils');
 
 var parser = module.exports = function parser(str, options) {
   var opts = _.extend({}, options);
-  var o = {};
-  // o.comments = [];
+  var arr = [];
 
-  o.comments = parser.extractComments(str, opts);
   var context = codeContext(str);
   var len = context.length;
+  var newObj = {};
 
-  var c = context.filter(function (obj, i) {
-
-    o.comments.push(obj);
+  context.forEach(function (obj, i) {
+    obj = obj || {};
 
     if (i < len + 1) {
-      if (obj && obj.type === 'comment') {
-        var next = context[i + 1];
-        if (next) {
-          next.comment = {};
 
+      if (obj.type === 'comment') {
+        var num = 0;
+        if (context.length > 1) {
+          num = i + 1;
+        }
+
+        var ctx = context[num];
+        if (ctx) {
           var comment = range(str, obj.begin, obj.end);
-          obj.string = comment;
-          var parsed = parser.extractComments(comment)[0];
+          ctx.string = comment;
 
-          if (next.type !== 'comment') {
-            for (var key in parsed) {
-              if (parsed.hasOwnProperty(key) && key !== 'line') {
-                next.comment[key] = parsed[key];
-              }
-            }
-            for (var prop in obj) {
-              if (obj.hasOwnProperty(prop) && prop !== 'type') {
-                next[prop] = obj[prop];
-              }
-            }
-            next = parser.normalizeHeading(next);
-            return false;
+          var parsed = parser.extractComments(comment, opts);
+          _.extend(ctx, parsed[0]);
+
+          if (ctx.api !== 'private') {
+            arr.push(_.omit(parser.normalizeHeading(ctx)));
           }
         }
       }
     }
-    return o;
   });
-  o.context = c;
-  return o;
+
+   return arr;
 };
 
 
@@ -84,10 +78,32 @@ parser.parseParams = function(param) {
   };
 
   if (match[2]) {
-    params.parent = match[2];
-    console.log(params)
+    parser.parseSubprop(match, params);
   }
 
+  return params;
+};
+
+
+/**
+ * Parse the subproperties from parameters.
+ *
+ * @param  {String} `param`
+ * @return {Object}
+ */
+
+parser.parseSubprop = function(match, params) {
+  var subprop = match[2];
+
+  if (/\./.test(subprop)) {
+    var parts = subprop.split('.');
+    var def = parts[1].split('=');
+    params.name = def[0];
+    params._default = def[1] || null;
+    subprop = parts[0];
+  }
+
+  params.parent = subprop;
   return params;
 };
 
@@ -100,7 +116,7 @@ parser.parseParams = function(param) {
  */
 
 parser.mergeSubprops = function(comments, subprop) {
-  if (comments[subprop]) {
+  if (comments.hasOwnProperty(subprop) && typeof comments[subprop] === 'object') {
     var o = {};
 
     comments[subprop].forEach(function (child) {
@@ -109,12 +125,15 @@ parser.mergeSubprops = function(comments, subprop) {
       delete child.parent;
     });
 
-    comments.params = comments.params.map(function (param) {
-      if (o[param.name]) {
-        param[subprop] = o[param.name];
-      }
-      return param;
-    });
+    if (comments.hasOwnProperty('params')) {
+      comments.params = comments.params.map(function (param) {
+        if (o[param.name]) {
+          param[subprop] = o[param.name];
+        }
+        return param;
+      });
+    }
+
   }
   return comments;
 };
@@ -215,25 +234,23 @@ parser.normalizeHeading = function(obj) {
 
   // @method tags
   if (o.hasOwnProperty('method')) {
-    o.name = o.method.replace(/`/g, '');
     o.type = 'method';
   }
 
   // @class tags
   if (o.hasOwnProperty('class')) {
-    o.name = o.class.replace(/`/g, '');
     o.type = 'class';
-
     o.heading.level = 1;
   } else {
     o.heading.level = 2;
   }
 
-  o.heading.text =
+  var heading =
+    o.name ||
     o.class ||
-    o.method ||
-    o.name;
+    o.method || '';
 
+  o.heading.text = heading.replace(/^`|`$/g, '');
   o.name = o.heading.text;
   return o;
 };
@@ -280,16 +297,16 @@ parser.parseTags = function (comment, options) {
   }
 
   // parse @param tags (`singular: plural`)
-  var props = {
+  var props = _.extend({
     return  : 'returns',
     param   : 'params',
     property: 'properties',
     option  : 'options'
-  };
+  }, opts.subprops);
 
-  _.extend(props, opts.subprops);
+  props = _.omit(props, ['api', 'constructor', 'class', 'static', 'type']);
 
-  Object.keys(props).forEach(function(key) {
+  _.keys(props).forEach(function(key) {
     var value = props[key];
     if (comment[key]) {
 
@@ -385,21 +402,34 @@ parser.parseComment = function (content, options) {
   }, {});
 
 
-  var subprops = _.values(opts.subprops);
+  var singular = _.keys(opts.subprops);
+  var plural = _.values(opts.subprops);
 
-  props = props.filter(function (prop) {
-    return prop !== 'param' && prop !== 'return';
-  }).map(function(name) {
+  var diff = _.difference(props, singular).filter(function (prop) {
+    return prop !== 'param' &&
+      prop !== 'constructor' &&
+      prop !== 'return' &&
+      prop !== 'static' &&
+      prop !== 'class' &&
+      prop !== 'type' &&
+      prop !== 'api';
+  });
+
+  var pluralized = diff.map(function(name) {
     return inflect.pluralize(name);
   });
 
+  singular = _.union(diff, singular);
+  plural = _.union([], pluralized, plural);
 
-  var comments = parser.parseTags(comment, opts);
+  var comments = this.parseTags(comment, {
+    subprops: _.zipObject(singular, plural)
+  });
 
   // Pass custom subprops (plural/arrays)
-  _.union(props, subprops).forEach(function (prop) {
-    parser.mergeSubprops(comments, prop);
-  });
+  plural.forEach(function (prop) {
+    this.mergeSubprops(comments, prop);
+  }.bind(this));
 
   return comments;
 };
@@ -412,15 +442,12 @@ parser.parseComment = function (content, options) {
  * @return  {String}
  */
 
+
 parser.extractComments = function (str, options) {
   var opts = _.extend({}, options);
 
   var re = /\/\*{1,2}([\s\S]*?)\*\//g;
   var data = [];
-
-  var filter = opts.fn || function (params) {
-    return !!/public/.test(params.api)
-  };
 
 
   var lineNumber = 1;
@@ -433,6 +460,7 @@ parser.extractComments = function (str, options) {
     lineNumber += lineCount(_str.substr(0, match.index));
     str = str.substr(match.index + match[1].length);
     var params = parser.parseComment(match[1], opts);
+
     params.line = lineNumber;
 
     // Allow @words to be escaped with a single backtick, e.g. `@word,
@@ -441,9 +469,7 @@ parser.extractComments = function (str, options) {
       params.description = params.description.replace(/^`@/gm, '@');
     }
 
-    if (filter(params)) {
-      data.push(params);
-    }
+    data.push(params);
 
     // add lines from the comment itself
     lineNumber += lineCount(_str.substr(match.index, match[1].length));

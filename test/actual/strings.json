@@ -1,663 +1,607 @@
 [
   {
-    "begin": 1,
+    "begin": 10,
     "type": "declaration",
-    "name": "util",
+    "name": "",
     "value": "require('util')",
-    "string": "util",
+    "string": "/**\n * Strings <https://github.com/sellside/strings>\n *\n * Copyright (c) 2014 Sellside, Jon Schlinkert and Brian Woodward\n * Licensed under the MIT License (MIT).\n */",
     "original": "var util = require('util');",
-    "comment": {
-      "description": "\n\nCopyright (c) 2014 Sellside, Jon Schlinkert and Brian Woodward\nLicensed under the MIT License (MIT).",
-      "lead": "Strings <https://github.com/sellside/strings>",
-      "heading": ""
-    },
-    "end": 6,
+    "description": "\n\nCopyright (c) 2014 Sellside, Jon Schlinkert and Brian Woodward\nLicensed under the MIT License (MIT).",
+    "lead": "Strings <https://github.com/sellside/strings>",
     "heading": {
       "level": 2,
-      "text": "util"
-    }
+      "text": ""
+    },
+    "line": 1
   },
   {
-    "begin": 11,
+    "api": "private",
+    "begin": 10,
     "type": "declaration",
-    "name": "frep",
-    "value": "require('frep')",
-    "string": "frep",
-    "original": "var frep = require('frep');"
+    "name": "",
+    "value": "require('util')",
+    "string": "/**\n * Strings <https://github.com/sellside/strings>\n *\n * Copyright (c) 2014 Sellside, Jon Schlinkert and Brian Woodward\n * Licensed under the MIT License (MIT).\n */",
+    "original": "var util = require('util');",
+    "description": "\n\nCopyright (c) 2014 Sellside, Jon Schlinkert and Brian Woodward\nLicensed under the MIT License (MIT).",
+    "lead": "Strings <https://github.com/sellside/strings>",
+    "heading": {
+      "level": 2,
+      "text": ""
+    },
+    "line": 1
   },
   {
-    "begin": 12,
-    "type": "declaration",
-    "name": "_",
-    "value": "require('lodash')",
-    "string": "_",
-    "original": "var _ = require('lodash');"
-  },
-  {
-    "begin": 13,
-    "type": "declaration",
-    "name": "utils",
-    "value": "require('./lib/utils.js')",
-    "string": "utils",
-    "original": "var utils = require('./lib/utils.js');"
-  },
-  {
-    "begin": 17,
-    "type": "function",
-    "name": "Strings",
-    "string": "Strings()",
+    "begin": 29,
+    "type": "class",
+    "name": "new Strings",
+    "args": [
+      "context"
+    ],
+    "string": "/**\n * ## new Strings()\n *\n * > Strings constructor method\n *\n * Instantiate a new instance of Strings, optionally passing a default context to use.\n *\n * @class Strings\n * @return {Object} Instance of a Strings object\n * @constructor\n */",
     "original": "function Strings(context) {",
-    "comment": {
-      "description": "\n\nInstantiate a new instance of Strings, optionally passing a default context to use.",
-      "class": "Strings",
-      "return": "{Object} Instance of a Strings object",
-      "constructor": true,
-      "lead": "> Strings constructor method",
-      "heading": "new Strings",
-      "returns": "Object"
-    },
-    "end": 27,
+    "description": "\n\nInstantiate a new instance of Strings, optionally passing a default context to use.",
+    "class": "Strings",
+    "return": "{Object} Instance of a Strings object",
+    "constructor": true,
+    "lead": "> Strings constructor method",
     "heading": {
-      "level": 2,
-      "text": "Strings"
-    }
+      "level": 1,
+      "text": "new Strings"
+    },
+    "returns": [
+      {
+        "type": "Object",
+        "description": "Instance of a Strings object"
+      }
+    ],
+    "line": 1
   },
   {
-    "begin": 34,
-    "type": "property",
-    "receiver": "this",
-    "name": "_context",
-    "value": "context || {}",
-    "string": "this._context",
-    "original": "this._context = context || {};"
-  },
-  {
-    "begin": 35,
-    "type": "property",
-    "receiver": "this",
-    "name": "_replacements",
-    "value": "{}",
-    "string": "this._replacements",
-    "original": "this._replacements = {};"
-  },
-  {
-    "begin": 36,
-    "type": "property",
-    "receiver": "this",
-    "name": "_propstrings",
-    "value": "{}",
-    "string": "this._propstrings",
-    "original": "this._propstrings = {};"
-  },
-  {
-    "begin": 37,
-    "type": "property",
-    "receiver": "this",
-    "name": "_templates",
-    "value": "{}",
-    "string": "this._templates",
-    "original": "this._templates = {};"
-  },
-  {
-    "begin": 38,
-    "type": "property",
-    "receiver": "this",
-    "name": "_patterns",
-    "value": "{}",
-    "string": "this._patterns",
-    "original": "this._patterns = {};"
-  },
-  {
-    "begin": 39,
-    "type": "property",
-    "receiver": "this",
-    "name": "_parsers",
-    "value": "{}",
-    "string": "this._parsers",
-    "original": "this._parsers = {};"
-  },
-  {
-    "begin": 40,
-    "type": "property",
-    "receiver": "this",
-    "name": "_groups",
-    "value": "{}",
-    "string": "this._groups",
-    "original": "this._groups = {};"
-  },
-  {
-    "begin": 44,
-    "type": "method",
-    "constructor": "Strings",
-    "name": "propstring",
-    "string": "Strings.prototype.propstring()",
+    "begin": 61,
+    "type": "class",
+    "class": "Strings",
+    "name": ".propstring",
+    "args": [
+      "name",
+      "str"
+    ],
+    "string": "/**\n * ## .propstring (name, propstring)\n *\n * Get or set a propstring.\n *\n * **Example**\n *\n * ```js\n * strings.propstring('permalinks', ':destBase/:dirname/:basename/index.:ext');\n * ```\n *\n * @param {String} `name`\n * @param {String} `propstring`\n * @return {Object} Instance of the current Strings object\n * @api public\n */",
     "original": "Strings.prototype.propstring = function (name, str) {",
-    "comment": {
-      "description": "\n\n**Example**\n\n```js\nstrings.propstring('permalinks', ':destBase/:dirname/:basename/index.:ext');\n```",
-      "param": [
-        "{String} `name`",
-        "{String} `propstring`"
-      ],
-      "return": "{Object} Instance of the current Strings object",
-      "api": "public",
-      "lead": "Get or set a propstring.",
-      "heading": ".propstring",
-      "params": [
-        {
-          "type": "String",
-          "name": "name",
-          "description": ""
-        },
-        {
-          "type": "String",
-          "name": "propstring",
-          "description": ""
-        }
-      ],
-      "returns": "Object"
-    },
-    "end": 59,
+    "description": "\n\n**Example**\n\n```js\nstrings.propstring('permalinks', ':destBase/:dirname/:basename/index.:ext');\n```",
+    "param": [
+      "{String} `name`",
+      "{String} `propstring`"
+    ],
+    "return": "{Object} Instance of the current Strings object",
+    "api": "public",
+    "lead": "Get or set a propstring.",
     "heading": {
       "level": 1,
-      "text": "propstring"
-    }
+      "text": ".propstring"
+    },
+    "returns": [
+      {
+        "type": "Object",
+        "description": "Instance of the current Strings object"
+      }
+    ],
+    "params": [
+      {
+        "type": "String",
+        "name": "name",
+        "description": ""
+      },
+      {
+        "type": "String",
+        "name": "propstring",
+        "description": ""
+      }
+    ],
+    "line": 1
   },
   {
-    "begin": 70,
-    "type": "method",
-    "constructor": "Strings",
-    "name": "pattern",
-    "string": "Strings.prototype.pattern()",
+    "begin": 87,
+    "type": "class",
+    "class": "Strings",
+    "name": ".pattern",
+    "args": [
+      "name",
+      "pattern",
+      "flags"
+    ],
+    "string": "/**\n * ## .pattern (name, pattern)\n *\n * Get or set regular expression or string.\n *\n * **Example**\n *\n * ```js\n * strings.pattern('prop', ':([\\\\w]+)');\n * ```\n *\n * @param {String} `name`\n * @param {String} `pattern`\n * @return {Object} Instance of the current Strings object\n * @api public\n */",
     "original": "Strings.prototype.pattern = function (name, pattern, flags) {",
-    "comment": {
-      "description": "\n\n**Example**\n\n```js\nstrings.pattern('prop', ':([\\\\w]+)');\n```",
-      "param": [
-        "{String} `name`",
-        "{String} `pattern`"
-      ],
-      "return": "{Object} Instance of the current Strings object",
-      "api": "public",
-      "lead": "Get or set regular expression or string.",
-      "heading": ".pattern",
-      "params": [
-        {
-          "type": "String",
-          "name": "name",
-          "description": ""
-        },
-        {
-          "type": "String",
-          "name": "pattern",
-          "description": ""
-        }
-      ],
-      "returns": "Object"
-    },
-    "end": 85,
+    "description": "\n\n**Example**\n\n```js\nstrings.pattern('prop', ':([\\\\w]+)');\n```",
+    "param": [
+      "{String} `name`",
+      "{String} `pattern`"
+    ],
+    "return": "{Object} Instance of the current Strings object",
+    "api": "public",
+    "lead": "Get or set regular expression or string.",
     "heading": {
       "level": 1,
-      "text": "pattern"
-    }
+      "text": ".pattern"
+    },
+    "returns": [
+      {
+        "type": "Object",
+        "description": "Instance of the current Strings object"
+      }
+    ],
+    "params": [
+      {
+        "type": "String",
+        "name": "name",
+        "description": ""
+      },
+      {
+        "type": "String",
+        "name": "pattern",
+        "description": ""
+      }
+    ],
+    "line": 1
   },
   {
-    "begin": 99,
-    "type": "method",
-    "constructor": "Strings",
-    "name": "replacement",
-    "string": "Strings.prototype.replacement()",
+    "begin": 118,
+    "type": "class",
+    "class": "Strings",
+    "name": ".replacement",
+    "args": [
+      "name",
+      "replacement"
+    ],
+    "string": "/**\n * ## .replacement (name, replacement)\n *\n * Get or set a replacement string or function.\n *\n * **Example**\n *\n * ```js\n * strings.replacement('prop', function(match) {\n *   return match.toUpperCase();\n * });\n * ```\n *\n * @param {String} `name`\n * @param {String} `replacement`\n * @return {Object} Instance of the current Strings object\n * @api public\n */",
     "original": "Strings.prototype.replacement = function (name, replacement) {",
-    "comment": {
-      "description": "\n\n**Example**\n\n```js\nstrings.replacement('prop', function(match) {\nreturn match.toUpperCase();\n});\n```",
-      "param": [
-        "{String} `name`",
-        "{String} `replacement`"
-      ],
-      "return": "{Object} Instance of the current Strings object",
-      "api": "public",
-      "lead": "Get or set a replacement string or function.",
-      "heading": ".replacement",
-      "params": [
-        {
-          "type": "String",
-          "name": "name",
-          "description": ""
-        },
-        {
-          "type": "String",
-          "name": "replacement",
-          "description": ""
-        }
-      ],
-      "returns": "Object"
-    },
-    "end": 116,
+    "description": "\n\n**Example**\n\n```js\nstrings.replacement('prop', function(match) {\n  return match.toUpperCase();\n});\n```",
+    "param": [
+      "{String} `name`",
+      "{String} `replacement`"
+    ],
+    "return": "{Object} Instance of the current Strings object",
+    "api": "public",
+    "lead": "Get or set a replacement string or function.",
     "heading": {
       "level": 1,
-      "text": "replacement"
-    }
+      "text": ".replacement"
+    },
+    "returns": [
+      {
+        "type": "Object",
+        "description": "Instance of the current Strings object"
+      }
+    ],
+    "params": [
+      {
+        "type": "String",
+        "name": "name",
+        "description": ""
+      },
+      {
+        "type": "String",
+        "name": "replacement",
+        "description": ""
+      }
+    ],
+    "line": 1
   },
   {
-    "begin": 127,
-    "type": "method",
-    "constructor": "Strings",
-    "name": "parser",
-    "string": "Strings.prototype.parser()",
+    "begin": 169,
+    "type": "class",
+    "class": "Strings",
+    "name": ".parser",
+    "args": [
+      "name",
+      "arr"
+    ],
+    "string": "/**\n * ## .parser ( name, replacement-patterns )\n *\n * Define a named parser to be used against any given string.\n *\n * **Example**\n *\n * Pass an object:\n *\n * ```js\n * strings.parser('prop', {\n *   pattern: /:([\\\\w]+)/,\n *   replacement: function(match) {\n *     return match.toUpperCase();\n *   }\n * );\n * ```\n *\n * Or an array\n *\n * ```js\n * strings.parser('prop', [\n *   {\n *     pattern: 'a',\n *     replacement: 'b'\n *   },\n *   {\n *     pattern: 'c',\n *     replacement: 'd'\n *   }\n * ]);\n * ```\n *\n * @param {String} `name` name of the parser.\n * @param {Object|Array} `pairings` array of replacement patterns to store with the given name.\n *   @param {String|RegExp} `pattern`\n *   @param {String|Function} `replacement`\n * @return {Object} Instance of the current Strings object\n *\n * @api public\n */",
     "original": "Strings.prototype.parser = function (name, arr) {",
-    "comment": {
-      "description": "\n\n**Example**\n\nPass an object:\n\n```js\nstrings.parser('prop', {\npattern: /:([\\\\w]+)/,\nreplacement: function(match) {\nreturn match.toUpperCase();\n}\n);\n```\n\nOr an array\n\n```js\nstrings.parser('prop', [\n{\npattern: 'a',\nreplacement: 'b'\n},\n{\npattern: 'c',\nreplacement: 'd'\n}\n]);\n```",
-      "param": [
-        "{String} `name` name of the parser.",
-        "{Object|Array} `pairings` array of replacement patterns to store with the given name.",
-        "{String|RegExp} `pattern`",
-        "{String|Function} `replacement`"
-      ],
-      "return": "{Object} Instance of the current Strings object",
-      "api": "public",
-      "lead": "Define a named parser to be used against any given string.",
-      "heading": ".parser",
-      "params": [
-        {
-          "type": "String",
-          "name": "name",
-          "description": "name of the parser."
-        },
-        {
-          "type": "Object|Array",
-          "name": "pairings",
-          "description": "array of replacement patterns to store with the given name."
-        },
-        {
-          "type": "String|RegExp",
-          "name": "pattern",
-          "description": ""
-        },
-        {
-          "type": "String|Function",
-          "name": "replacement",
-          "description": ""
-        }
-      ],
-      "returns": "Object"
-    },
-    "end": 167,
+    "description": "\n\n**Example**\n\nPass an object:\n\n```js\nstrings.parser('prop', {\n  pattern: /:([\\\\w]+)/,\n  replacement: function(match) {\n    return match.toUpperCase();\n  }\n);\n```\n\nOr an array\n\n```js\nstrings.parser('prop', [\n  {\n    pattern: 'a',\n    replacement: 'b'\n  },\n  {\n    pattern: 'c',\n    replacement: 'd'\n  }\n]);\n```",
+    "param": [
+      "{String} `name` name of the parser.",
+      "{Object|Array} `pairings` array of replacement patterns to store with the given name.",
+      "{String|RegExp} `pattern`",
+      "{String|Function} `replacement`"
+    ],
+    "return": "{Object} Instance of the current Strings object",
+    "api": "public",
+    "lead": "Define a named parser to be used against any given string.",
     "heading": {
       "level": 1,
-      "text": "parser"
-    }
+      "text": ".parser"
+    },
+    "returns": [
+      {
+        "type": "Object",
+        "description": "Instance of the current Strings object"
+      }
+    ],
+    "params": [
+      {
+        "type": "String",
+        "name": "name",
+        "description": "name of the parser."
+      },
+      {
+        "type": "Object|Array",
+        "name": "pairings",
+        "description": "array of replacement patterns to store with the given name."
+      },
+      {
+        "type": "String|RegExp",
+        "name": "pattern",
+        "description": ""
+      },
+      {
+        "type": "String|Function",
+        "name": "replacement",
+        "description": ""
+      }
+    ],
+    "line": 1
   },
   {
-    "begin": 178,
-    "type": "method",
-    "constructor": "Strings",
-    "name": "extend",
-    "string": "Strings.prototype.extend()",
+    "begin": 202,
+    "type": "class",
+    "class": "Strings",
+    "name": ".extend",
+    "args": [
+      "name",
+      "arr"
+    ],
+    "string": "/**\n * ## .extend ( parser, replacement-patterns )\n *\n * Extend a parser.\n *\n * **Example**\n *\n * ```js\n * strings.extend('prop', {\n *   pattern: /:([\\\\w]+)/,\n *   replacement: function(match) {\n *     return match.toUpperCase();\n *   }\n * );\n * ```\n *\n * @param {String} `name` name of the parser to extend.\n * @param {Object|Array} `arr` array of replacement patterns to store with the given name.\n *   @param {String|RegExp} `pattern`\n *   @param {String|Function} `replacement`\n * @return {Object} Instance of the current Strings object\n * @api public\n */",
     "original": "Strings.prototype.extend = function (name, arr) {",
-    "comment": {
-      "description": "\n\n**Example**\n\n```js\nstrings.extend('prop', {\npattern: /:([\\\\w]+)/,\nreplacement: function(match) {\nreturn match.toUpperCase();\n}\n);\n```",
-      "param": [
-        "{String} `name` name of the parser to extend.",
-        "{Object|Array} `arr` array of replacement patterns to store with the given name.",
-        "{String|RegExp} `pattern`",
-        "{String|Function} `replacement`"
-      ],
-      "return": "{Object} Instance of the current Strings object",
-      "api": "public",
-      "lead": "Extend a parser.",
-      "heading": ".extend",
-      "params": [
-        {
-          "type": "String",
-          "name": "name",
-          "description": "name of the parser to extend."
-        },
-        {
-          "type": "Object|Array",
-          "name": "arr",
-          "description": "array of replacement patterns to store with the given name."
-        },
-        {
-          "type": "String|RegExp",
-          "name": "pattern",
-          "description": ""
-        },
-        {
-          "type": "String|Function",
-          "name": "replacement",
-          "description": ""
-        }
-      ],
-      "returns": "Object"
-    },
-    "end": 200,
+    "description": "\n\n**Example**\n\n```js\nstrings.extend('prop', {\n  pattern: /:([\\\\w]+)/,\n  replacement: function(match) {\n    return match.toUpperCase();\n  }\n);\n```",
+    "param": [
+      "{String} `name` name of the parser to extend.",
+      "{Object|Array} `arr` array of replacement patterns to store with the given name.",
+      "{String|RegExp} `pattern`",
+      "{String|Function} `replacement`"
+    ],
+    "return": "{Object} Instance of the current Strings object",
+    "api": "public",
+    "lead": "Extend a parser.",
     "heading": {
       "level": 1,
-      "text": "extend"
-    }
+      "text": ".extend"
+    },
+    "returns": [
+      {
+        "type": "Object",
+        "description": "Instance of the current Strings object"
+      }
+    ],
+    "params": [
+      {
+        "type": "String",
+        "name": "name",
+        "description": "name of the parser to extend."
+      },
+      {
+        "type": "Object|Array",
+        "name": "arr",
+        "description": "array of replacement patterns to store with the given name."
+      },
+      {
+        "type": "String|RegExp",
+        "name": "pattern",
+        "description": ""
+      },
+      {
+        "type": "String|Function",
+        "name": "replacement",
+        "description": ""
+      }
+    ],
+    "line": 1
   },
   {
-    "begin": 204,
-    "type": "declaration",
-    "name": "parser",
-    "value": "_.union(this._parsers[name], arr)",
-    "string": "parser",
-    "original": "var parser = _.union(this._parsers[name], arr);"
-  },
-  {
-    "begin": 210,
-    "type": "method",
-    "constructor": "Strings",
-    "name": "parsers",
-    "string": "Strings.prototype.parsers()",
+    "begin": 231,
+    "type": "class",
+    "class": "Strings",
+    "name": ".parsers",
+    "args": [
+      "parsers"
+    ],
+    "string": "/**\n * ## .parsers ( parsers )\n *\n * Return a list of parsers based on the given list of named\n * parsers or parser objects.\n *\n * **Example**\n *\n * ```js\n * // pass an array of parser names\n * strings.parsers(['a', 'b', 'c']);\n *\n * // or a string\n * strings.parsers('a');\n * ```\n *\n * @param {String|Array} `parsers` named parsers or parser objects to use.\n * @return {Array}\n * @api public\n */",
     "original": "Strings.prototype.parsers = function (parsers) {",
-    "comment": {
-      "description": "\n\n**Example**\n\n```js\n// pass an array of parser names\nstrings.parsers(['a', 'b', 'c']);\n\n// or a string\nstrings.parsers('a');\n```",
-      "param": "{String|Array} `parsers` named parsers or parser objects to use.",
-      "return": "{Array}",
-      "api": "public",
-      "lead": "Return a list of parsers based on the given list of named parsers or parser objects.",
-      "heading": ".parsers",
-      "params": [
-        {
-          "type": "String|Array",
-          "name": "parsers",
-          "description": "named parsers or parser objects to use."
-        }
-      ],
-      "returns": "Array"
-    },
-    "end": 229,
+    "description": "\n\n**Example**\n\n```js\n// pass an array of parser names\nstrings.parsers(['a', 'b', 'c']);\n\n// or a string\nstrings.parsers('a');\n```",
+    "param": "{String|Array} `parsers` named parsers or parser objects to use.",
+    "return": "{Array}",
+    "api": "public",
+    "lead": "Return a list of parsers based on the given list of named parsers or parser objects.",
     "heading": {
       "level": 1,
-      "text": "parsers"
-    }
+      "text": ".parsers"
+    },
+    "returns": [
+      {
+        "description": "{Array}"
+      }
+    ],
+    "params": [
+      {
+        "type": "String|Array",
+        "name": "parsers",
+        "description": "named parsers or parser objects to use."
+      }
+    ],
+    "line": 1
   },
   {
-    "begin": 240,
-    "type": "declaration",
-    "name": "_parsers",
-    "value": "_.map(parsers, function (parser) {",
-    "string": "_parsers",
-    "original": "var _parsers = _.map(parsers, function (parser) {"
-  },
-  {
-    "begin": 257,
-    "type": "method",
-    "constructor": "Strings",
-    "name": "template",
-    "string": "Strings.prototype.template()",
+    "begin": 280,
+    "type": "class",
+    "class": "Strings",
+    "name": ".template",
+    "args": [
+      "name",
+      "propstring",
+      "parsers"
+    ],
+    "string": "/**\n * ## .template( name, propstring, parsers )\n *\n * Store, by name, a named propstring and an array of parsers.\n *\n * **Example**\n *\n * ```js\n * // strings.template(name string, array);\n * strings.template('prop', ['prop'], {\n *   foo: 'aaa',\n *   bar: 'bbb',\n *   baz: 'ccc'\n * });\n * ```\n *\n * @param {String} `name` The name of the template to store\n * @param {String} `name` Name of replacement group to use for building the final string\n * @param {Object} `context` Optional Object to bind to replacement function as `this`\n * @return {String}\n * @api public\n */",
     "original": "Strings.prototype.template = function (name, propstring, parsers) {",
-    "comment": {
-      "description": "\n\n**Example**\n\n```js\n// strings.template(name string, array);\nstrings.template('prop', ['prop'], {\nfoo: 'aaa',\nbar: 'bbb',\nbaz: 'ccc'\n});\n```",
-      "param": [
-        "{String} `name` The name of the template to store",
-        "{String} `name` Name of replacement group to use for building the final string",
-        "{Object} `context` Optional Object to bind to replacement function as `this`"
-      ],
-      "return": "{String}",
-      "api": "public",
-      "lead": "Store, by name, a named propstring and an array of parsers.",
-      "heading": ".template",
-      "params": [
-        {
-          "type": "String",
-          "name": "name",
-          "description": "The name of the template to store"
-        },
-        {
-          "type": "String",
-          "name": "name",
-          "description": "Name of replacement group to use for building the final string"
-        },
-        {
-          "type": "Object",
-          "name": "context",
-          "description": "Optional Object to bind to replacement function as `this`"
-        }
-      ],
-      "returns": "String"
-    },
-    "end": 278,
+    "description": "\n\n**Example**\n\n```js\n// strings.template(name string, array);\nstrings.template('prop', ['prop'], {\n  foo: 'aaa',\n  bar: 'bbb',\n  baz: 'ccc'\n});\n```",
+    "param": [
+      "{String} `name` The name of the template to store",
+      "{String} `name` Name of replacement group to use for building the final string",
+      "{Object} `context` Optional Object to bind to replacement function as `this`"
+    ],
+    "return": "{String}",
+    "api": "public",
+    "lead": "Store, by name, a named propstring and an array of parsers.",
     "heading": {
       "level": 1,
-      "text": "template"
-    }
+      "text": ".template"
+    },
+    "returns": [
+      {
+        "description": "{String}"
+      }
+    ],
+    "params": [
+      {
+        "type": "String",
+        "name": "name",
+        "description": "The name of the template to store"
+      },
+      {
+        "type": "String",
+        "name": "name",
+        "description": "Name of replacement group to use for building the final string"
+      },
+      {
+        "type": "Object",
+        "name": "context",
+        "description": "Optional Object to bind to replacement function as `this`"
+      }
+    ],
+    "line": 1
   },
   {
-    "begin": 301,
-    "type": "method",
-    "constructor": "Strings",
-    "name": "transform",
-    "string": "Strings.prototype.transform()",
+    "begin": 337,
+    "type": "class",
+    "class": "Strings",
+    "name": ".transform",
+    "args": [
+      "propstring",
+      "parsers",
+      "context"
+    ],
+    "string": "/**\n * ## .transform( named-propstring, named-parsers, context)\n *\n * Similar to `.process`, except that the first parameter is the name\n * of the stored `propstring` to use, rather than any given string.\n *\n * **Example**\n *\n * ```js\n * strings.transform('propstring', ['parser'], {\n *   foo: 'aaa',\n *   bar: 'bbb',\n *   baz: 'ccc'\n * });\n * ```\n *\n * Or pass an object, `strings.transform({})`:\n *\n * ```js\n * strings.transform({\n *   propstring: 'prop',\n *   parsers: ['prop'],\n *   context: {\n *     foo: 'aaa',\n *     bar: 'bbb',\n *     baz: 'ccc'\n *   }\n * });\n * ```\n *\n * @param {String} `name` The name of the stored template to use\n * @param {Object} `context` The optional context object to bind to replacement functions as `this`\n * @return {String}\n * @api public\n */",
     "original": "Strings.prototype.transform = function (propstring, parsers, context) {",
-    "comment": {
-      "description": "\n\n**Example**\n\n```js\nstrings.transform('propstring', ['parser'], {\nfoo: 'aaa',\nbar: 'bbb',\nbaz: 'ccc'\n});\n```\n\nOr pass an object, `strings.transform({})`:\n\n```js\nstrings.transform({\npropstring: 'prop',\nparsers: ['prop'],\ncontext: {\nfoo: 'aaa',\nbar: 'bbb',\nbaz: 'ccc'\n}\n});\n```",
-      "param": [
-        "{String} `name` The name of the stored template to use",
-        "{Object} `context` The optional context object to bind to replacement functions as `this`"
-      ],
-      "return": "{String}",
-      "api": "public",
-      "lead": "Similar to `.process`, except that the first parameter is the name of the stored `propstring` to use, rather than any given string.",
-      "heading": ".transform",
-      "params": [
-        {
-          "type": "String",
-          "name": "name",
-          "description": "The name of the stored template to use"
-        },
-        {
-          "type": "Object",
-          "name": "context",
-          "description": "The optional context object to bind to replacement functions as `this`"
-        }
-      ],
-      "returns": "String"
-    },
-    "end": 335,
+    "description": "\n\n**Example**\n\n```js\nstrings.transform('propstring', ['parser'], {\n  foo: 'aaa',\n  bar: 'bbb',\n  baz: 'ccc'\n});\n```\n\nOr pass an object, `strings.transform({})`:\n\n```js\nstrings.transform({\n  propstring: 'prop',\n  parsers: ['prop'],\n  context: {\n    foo: 'aaa',\n    bar: 'bbb',\n    baz: 'ccc'\n  }\n});\n```",
+    "param": [
+      "{String} `name` The name of the stored template to use",
+      "{Object} `context` The optional context object to bind to replacement functions as `this`"
+    ],
+    "return": "{String}",
+    "api": "public",
+    "lead": "Similar to `.process`, except that the first parameter is the name of the stored `propstring` to use, rather than any given string.",
     "heading": {
       "level": 1,
-      "text": "transform"
-    }
+      "text": ".transform"
+    },
+    "returns": [
+      {
+        "description": "{String}"
+      }
+    ],
+    "params": [
+      {
+        "type": "String",
+        "name": "name",
+        "description": "The name of the stored template to use"
+      },
+      {
+        "type": "Object",
+        "name": "context",
+        "description": "The optional context object to bind to replacement functions as `this`"
+      }
+    ],
+    "line": 1
   },
   {
-    "begin": 348,
-    "type": "method",
-    "constructor": "Strings",
-    "name": "use",
-    "string": "Strings.prototype.use()",
+    "begin": 384,
+    "type": "class",
+    "class": "Strings",
+    "name": ".use",
+    "args": [
+      "template",
+      "context"
+    ],
+    "string": "/**\n * ## .use( named-propstring, named-parsers, context)\n *\n * Similar to `.process`, except that the first parameter is the name\n * of the stored `propstring` to use, rather than any given string.\n *\n * **Example**\n *\n * ```js\n * strings.use('propstring', ['parser'], {\n *   foo: 'aaa',\n *   bar: 'bbb',\n *   baz: 'ccc'\n * });\n * ```\n *\n * Or pass an object, `strings.use({})`:\n *\n * ```js\n * strings.use({\n *   propstring: 'prop',\n *   parsers: ['prop'],\n *   context: {\n *     foo: 'aaa',\n *     bar: 'bbb',\n *     baz: 'ccc'\n *   }\n * });\n * ```\n *\n * @param {String} `name` The name of the stored template to use\n * @param {Object} `context` The optional context object to bind to replacement functions as `this`\n * @return {String}\n * @api public\n */",
     "original": "Strings.prototype.use = function (template, context) {",
-    "comment": {
-      "description": "\n\n**Example**\n\n```js\nstrings.use('propstring', ['parser'], {\nfoo: 'aaa',\nbar: 'bbb',\nbaz: 'ccc'\n});\n```\n\nOr pass an object, `strings.use({})`:\n\n```js\nstrings.use({\npropstring: 'prop',\nparsers: ['prop'],\ncontext: {\nfoo: 'aaa',\nbar: 'bbb',\nbaz: 'ccc'\n}\n});\n```",
-      "param": [
-        "{String} `name` The name of the stored template to use",
-        "{Object} `context` The optional context object to bind to replacement functions as `this`"
-      ],
-      "return": "{String}",
-      "api": "public",
-      "lead": "Similar to `.process`, except that the first parameter is the name of the stored `propstring` to use, rather than any given string.",
-      "heading": ".use",
-      "params": [
-        {
-          "type": "String",
-          "name": "name",
-          "description": "The name of the stored template to use"
-        },
-        {
-          "type": "Object",
-          "name": "context",
-          "description": "The optional context object to bind to replacement functions as `this`"
-        }
-      ],
-      "returns": "String"
-    },
-    "end": 382,
+    "description": "\n\n**Example**\n\n```js\nstrings.use('propstring', ['parser'], {\n  foo: 'aaa',\n  bar: 'bbb',\n  baz: 'ccc'\n});\n```\n\nOr pass an object, `strings.use({})`:\n\n```js\nstrings.use({\n  propstring: 'prop',\n  parsers: ['prop'],\n  context: {\n    foo: 'aaa',\n    bar: 'bbb',\n    baz: 'ccc'\n  }\n});\n```",
+    "param": [
+      "{String} `name` The name of the stored template to use",
+      "{Object} `context` The optional context object to bind to replacement functions as `this`"
+    ],
+    "return": "{String}",
+    "api": "public",
+    "lead": "Similar to `.process`, except that the first parameter is the name of the stored `propstring` to use, rather than any given string.",
     "heading": {
       "level": 1,
-      "text": "use"
-    }
+      "text": ".use"
+    },
+    "returns": [
+      {
+        "description": "{String}"
+      }
+    ],
+    "params": [
+      {
+        "type": "String",
+        "name": "name",
+        "description": "The name of the stored template to use"
+      },
+      {
+        "type": "Object",
+        "name": "context",
+        "description": "The optional context object to bind to replacement functions as `this`"
+      }
+    ],
+    "line": 1
   },
   {
-    "begin": 385,
-    "type": "declaration",
-    "name": "tmpl",
-    "value": "this.template(template)",
-    "string": "tmpl",
-    "original": "var tmpl = this.template(template);"
-  },
-  {
-    "begin": 390,
-    "type": "method",
-    "constructor": "Strings",
-    "name": "process",
-    "string": "Strings.prototype.process()",
+    "begin": 414,
+    "type": "class",
+    "class": "Strings",
+    "name": ".process",
+    "args": [
+      "str",
+      "arr",
+      "context"
+    ],
+    "string": "/**\n * ## .process (str, parsers, context)\n *\n * Directly process the given string, using a named replacement\n * pattern or array of named replacement patterns, with the given\n * context.\n *\n * **Example**\n *\n * ```js\n * strings.process(':foo/:bar/:baz', ['a', 'b', 'c'], {\n *   foo: 'aaa',\n *   bar: 'bbb',\n *   baz: 'ccc'\n * });\n * ```\n *\n * @param {String} `str` the string to process\n * @param {String|Object|Array} `parsers` named parsers or parser objects to use when processing.\n * @param {Object} `context` context to use. optional if a global context is passed.\n * @return {String}\n * @api public\n */",
     "original": "Strings.prototype.process = function (str, arr, context) {",
-    "comment": {
-      "description": "\n\n**Example**\n\n```js\nstrings.process(':foo/:bar/:baz', ['a', 'b', 'c'], {\nfoo: 'aaa',\nbar: 'bbb',\nbaz: 'ccc'\n});\n```",
-      "param": [
-        "{String} `str` the string to process",
-        "{String|Object|Array} `parsers` named parsers or parser objects to use when processing.",
-        "{Object} `context` context to use. optional if a global context is passed."
-      ],
-      "return": "{String}",
-      "api": "public",
-      "lead": "Directly process the given string, using a named replacement pattern or array of named replacement patterns, with the given context.",
-      "heading": ".process",
-      "params": [
-        {
-          "type": "String",
-          "name": "str",
-          "description": "the string to process"
-        },
-        {
-          "type": "String|Object|Array",
-          "name": "parsers",
-          "description": "named parsers or parser objects to use when processing."
-        },
-        {
-          "type": "Object",
-          "name": "context",
-          "description": "context to use. optional if a global context is passed."
-        }
-      ],
-      "returns": "String"
-    },
-    "end": 412,
+    "description": "\n\n**Example**\n\n```js\nstrings.process(':foo/:bar/:baz', ['a', 'b', 'c'], {\n  foo: 'aaa',\n  bar: 'bbb',\n  baz: 'ccc'\n});\n```",
+    "param": [
+      "{String} `str` the string to process",
+      "{String|Object|Array} `parsers` named parsers or parser objects to use when processing.",
+      "{Object} `context` context to use. optional if a global context is passed."
+    ],
+    "return": "{String}",
+    "api": "public",
+    "lead": "Directly process the given string, using a named replacement pattern or array of named replacement patterns, with the given context.",
     "heading": {
       "level": 1,
-      "text": "process"
-    }
+      "text": ".process"
+    },
+    "returns": [
+      {
+        "description": "{String}"
+      }
+    ],
+    "params": [
+      {
+        "type": "String",
+        "name": "str",
+        "description": "the string to process"
+      },
+      {
+        "type": "String|Object|Array",
+        "name": "parsers",
+        "description": "named parsers or parser objects to use when processing."
+      },
+      {
+        "type": "Object",
+        "name": "context",
+        "description": "context to use. optional if a global context is passed."
+      }
+    ],
+    "line": 1
   },
   {
-    "begin": 415,
-    "type": "declaration",
-    "name": "parsers",
-    "value": "this.parsers(arr)",
-    "string": "parsers",
-    "original": "var parsers = this.parsers(arr);"
-  },
-  {
-    "begin": 416,
-    "type": "declaration",
-    "name": "ctx",
-    "value": "_.extend({}, this._context, context)",
-    "string": "ctx",
-    "original": "var ctx = _.extend({}, this._context, context);"
-  },
-  {
-    "begin": 421,
-    "type": "method",
-    "constructor": "Strings",
-    "name": "group",
-    "string": "Strings.prototype.group()",
+    "begin": 446,
+    "type": "class",
+    "class": "Strings",
+    "name": ".group",
+    "args": [
+      "groupName",
+      "propstring",
+      "parsers"
+    ],
+    "string": "/**\n * ## .group ( name, propstring, parsers )\n *\n * Define a named group of propstring/parser mappings, or get a\n * group if only the name is passed.\n *\n * **Example**\n *\n * ```js\n * strings.group('my-group-name', ':foo/:bar/:baz', ['a', 'b', 'c']);\n * ```\n *\n * To get a group:\n *\n * ```js\n * strings.group( name );\n * ```\n *\n * @param {String} `name`\n * @param {String} `propstring` the name of the propstring to use\n * @param {String|Array} `parsers` name or array of names of parsers to use\n * @return {Object} Instance of the current Strings object\n * @api public\n */",
     "original": "Strings.prototype.group = function (groupName, propstring, parsers) {",
-    "comment": {
-      "description": "\n\n**Example**\n\n```js\nstrings.group('my-group-name', ':foo/:bar/:baz', ['a', 'b', 'c']);\n```\n\nTo get a group:\n\n```js\nstrings.group( name );\n```",
-      "param": [
-        "{String} `name`",
-        "{String} `propstring` the name of the propstring to use",
-        "{String|Array} `parsers` name or array of names of parsers to use"
-      ],
-      "return": "{Object} Instance of the current Strings object",
-      "api": "public",
-      "lead": "Define a named group of propstring/parser mappings, or get a group if only the name is passed.",
-      "heading": ".group",
-      "params": [
-        {
-          "type": "String",
-          "name": "name",
-          "description": ""
-        },
-        {
-          "type": "String",
-          "name": "propstring",
-          "description": "the name of the propstring to use"
-        },
-        {
-          "type": "String|Array",
-          "name": "parsers",
-          "description": "name or array of names of parsers to use"
-        }
-      ],
-      "returns": "Object"
-    },
-    "end": 444,
+    "description": "\n\n**Example**\n\n```js\nstrings.group('my-group-name', ':foo/:bar/:baz', ['a', 'b', 'c']);\n```\n\nTo get a group:\n\n```js\nstrings.group( name );\n```",
+    "param": [
+      "{String} `name`",
+      "{String} `propstring` the name of the propstring to use",
+      "{String|Array} `parsers` name or array of names of parsers to use"
+    ],
+    "return": "{Object} Instance of the current Strings object",
+    "api": "public",
+    "lead": "Define a named group of propstring/parser mappings, or get a group if only the name is passed.",
     "heading": {
       "level": 1,
-      "text": "group"
-    }
+      "text": ".group"
+    },
+    "returns": [
+      {
+        "type": "Object",
+        "description": "Instance of the current Strings object"
+      }
+    ],
+    "params": [
+      {
+        "type": "String",
+        "name": "name",
+        "description": ""
+      },
+      {
+        "type": "String",
+        "name": "propstring",
+        "description": "the name of the propstring to use"
+      },
+      {
+        "type": "String|Array",
+        "name": "parsers",
+        "description": "name or array of names of parsers to use"
+      }
+    ],
+    "line": 1
   },
   {
-    "begin": 458,
-    "type": "method",
-    "constructor": "Strings",
-    "name": "run",
-    "string": "Strings.prototype.run()",
+    "begin": 481,
+    "type": "class",
+    "class": "Strings",
+    "name": ".run",
+    "args": [
+      "group",
+      "context"
+    ],
+    "string": "/**\n * ## .run ( groupname, context )\n *\n * Process the specified group using the given context.\n *\n * **Example**\n *\n * Set: (`strings.run( string, object )`)\n *\n * ```js\n * strings.run('my-group-name', {\n *   foo: 'aaa',\n *   bar: 'bbb',\n *   baz: 'ccc'\n * });\n * ```\n *\n * @param {String} `group` The group to run.\n * @param {Object} `context` Optional context object, to bind to replacement function as `this`\n * @return {String}\n * @api public\n */",
     "original": "Strings.prototype.run = function (group, context) {",
-    "comment": {
-      "description": "\n\n**Example**\n\nSet: (`strings.run( string, object )`)\n\n```js\nstrings.run('my-group-name', {\nfoo: 'aaa',\nbar: 'bbb',\nbaz: 'ccc'\n});\n```",
-      "param": [
-        "{String} `group` The group to run.",
-        "{Object} `context` Optional context object, to bind to replacement function as `this`"
-      ],
-      "return": "{String}",
-      "api": "public",
-      "lead": "Process the specified group using the given context.",
-      "heading": ".run",
-      "params": [
-        {
-          "type": "String",
-          "name": "group",
-          "description": "The group to run."
-        },
-        {
-          "type": "Object",
-          "name": "context",
-          "description": "Optional context object, to bind to replacement function as `this`"
-        }
-      ],
-      "returns": "String"
-    },
-    "end": 479,
+    "description": "\n\n**Example**\n\nSet: (`strings.run( string, object )`)\n\n```js\nstrings.run('my-group-name', {\n  foo: 'aaa',\n  bar: 'bbb',\n  baz: 'ccc'\n});\n```",
+    "param": [
+      "{String} `group` The group to run.",
+      "{Object} `context` Optional context object, to bind to replacement function as `this`"
+    ],
+    "return": "{String}",
+    "api": "public",
+    "lead": "Process the specified group using the given context.",
     "heading": {
       "level": 1,
-      "text": "run"
-    }
-  },
-  {
-    "begin": 482,
-    "type": "declaration",
-    "name": "namedGroup",
-    "value": "this.group(group)",
-    "string": "namedGroup",
-    "original": "var namedGroup = this.group(group);"
-  },
-  {
-    "begin": 487,
-    "type": "property",
-    "receiver": "module",
-    "name": "exports",
-    "value": "Strings",
-    "string": "module.exports",
-    "original": "module.exports = Strings;"
+      "text": ".run"
+    },
+    "returns": [
+      {
+        "description": "{String}"
+      }
+    ],
+    "params": [
+      {
+        "type": "String",
+        "name": "group",
+        "description": "The group to run."
+      },
+      {
+        "type": "Object",
+        "name": "context",
+        "description": "Optional context object, to bind to replacement function as `this`"
+      }
+    ],
+    "line": 1
   }
 ]

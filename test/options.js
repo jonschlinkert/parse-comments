@@ -24,104 +24,36 @@ var a = [
   ' *   @property {Array} [beta] `foo` This is foo option.',
   ' *   @property {Array} [beta] `bar` This is bar option',
   ' * @param {String} `omega`',
-  ' *   @option {Array} [omega] `a` This is option A.',
-  ' *   @option {Array} [omega] `b` This is option B',
+  ' *   @option {Array} [omega.one=foo] `a` This is option A.',
+  ' *   @option {Array} [omega.two=bar] `b` This is option B.',
+  ' *   @option {Array} [omega] `c` This is option C',
   ' * @return {Strings} to allow chaining',
   ' * @api public',
-  ' */'
-].join('\n');
-
-
-var b = [
-  '/**',
-  ' * @param {String} `alpha`',
-  ' * @param {Object|Array} `arr` Object or array of replacement patterns to associate.',
-  ' *   @a {String|RegExp} [arr] `pattern`',
-  ' *   @a {String|Function} [arr] `replacement`',
-  ' * @param {String} `beta`',
-  ' *   @b {Array} [beta] `foo` This is foo option.',
-  ' *   @b {Array} [beta] `bar` This is bar option',
-  ' * @param {String} `omega`',
-  ' *   @c {Array} [omega] `a` This is option A.',
-  ' *   @c {Array} [omega] `b` This is option B',
-  ' * @return {Strings} to allow chaining',
-  ' * @api public',
-  ' */'
-].join('\n');
-
-var c = [
-  '/**',
-  ' * @param {String} `alpha`',
-  ' * @param {Object|Array} `arr` Object or array of replacement patterns to associate.',
-  ' *   @a {String|RegExp} [arr] `pattern`',
-  ' * @a {String|Function} [arr] `replacement`',
-  ' *       @param {String} `beta`',
-  ' *   @b {Array} [beta] `foo` This is foo option.',
-  ' *    @b {Array} [beta] `bar` This is bar option',
-  ' * @param {String} `omega`',
-  ' *@c {Array} [omega] `a` This is option A.',
-  ' *                                            @c {Array} [omega] `b` This is option B',
-  ' *@return {Strings} to allow chaining',
-  ' * @api public',
-  ' */'
+  ' */',
+  ''
 ].join('\n');
 
 
 describe('sub properties:', function () {
   it('should add sub-props to a parent parameter', function () {
     var actual = parser(a);
-    actual.comments[0].should.have.property('params');
-    actual.comments[0].should.have.property('properties');
-    actual.comments[0].params[1].should.have.property('properties');
-    actual.comments[0].params[2].should.have.property('properties');
+    actual[0].should.have.property('params');
+    actual[0].should.have.property('properties');
+    actual[0].params[1].should.have.property('properties');
+    actual[0].params[2].should.have.property('properties');
   });
 
   it('should add sub-props to a parent parameter', function () {
     var actual = parser(a);
-    actual.comments[0].should.have.property('params');
-    actual.comments[0].should.have.property('properties');
-    actual.comments[0].params[1].should.have.property('properties');
-    actual.comments[0].params[2].should.have.property('properties');
-    actual.comments[0].params[3].should.have.property('options');
+    actual[0].should.have.property('params');
+    actual[0].should.have.property('properties');
+    actual[0].params[1].should.have.property('properties');
+    actual[0].params[2].should.have.property('properties');
+    actual[0].params[3].should.have.property('options');
   });
 
   it('should not add properties object to a param that has no children', function () {
     var actual = parser(a);
-    actual.comments[0].params[0].should.not.have.property('properties');
+    actual[0].params[0].should.not.have.property('properties');
   });
-
-
-  it('should allow custom sub-props to be defined.', function () {
-    var actual = parser(b, {
-      subprops: {
-        a: 'aa',
-        b: 'bb',
-        c: 'cc'
-      }
-    });
-
-    actual.comments[0].should.have.property('aa');
-    actual.comments[0].should.have.property('bb');
-    actual.comments[0].params[1].should.have.property('aa');
-    actual.comments[0].params[2].should.have.property('bb');
-    actual.comments[0].params[3].should.have.property('cc');
-  });
-
-  it('should use custom sub-props regardless of indent.', function () {
-    var actual = parser(c, {
-      subprops: {
-        a: 'aa',
-        b: 'bb',
-        c: 'cc'
-      }
-    });
-
-    actual.comments[0].should.have.property('aa');
-    actual.comments[0].should.have.property('bb');
-    actual.comments[0].params[1].should.have.property('aa');
-    actual.comments[0].params[2].should.have.property('bb');
-    actual.comments[0].params[3].should.have.property('cc');
-  });
-
 });
-

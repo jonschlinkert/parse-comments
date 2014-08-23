@@ -70,24 +70,24 @@ var c = [
 describe('sub properties:', function () {
   it('should add sub-props to a parent parameter', function () {
     var actual = parser(a);
-    actual.comments[0].should.have.property('params');
-    actual.comments[0].should.have.property('properties');
-    actual.comments[0].params[1].should.have.property('properties');
-    actual.comments[0].params[2].should.have.property('properties');
+    actual[0].should.have.property('params');
+    actual[0].should.have.property('properties');
+    actual[0].params[1].should.have.property('properties');
+    actual[0].params[2].should.have.property('properties');
   });
 
   it('should add sub-props to a parent parameter', function () {
     var actual = parser(a);
-    actual.comments[0].should.have.property('params');
-    actual.comments[0].should.have.property('properties');
-    actual.comments[0].params[1].should.have.property('properties');
-    actual.comments[0].params[2].should.have.property('properties');
-    actual.comments[0].params[3].should.have.property('options');
+    actual[0].should.have.property('params');
+    actual[0].should.have.property('properties');
+    actual[0].params[1].should.have.property('properties');
+    actual[0].params[2].should.have.property('properties');
+    actual[0].params[3].should.have.property('options');
   });
 
   it('should not add properties object to a param that has no children', function () {
     var actual = parser(a);
-    actual.comments[0].params[0].should.not.have.property('properties');
+    actual[0].params[0].should.not.have.property('properties');
   });
 
 
@@ -100,11 +100,11 @@ describe('sub properties:', function () {
       }
     });
 
-    actual.comments[0].should.have.property('aa');
-    actual.comments[0].should.have.property('bb');
-    actual.comments[0].params[1].should.have.property('aa');
-    actual.comments[0].params[2].should.have.property('bb');
-    actual.comments[0].params[3].should.have.property('cc');
+    actual[0].should.have.property('aa');
+    actual[0].should.have.property('bb');
+    actual[0].params[1].should.have.property('aa');
+    actual[0].params[2].should.have.property('bb');
+    actual[0].params[3].should.have.property('cc');
   });
 
   it('should use custom sub-props regardless of indent.', function () {
@@ -116,11 +116,11 @@ describe('sub properties:', function () {
       }
     });
 
-    actual.comments[0].should.have.property('aa');
-    actual.comments[0].should.have.property('bb');
-    actual.comments[0].params[1].should.have.property('aa');
-    actual.comments[0].params[2].should.have.property('bb');
-    actual.comments[0].params[3].should.have.property('cc');
+    actual[0].should.have.property('aa');
+    actual[0].should.have.property('bb');
+    actual[0].params[1].should.have.property('aa');
+    actual[0].params[2].should.have.property('bb');
+    actual[0].params[3].should.have.property('cc');
   });
 
 });

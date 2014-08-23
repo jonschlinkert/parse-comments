@@ -44,12 +44,12 @@ var comment = [
 describe('when a string is passed:', function () {
   it('should parse comments and return an object', function () {
     var actual = jscomments('/**\n@foo {Object} `bar`\n*/');
-    actual.comments.should.be.an.object;
+    actual.should.be.an.object;
   });
 
   it('should parse comments and return an object', function () {
     var actual = jscomments(readFixture('strings'));
-    actual.comments.should.be.an.object;
+    actual.should.be.an.object;
   });
 
 });

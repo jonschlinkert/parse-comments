@@ -1,0 +1,22 @@
+[
+  {
+    "api": "private",
+    "num": 1,
+    "a": "b"
+  },
+  {
+    "api": "public",
+    "num": 2,
+    "a": "b"
+  },
+  {
+    "api": "private",
+    "num": 3,
+    "a": "a"
+  },
+  {
+    "api": "public",
+    "num": 4,
+    "a": "a"
+  }
+]

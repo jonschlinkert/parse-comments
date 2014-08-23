@@ -15,7 +15,7 @@ var parseComments = require('..');
 describe('parse code context:', function () {
   it('should parse comments and merge in code context.', function () {
     var actual = parseComments(utils.read('strings'));
-    actual.comments.should.be.an.array;
+    actual.should.be.an.array;
   });
 });
 
