@@ -14,49 +14,146 @@
 
 var _ = require('lodash');
 var arrayify = require('arrayify-compact');
+var codeBlocks = require('gfm-code-blocks');
 var codeContext = require('code-context');
-var lineCount = require('count-lines');
 var inflect = require('inflection');
-var range = require('extract-range');
 var utils = require('./lib/utils');
 
 
-var parser = module.exports = function parser(str, options) {
-  var opts = _.extend({}, options);
-  var arr = [];
 
+var parser = function parser(str) {
+  var comments = parser.codeContext(str);
+
+  return comments.filter(function (o) {
+    return !_.isEmpty(o);
+  });
+};
+
+
+parser.nolinks = [];
+parser.links = {};
+
+
+/**
+ * Extract code comments, and merge in code context.
+ *
+ * @param  {String} `str`
+ * @return {Array} Array of comment objects.
+ */
+
+parser.codeContext = function(str) {
   var context = codeContext(str);
-  var len = context.length;
-  var newObj = {};
 
-  context.forEach(function (obj, i) {
-    obj = obj || {};
+  return context.map(function (o, i) {
+    var comment = {};
+    o = o || {};
 
-    if (i < len + 1) {
+    var next = i;
+    if (i < context.length - 1) {
+      next = i + 1;
+    }
 
-      if (obj.type === 'comment') {
-        var num = 0;
-        if (context.length > 1) {
-          num = i + 1;
-        }
+    if (o.hasOwnProperty('comment')) {
+      o.comment = parser.parseComment(o.comment);
+      if (o.comment.api && o.comment.api === 'public') {
+        comment = _.extend({}, o, o.comment);
+        comment.context = context[next];
+        parser.parseExamples(comment);
+        parser.parseDescription(comment);
+        // console.log(comment)
 
-        var ctx = context[num];
-        if (ctx) {
-          var comment = range(str, obj.begin, obj.end);
-          ctx.string = comment;
-
-          var parsed = parser.extractComments(comment, opts);
-          _.extend(ctx, parsed[0]);
-
-          if (ctx.api !== 'private') {
-            arr.push(_.omit(parser.normalizeHeading(ctx)));
-          }
-        }
       }
     }
-  });
 
-   return arr;
+    delete comment.comment;
+    delete comment.type;
+    return comment;
+  });
+};
+
+
+/**
+ * Normalize descriptions.
+ *
+ * @param  {Object} `comment`
+ * @return {Object}
+ */
+
+parser.normalizeDesc = function(o) {
+  // strip trailing whitespace from description
+  comment.description = utils.trimRight(comment.description);
+
+  // split
+  o = parser.splitHeading(comment.description);
+  heading = o.heading;
+
+  // Extract headings from comments
+  comment.description = o.desc.join('\n\n');
+
+  // Extract leads from comments
+  var parsedDesc = parser.parseLead(comment.description);
+  comment.lead = parsedDesc.lead;
+  comment.description = parsedDesc.desc;
+  return o;
+};
+
+
+/**
+ * Parse code examples from a `comment.description`.
+ *
+ * @param  {Object} `comment`
+ * @return {Object}
+ */
+
+parser.parseDescription = function (comment) {
+  var o = {},
+    heading = {};
+
+  // strip trailing whitespace from description
+  if (comment.description) {
+    // comment.description = utils.trimRight(comment.description);
+
+    // // split
+    // o = parser.splitHeading(comment.description);
+    // heading = o.heading;
+
+    // // Extract headings from comments
+    // comment.description = o.desc.join('\n\n');
+
+    // // Extract leads from comments
+    // var parsedDesc = parser.parseLead(comment.description);
+    // comment.lead = parsedDesc.lead;
+    // comment.description = parsedDesc.desc;
+  }
+
+  if (heading && !heading.text) {
+    comment.heading = heading;
+    comment.name = heading.text;
+
+    _.extend(comment, parser.normalizeHeading(comment));
+  }
+
+  comment.name = (comment.name || '').replace(/`/g, '');
+
+  // @example tags, strip trailing whitespace
+  if (comment.example) {
+    comment.example = utils.trimRight(comment.example);
+  }
+};
+
+/**
+ * Parse code examples from a `comment.description`.
+ *
+ * @param  {Object} `comment`
+ * @return {Object}
+ */
+
+parser.parseExamples = function(comment) {
+  var examples = codeBlocks(comment.description);
+  if (!_.isEmpty(examples)) {
+    comment.examples = examples;
+  }
+  return comment;
 };
 
 
@@ -228,7 +325,10 @@ parser.splitHeading = function (str) {
 
 parser.normalizeHeading = function(obj) {
   var o = _.extend({}, obj);
-  o.name = obj.name || '';
+  obj.context = obj.context || {};
+
+  o.name = obj.name || obj.context.name || null;
+
   o.heading = {};
   o.heading.level = 2;
 
@@ -250,9 +350,72 @@ parser.normalizeHeading = function(obj) {
     o.class ||
     o.method || '';
 
+  // Strip backticks from headings
   o.heading.text = heading.replace(/^`|`$/g, '');
   o.name = o.heading.text;
+
+  // optionally prefix prototype methods with `.`
+  if (o.context && o.context.type &&
+    /prototype (?:method|property)/.test(o.context.type)) {
+    o.heading.prefix = '.';
+  }
+
   return o;
+};
+
+
+/**
+ * Parse sub-headings from a string.
+ *
+ * @param  {String} `str`
+ * @return {Object}
+ */
+
+parser.parseSubHeading = function(str) {
+  var re = /^\*\*([\s\S]+?):?\*\*(?!\*)/;
+  var match = str.match(re);
+  if (match) {
+    return match[1];
+  }
+};
+
+
+/**
+ * Parse links.
+ *
+ * @param  {String} `str`
+ * @return {Object}
+ */
+
+parser.parseLink = function(str) {
+  var re = /^!?\[((?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\(\s*<?([\s\S]*?)>?(?:\s+['"]([\s\S]*?)['"])?\s*\)/;
+  var match = str.match(re);
+  if (match) {
+    return {
+      text: match[1],
+      url: match[2],
+      alt: match[3]
+    }
+  }
+};
+
+
+/**
+ * Parse nolinks.
+ *
+ * @param  {String} `str`
+ * @return {Object}
+ */
+
+parser.parseNolink = function(str) {
+  var nolink = /^!?\[((?:\[[^\]]*\]|[^\[\]])*)\]/;
+  var ref = /^!?\[((?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\s*\[([^\]]*)\]/;
+  var match;
+  if (match = str.match(nolink)) {
+    return match[0];
+  } else if (match = str.match(ref)) {
+    return match[0];
+  }
 };
 
 
@@ -266,35 +429,6 @@ parser.normalizeHeading = function(obj) {
 
 parser.parseTags = function (comment, options) {
   var opts = options || {};
-  var extracted = {};
-
-  // strip trailing whitespace from description
-  if (comment.description) {
-    comment.description = utils.trimRight(comment.description);
-    extracted = parser.splitHeading(comment.description);
-
-    // Extract headings from comments
-    comment.description = extracted.desc.join('\n\n');
-
-    // Extract leads from comments
-    var parsedDesc = parser.parseLead(comment.description);
-    comment.lead = parsedDesc.lead;
-    comment.description = parsedDesc.desc;
-  }
-
-  var h = extracted.heading || {};
-  comment.heading = h;
-  comment.name = h.text;
-
-  if (h && !h.text) {
-    _.extend(comment, parser.normalizeHeading(comment));
-  }
-  comment.name = (comment.name || '').replace(/`/g, '');
-
-  // @example tags, strip trailing whitespace
-  if (comment.example) {
-    comment.example = utils.trimRight(comment.example);
-  }
 
   // parse @param tags (`singular: plural`)
   var props = _.extend({
@@ -321,18 +455,18 @@ parser.parseTags = function (comment, options) {
 };
 
 
-
 parser.parseComment = function (content, options) {
+  content = content.replace(/\r/g, '');
   var opts = options || {};
 
-  var re = /^(\s*@[\S]+)\s*(.*)/;
-  var afterTags = false;
-  var lines = content.split('\n');
   var afterNewLine = false;
-  var lastTag;
+  var afterTags = false;
   var props = [];
-
+  var lastTag;
   var i = 0;
+
+  var lines = content.split(/\n/g);
+
 
   var comment = lines.reduce(function (c, str) {
     var line = utils.stripStars(str);
@@ -341,8 +475,23 @@ parser.parseComment = function (content, options) {
     }
 
     if (line) {
-      var match = line.match(re);
+      var href = parser.parseLink(line);
+      if (href) {
+        parser.links[href.text] = href;
+      }
 
+      var nolink = parser.parseNolink(line);
+      if (nolink) {
+        parser.nolinks.push(nolink);
+      }
+
+      c.subheads = c.subheads || [];
+      var subhead = parser.parseSubHeading(line);
+      if (subhead) {
+        c.subheads.push(subhead);
+      }
+
+      var match = line.match(/^(\s*@[\S]+)\s*(.*)/);
       if (match) {
         afterTags = true;
         var tagname = match[1].replace(/@/, '');
@@ -401,7 +550,6 @@ parser.parseComment = function (content, options) {
     return c;
   }, {});
 
-
   var singular = _.keys(opts.subprops);
   var plural = _.values(opts.subprops);
 
@@ -434,45 +582,12 @@ parser.parseComment = function (content, options) {
   return comments;
 };
 
+var fs = require('fs');
+var str = fs.readFileSync('test/fixtures/assemble.js', 'utf8');
+var p = parser(str);
+var util = require('util');
+
+// console.log(util.inspect(p, null, 10));
 
 
-/**
- * Parse comments
- * @param   {String}  str
- * @return  {String}
- */
-
-
-parser.extractComments = function (str, options) {
-  var opts = _.extend({}, options);
-
-  var re = /\/\*{1,2}([\s\S]*?)\*\//g;
-  var data = [];
-
-
-  var lineNumber = 1;
-  var match;
-
-  while (match = re.exec(str)) {
-    var _str = str;
-
-    // add lines from before the comments
-    lineNumber += lineCount(_str.substr(0, match.index));
-    str = str.substr(match.index + match[1].length);
-    var params = parser.parseComment(match[1], opts);
-
-    params.line = lineNumber;
-
-    // Allow @words to be escaped with a single backtick, e.g. `@word,
-    // then remove the backtick before the final result.
-    if (params.description) {
-      params.description = params.description.replace(/^`@/gm, '@');
-    }
-
-    data.push(params);
-
-    // add lines from the comment itself
-    lineNumber += lineCount(_str.substr(match.index, match[1].length));
-  }
-  return data;
-};
+module.exports = parser;
