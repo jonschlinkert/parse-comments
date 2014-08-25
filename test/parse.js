@@ -11,7 +11,7 @@ var fs = require('fs');
 var _ = require('lodash');
 var inspect = _.partialRight(require('util').inspect, null, 10);
 var should = require('should');
-var parser = require('..');
+var comments = require('..');
 var utils = require('./helpers/utils');
 
 
@@ -45,33 +45,33 @@ var comment = [
 
 describe('when a string is passed:', function () {
   it('should parse a string', function () {
-    var actual = parser('/**\n@param {Object} `abc`\n@api public\n*/');
+    var actual = comments('/**\n@param {Object} `abc`\n@api public\n*/');
     actual.length.should.equal(1);
     actual[0].should.have.property('param');
     actual[0].should.have.property('api');
   });
 
   it('should parse a string', function () {
-    var actual = parser(comment)
+    var actual = comments(comment)
     actual.length.should.equal(1);
     actual[0].should.have.property('param');
   });
 
   it('should parse @params', function () {
-    var actual = utils.fixture('params');
-    actual.length.should.equal(2);
+    var actual = comments(utils.read('params'));
+    actual.length.should.equal(1);
     actual[0].should.have.property('param');
   });
 
   it('should parse @return', function () {
-    var actual = utils.fixture('return');
+    var actual = comments(utils.read('ret'));
     actual.length.should.equal(1);
     actual[0].should.have.property('return');
     actual[0].should.have.property('returns');
   });
 
   it('should parse @api', function () {
-    var actual = utils.fixture('api');
+    var actual = comments(utils.read('api'));
     actual.length.should.equal(1);
     actual[0].should.have.property('api');
   });

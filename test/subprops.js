@@ -11,8 +11,7 @@ var fs = require('fs');
 var _ = require('lodash');
 var inspect = _.partialRight(require('util').inspect, null, 10);
 var should = require('should');
-var parser = require('..');
-var utils = require('./helpers/utils');
+var comments = require('..');
 
 var a = [
   '/**',
@@ -28,7 +27,8 @@ var a = [
   ' *   @option {Array} [omega] `b` This is option B',
   ' * @return {Strings} to allow chaining',
   ' * @api public',
-  ' */'
+  ' */',
+  'function Something(a, b, c) {}'
 ].join('\n');
 
 
@@ -69,7 +69,7 @@ var c = [
 
 describe('sub properties:', function () {
   it('should add sub-props to a parent parameter', function () {
-    var actual = parser(a);
+    var actual = comments(a);
     actual[0].should.have.property('params');
     actual[0].should.have.property('properties');
     actual[0].params[1].should.have.property('properties');
@@ -77,7 +77,7 @@ describe('sub properties:', function () {
   });
 
   it('should add sub-props to a parent parameter', function () {
-    var actual = parser(a);
+    var actual = comments(a);
     actual[0].should.have.property('params');
     actual[0].should.have.property('properties');
     actual[0].params[1].should.have.property('properties');
@@ -86,13 +86,13 @@ describe('sub properties:', function () {
   });
 
   it('should not add properties object to a param that has no children', function () {
-    var actual = parser(a);
+    var actual = comments(a);
     actual[0].params[0].should.not.have.property('properties');
   });
 
 
   it('should allow custom sub-props to be defined.', function () {
-    var actual = parser(b, {
+    var actual = comments(b, {
       subprops: {
         a: 'aa',
         b: 'bb',
@@ -108,7 +108,7 @@ describe('sub properties:', function () {
   });
 
   it('should use custom sub-props regardless of indent.', function () {
-    var actual = parser(c, {
+    var actual = comments(c, {
       subprops: {
         a: 'aa',
         b: 'bb',

@@ -9,13 +9,12 @@
 
 var fs = require('fs');
 var should = require('should');
-var parseComment = require('..');
+var comments = require('..');
 var utils = require('./helpers/utils');
 
 describe('utils:', function () {
   it('should strip banners', function () {
-    var actual = utils.fixture('params');
-    // console.log(actual[1])
+    var actual = comments(utils.read('params'));
 
     actual[0].should.have.property('param');
     actual[0].should.have.property('params');

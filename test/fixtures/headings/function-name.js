@@ -1,6 +1,4 @@
 /**
- * ## CacheFoo
- *
  * I'm a constructor.
  *
  * @method `Cache`
