@@ -1,7 +1,7 @@
 {
   "name": "parse-comments",
   "description": "Parse code comments from JavaScript or any language that uses the same format.",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "homepage": "https://github.com/jonschlinkert/parse-comments",
   "author": {
     "name": "Jon Schlinkert",
