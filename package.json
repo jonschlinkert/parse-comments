@@ -1,7 +1,7 @@
 {
   "name": "parse-comments",
   "description": "Parse code comments from JavaScript or any language that uses the same format.",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "homepage": "https://github.com/jonschlinkert/parse-comments",
   "author": {
     "name": "Jon Schlinkert",
@@ -21,13 +21,9 @@
     }
   ],
   "keywords": [
-    "docs",
-    "documentation",
-    "generate",
-    "generator",
-    "markdown",
-    "templates",
-    "verb"
+    "parse",
+    "code",
+    "comments"
   ],
   "main": "index.js",
   "engines": {
@@ -42,13 +38,13 @@
     "mocha": "*",
     "should": "^4.0.4",
     "test-helpers": "^0.1.4",
-    "verb": ">= 0.2.6"
+    "verb": ">= 0.2.6",
+    "verb-tag-jscomments": "^0.2.2"
   },
   "dependencies": {
     "arrayify-compact": "^0.1.0",
-    "code-context": "^0.2.0",
+    "code-context": "^0.2.1",
     "gfm-code-blocks": "^0.1.0",
-    "inflection": "^1.4.0",
-    "lodash": "^2.4.1"
+    "inflection": "^1.4.0"
   }
 }

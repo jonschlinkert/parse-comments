@@ -54,13 +54,11 @@ parser.codeContext = function (str, options) {
     }
     if (o.hasOwnProperty('comment')) {
       o.comment = parser.parseComment(o.comment, opts);
-      if (o.comment.api && o.comment.api === 'public') {
-        comment = _.extend({}, o, o.comment);
-        comment.context = context[next];
+      comment = _.extend({}, o, o.comment);
+      comment.context = context[next];
 
-        _.merge(comment, parser.parseDescription(comment));
-        _.merge(comment, parser.parseExamples(comment));
-      }
+      _.merge(comment, parser.parseDescription(comment));
+      _.merge(comment, parser.parseExamples(comment));
     }
 
     delete comment.comment;
@@ -146,8 +144,12 @@ parser.parseExamples = function (comment) {
 
 parser.parseParams = function (param) {
   var re = /(?:^\{([^\}]+)\}\s+)?(?:\[([\S]+)\]\s*)?(?:`([\S]+)`\s*)?([\s\S]*)?/;
-  var match = param.match(re);
 
+  if (typeof param !== 'string') {
+    return {};
+  }
+
+  var match = param.match(re);
   var params = {
     type: match[1],
     name: match[3],
@@ -157,7 +159,6 @@ parser.parseParams = function (param) {
   if (match[2]) {
     parser.parseSubprop(match, params);
   }
-
   return params;
 };
 
@@ -338,7 +339,7 @@ parser.normalizeHeading = function (obj) {
 
   // optionally prefix prototype methods with `.`
   if (o.context && o.context.type &&
-    /prototype (?:method|property)/.test(o.context.type)) {
+    /(?:prototype )?(?:method|property)/.test(o.context.type)) {
     o.heading.prefix = '.';
   }
 
@@ -464,6 +465,15 @@ parser.parseTags = function (comment, options) {
 };
 
 
+/**
+ * Parse comments from the given `content` string with the
+ * specified `options.`
+ *
+ * @param  {String} `content`
+ * @param  {Object} `options`
+ * @return {Object}
+ */
+
 parser.parseComment = function (content, options) {
   content = content.replace(/\r/g, '');
   var opts = options || {};
@@ -576,13 +586,6 @@ parser.parseComment = function (content, options) {
 
   return comments;
 };
-
-// var fs = require('fs');
-// var str = fs.readFileSync('test/fixtures/assemble.js', 'utf8');
-// var p = parser(str);
-// var util = require('util');
-
-// // console.log(util.inspect(p, null, 10));
 
 
 module.exports = parser;
