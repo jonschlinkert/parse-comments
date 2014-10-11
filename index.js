@@ -23,6 +23,7 @@ var utils = require('./lib/utils');
 
 var parser = function parser (str, opts) {
   var comments = parser.codeContext(str, opts);
+
   return comments.filter(function (o) {
     return !_.isEmpty(o);
   });
@@ -41,9 +42,8 @@ parser.links = {};
  */
 
 parser.codeContext = function (str, options) {
-  var opts = _.extend({}, options);
+  var opts = _.merge({}, options);
   var context = codeContext(str);
-
   return context.map(function (o, i) {
     var comment = {};
     o = o || {};
@@ -54,9 +54,8 @@ parser.codeContext = function (str, options) {
     }
     if (o.hasOwnProperty('comment')) {
       o.comment = parser.parseComment(o.comment, opts);
-      comment = _.extend({}, o, o.comment);
+      comment = _.merge({}, o, o.comment);
       comment.context = context[next];
-
       _.merge(comment, parser.parseDescription(comment));
       _.merge(comment, parser.parseExamples(comment));
     }
@@ -306,7 +305,7 @@ parser.splitHeading = function (str) {
  */
 
 parser.normalizeHeading = function (obj) {
-  var o = _.extend({}, obj);
+  var o = _.merge({}, obj);
   obj.context = obj.context || {};
 
   o.name = obj.name || obj.context.name || null;
@@ -441,7 +440,7 @@ parser.parseTags = function (comment, options) {
   var opts = options || {};
 
   // parse @param tags (`singular: plural`)
-  var props = _.extend({
+  var props = _.merge({
     return  : 'returns',
     param   : 'params',
     property: 'properties',
@@ -488,7 +487,9 @@ parser.parseComment = function (content, options) {
 
 
   var comment = lines.reduce(function (c, str) {
+    // strip leading asterisks
     var line = utils.stripStars(str);
+
     if (/\s*@/.test(line)) {
       line = line.replace(/^\s+/, '');
     }
