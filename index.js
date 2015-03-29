@@ -19,15 +19,13 @@ var inflect = require('inflection');
 var utils = require('./lib/utils');
 
 
-
-var parser = function parser (str, opts) {
+function parser(str, opts) {
   var comments = parser.codeContext(str, opts);
 
   return comments.filter(function (o) {
     return !_.isEmpty(o);
   });
-};
-
+}
 
 parser.nolinks = [];
 parser.links = {};
