@@ -1,4 +1,4 @@
-# parse-comments [![NPM version](https://badge.fury.io/js/parse-comments.svg)](http://badge.fury.io/js/parse-comments)  [![Build Status](https://travis-ci.org/jonschlinkert/parse-comments.svg)](https://travis-ci.org/jonschlinkert/parse-comments) 
+# parse-comments [![NPM version](https://badge.fury.io/js/parse-comments.svg)](http://badge.fury.io/js/parse-comments) 
 
 > Parse code comments from JavaScript or any language that uses the same format.
 
@@ -8,6 +8,9 @@
 npm i parse-comments --save
 ```
 
+## Related
+* [js-comments](https://github.com/jonschlinkert/js-comments): Parse JavaScript code comments and generate API documentation.
+* [code-context](https://github.com/jonschlinkert/code-context): Parse a string of javascript to determine the context for functions, variables and comments based on the code that follows.
 
 ## Author
 
