@@ -1,9 +1,8 @@
 /*!
  * parse-comments <https://github.com/jonschlinkert/parse-comments>
- * Originally based on https://github.com/caolan/scrawl
  *
- * Copyright (c) 2014 Jon Schlinkert, contributors
- * Licensed under the MIT License (MIT)
+ * Copyright (c) 2014-2015, Jon Schlinkert.
+ * Licensed under the MIT License.
  */
 
 'use strict';

@@ -1,8 +1,8 @@
 /*!
- * parse-comments <https://githuc.com/jonschlinkert/parse-comments>
+ * parse-comments <https://github.com/jonschlinkert/parse-comments>
  *
- * Copyright (c) 2014 Jon Schlinkert, contributors
- * Licensed under the MIT License (MIT)
+ * Copyright (c) 2014-2015, Jon Schlinkert.
+ * Licensed under the MIT License.
  */
 
 'use strict';
