@@ -1,9 +1,9 @@
 /*!
  * parse-comments <https://github.com/jonschlinkert/parse-comments>
- * Originally based on https://github.com/caolan/scrawl
+ * Substantially changed, but originally based on https://github.com/caolan/scrawl
  *
- * Copyright (c) 2014 Jon Schlinkert, contributors
- * Licensed under the MIT License (MIT)
+ * Copyright (c) 2014-2015, Jon Schlinkert.
+ * Licensed under the MIT License.
  */
 
 'use strict';
@@ -20,19 +20,16 @@ var inflect = require('inflection');
 var utils = require('./lib/utils');
 
 
-
-var parser = function parser (str, opts) {
+function parser (str, opts) {
   var comments = parser.codeContext(str, opts);
 
   return comments.filter(function (o) {
     return !_.isEmpty(o);
   });
-};
-
+}
 
 parser.nolinks = [];
 parser.links = {};
-
 
 /**
  * Extract code comments, and merge in code context.
