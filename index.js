@@ -62,7 +62,6 @@ parser.codeContext = function (str, opts) {
 
 parser.normalizeDesc = function (comment) {
   var o = {};
-
   // strip trailing whitespace from description
   comment.description = utils.trimRight(comment.description);
 

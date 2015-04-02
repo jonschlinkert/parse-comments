@@ -83,15 +83,15 @@ Into an array of comment objects, like this:
 ```
 
 ## Related projects
- * [js-comments](https://github.com/jonschlinkert/js-comments): Parse JavaScript code comments and generate API documentation.
- * [parse-code-context](https://github.com/jonschlinkert/parse-code-context): Parse code context in a single line of javascript, for functions, variable declarations, methods, prototype properties, prototype methods etc.
- * [code-context](https://github.com/jonschlinkert/code-context): Parse a string of javascript to determine the context for functions, variables and comments based on the code that follows.
- * [gfm-code-blocks](https://github.com/jonschlinkert/gfm-code-blocks): Extract gfm (GitHub Flavored Markdown) fenced code blocks from a string.
- * [extract-comments](https://github.com/jonschlinkert/extract-comments): Extract code comments from string or from a glob of files.
- * [esprima-extract-comments](https://github.com/jonschlinkert/esprima-extract-comments): Extract code comments from string or from a glob of files using esprima.  
+* [js-comments](https://github.com/jonschlinkert/js-comments): Parse JavaScript code comments and generate API documentation.
+* [parse-code-context](https://github.com/jonschlinkert/parse-code-context): Parse code context in a single line of javascript, for functions, variable declarations, methods, prototype properties, prototype methods etc.
+* [code-context](https://github.com/jonschlinkert/code-context): Parse a string of javascript to determine the context for functions, variables and comments based on the code that follows.
+* [gfm-code-blocks](https://github.com/jonschlinkert/gfm-code-blocks): Extract gfm (GitHub Flavored Markdown) fenced code blocks from a string.
+* [extract-comments](https://github.com/jonschlinkert/extract-comments): Extract code comments from string or from a glob of files.
+* [esprima-extract-comments](https://github.com/jonschlinkert/esprima-extract-comments): Extract code comments from string or from a glob of files using esprima.  
 
 ## Running tests
-Install dev dependencies:
+Install dev dependencies.
 
 ```bash
 npm i -d && npm test
@@ -103,7 +103,7 @@ Pull requests and stars are always welcome. For bugs and feature requests, [plea
 ## Author
 
 **Jon Schlinkert**
-
+ 
 + [github/jonschlinkert](https://github.com/jonschlinkert)
 + [twitter/jonschlinkert](http://twitter.com/jonschlinkert) 
 
