@@ -8,6 +8,6 @@
  * @api public
  */
 
-function CacheManager() {
+function CacheManager(a, b, c) {
   this.options = {};
 }

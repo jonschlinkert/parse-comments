@@ -48,9 +48,8 @@ describe('when a string is passed:', function () {
   });
 
   it('should parse comments and return an object', function () {
-    var actual = jscomments(readFixture('strings'));
+    var actual = jscomments(readFixture('verb'));
     actual.should.be.an.object;
   });
-
 });
 
