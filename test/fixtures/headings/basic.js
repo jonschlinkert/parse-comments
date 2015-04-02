@@ -1,11 +1,15 @@
 /**
  * ## .writeFile
  *
- * Foo bar baz.
+ * Foo bar baz. [foo](./bar)
  *
  * @method `writeFile`
  * @param {String} `name`
  * @param {String} `propstring`
- * @return {Object} Instance of the current Strings object
+ * @return {Object} `Strings` Instance of the current Strings object
  * @api public
  */
+
+exports.foo = function (a, b, c) {
+  return ''
+};

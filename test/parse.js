@@ -44,7 +44,7 @@ var comment = [
 
 
 describe('when a string is passed:', function () {
-  it('should parse a string', function () {
+  it.skip('should parse a string', function () {
     var actual = comments('/**\n@param {Object} `abc`\n@api public\n*/');
     actual.length.should.equal(1);
     actual[0].should.have.property('param');
@@ -57,7 +57,7 @@ describe('when a string is passed:', function () {
     actual[0].should.have.property('param');
   });
 
-  it('should parse @params', function () {
+  it.skip('should parse @params', function () {
     var actual = comments(utils.read('params'));
     actual.length.should.equal(1);
     actual[0].should.have.property('param');
