@@ -62,6 +62,7 @@ parser.codeContext = function (str, opts) {
 
 parser.normalizeDesc = function (comment) {
   var o = {};
+
   // strip trailing whitespace from description
   comment.description = utils.trimRight(comment.description);
 
@@ -272,6 +273,10 @@ parser.normalizeHeading = function (obj) {
   o.heading = o.heading || {};
   o.heading.level = o.heading.level || 2;
 
+  if (o.name && o.name === 'exports') {
+    o.name = null;
+  }
+
   // @method tags
   if (o.hasOwnProperty('method')) {
     o.type = 'method';
@@ -288,7 +293,7 @@ parser.normalizeHeading = function (obj) {
   var heading = o.name || o.class || o.method || '';
   // Strip backticks from headings
   o.heading.text = stripBackticks(o.heading.text, heading);
-  o.name = o.heading.text || '';
+  o.name = o.name || o.heading.text || '';
 
   // optionally prefix prototype methods with `.`
   if (o.context && o.context.type &&
