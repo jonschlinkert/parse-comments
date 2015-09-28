@@ -28,12 +28,12 @@ describe('comment `heading`:', function () {
     actual[0].name.should.equal('set');
   });
 
-  it('explicit heading should win over function name.', function () {
+  it('explicit heading should not win over function name.', function () {
     var str = utils.read('headings/class');
     var actual = comments(str);
     actual[0].should.have.property('heading');
     actual[0].heading.text.should.equal('CacheFoo');
-    actual[0].name.should.equal('CacheFoo');
+    actual[0].name.should.equal('CacheManager');
   });
 
   it('function name should win over everything but explicit.', function () {
