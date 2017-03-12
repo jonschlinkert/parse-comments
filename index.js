@@ -1,550 +1,471 @@
-/*!
- * parse-comments <https://github.com/jonschlinkert/parse-comments>
- * Substantially changed, but originally based on https://github.com/caolan/scrawl
- *
- * Copyright (c) 2014-2015, Jon Schlinkert.
- * Licensed under the MIT License.
- */
-
 'use strict';
 
-/**
- * Module dependencies
- */
-
-var _ = require('lodash');
-var arrayify = require('arrayify-compact');
-var codeBlocks = require('gfm-code-blocks');
+var get = require('get-value');
+var set = require('set-value');
+var isObject = require('isobject');
+var Snapdragon = require('snapdragon');
+var Emitter = require('component-emitter');
 var extract = require('extract-comments');
-var parseContext = require('parse-code-context');
-var inflect = require('inflection');
+var define = require('define-property');
+var extend = require('extend-shallow');
+var tokenize = require('tokenize-comment');
 var utils = require('./lib/utils');
+var types = require('./lib/types');
+var tags = require('./lib/tags');
 
-function parser (str, opts) {
-  return parser.codeContext(str, opts);
+/**
+ * Create an instance of `Comments` with the given `options`.
+ *
+ * @param {Object|String} `options` Pass options if you need to instantiate Comments, or a string to convert HTML to markdown.
+ * @api public
+ */
+
+function Comments(options) {
+  if (typeof options === 'string') {
+    let proto = Object.create(Comments.prototype);
+    Comments.call(proto);
+    return proto.render.apply(proto, arguments);
+  }
+
+  if (!(this instanceof Comments)) {
+    let proto = Object.create(Comments.prototype);
+    Comments.call(proto);
+    return proto;
+  }
+
+  this.define('cache', {});
+  this.options = extend({}, options);
+  this.tokens = [];
+  this.plugins = {
+    fns: [],
+    middleware: {},
+    before: {},
+    after: {}
+  };
 }
 
-parser.nolinks = [];
-parser.links = {};
-
 /**
- * Extract code comments, and merge in code context.
- *
- * @param  {String} `str`
- * @return {Array} Array of comment objects.
+ * Inherit Emitter
  */
 
-parser.codeContext = function (str, opts) {
-  var comments = extract(str);
-  var res = [];
+Emitter(Comments.prototype);
 
-  for (var key in comments) {
-    if (comments.hasOwnProperty(key)) {
-      var comment = comments[key];
-      var o = parser.parseComment(comment.content, opts);
-      o.comment = comment;
-      o.context = parseContext(comment.code) || {};
-      o.context.begin = comment.codeStart;
-      _.merge(o, parser.parseDescription(o));
-      _.merge(o, parser.parseExamples(o));
-      res.push(o);
+/**
+ * Register a compiler plugin `fn`. Plugin functions should take an
+ * options object, and return a function that takes an instance of
+ * comments.
+ *
+ * ```js
+ * // plugin example
+ * function yourPlugin(options) {
+ *   return function(comments) {
+ *     // do stuff
+ *   };
+ * }
+ * // usage
+ * comments.use(yourPlugin());
+ * ```
+ *
+ * @param {Function} `fn` plugin function
+ * @return {Object} Returns the comments instance for chaining.
+ * @api public
+ */
+
+Comments.prototype.use = function(fn) {
+  this.plugins.fns = this.plugins.fns.concat(fn);
+  return this;
+};
+
+/**
+ * Set a non-enumerable property or method on the comments instance.
+ * Useful in plugins for defining methods or properties for to be used
+ * inside compiler handler functions.
+ *
+ * ```js
+ * // plugin example
+ * comments.use(function() {
+ *   this.define('appendFoo', function(node) {
+ *     node.val += 'Foo';
+ *   });
+ * });
+ *
+ * // then, in a compiler "handler" function
+ * comments.set('text', function(node) {
+ *   if (node.something === true) {
+ *     this.appendFoo(node);
+ *   }
+ *   this.emit(node.val);
+ * });
+ * ```
+ * @param {String} `name` Name of the property or method being defined
+ * @param {any} `val` Property value
+ * @return {Object} Returns the instance for chaining.
+ * @api public
+ */
+
+Comments.prototype.define = function(name, val) {
+  define(this, name, val);
+  return this;
+};
+
+/**
+ * Register a handler function to be called on a node of the given `type`.
+ * Override a built-in handler `type`, or register a new type.
+ *
+ * ```js
+ * comments.set('param', function(node) {
+ *   // do stuff to node
+ * });
+ * ```
+ * @param {String} `type` The `node.type` to call the handler on. You can override built-in middleware by registering a handler of the same name, or register a handler for rendering a new type.
+ * @param {Function} `fn` The handler function
+ * @return {Object} Returns the instance for chaining.
+ * @api public
+ */
+
+Comments.prototype.set = function(type, fn) {
+  if (Array.isArray(type)) {
+    for (var i = 0; i < type.length; i++) {
+      this.set(type[i], fn);
     }
-  }
-  return res;
-};
-
-/**
- * Normalize descriptions.
- *
- * @param  {Object} `comment`
- * @return {Object}
- */
-
-parser.normalizeDesc = function (comment) {
-  var o = {};
-
-  // strip trailing whitespace from description
-  comment.description = utils.trimRight(comment.description);
-
-  // separate heading from description
-  o = parser.splitHeading(comment.description);
-
-  // Extract headings from comments
-  comment.description = o.desc.join('\n\n');
-  comment.heading = o.heading;
-
-  // Extract leads from comments
-  var parsedDesc = parser.parseLead(comment.description);
-  comment.lead = parsedDesc.lead;
-  comment.description = parsedDesc.desc;
-  return comment;
-};
-
-/**
- * Parse code examples from a `comment.description`.
- *
- * @param  {Object} `comment`
- * @return {Object}
- */
-
-parser.parseDescription = function (comment) {
-  // strip trailing whitespace from description
-  if (comment.description) {
-    _.merge(comment, parser.normalizeDesc(comment));
-    comment.heading = comment.heading || {};
-  }
-  var heading = parser.normalizeHeading(comment);
-  comment = _.merge({}, comment, heading);
-
-  // @example tags, strip trailing whitespace
-  if (comment.example) {
-    comment.example = utils.trimRight(comment.example);
-  }
-  return comment;
-};
-
-/**
- * Parse code examples from a `comment.description`.
- *
- * @param  {Object} `comment`
- * @return {Object}
- */
-
-parser.parseExamples = function (comment) {
-  comment.examples = codeBlocks(comment.description) || [];
-  return comment;
-};
-
-/**
- * Parse the parameters from a string.
- *
- * @param  {String} `param`
- * @return {Object}
- */
-
-parser.parseParams = function (param) {
-  var re = /(?:^\{([^\}]+)\}\s+)?(?:\[([\S]+)\]\s*)?(?:`([\S]+)`\s*)?([\s\S]*)?/;
-  if (typeof param !== 'string') return {};
-  var match = param.match(re);
-  var params = {
-    type: match[1],
-    name: match[3] || '',
-    description: (match[4] || '').replace(/^\s*-\s*/, '')
-  };
-  if (match[2]) {
-    parser.parseSubprop(match, params);
-  }
-  return params;
-};
-
-/**
- * Parse the subproperties from parameters.
- *
- * @param  {String} `param`
- * @return {Object}
- */
-
-parser.parseSubprop = function (match, params) {
-  var subprop = match[2];
-  if (/\./.test(subprop)) {
-    var parts = subprop.split('.');
-    var def = parts[1].split('=');
-    params.name = def[0];
-    params['default'] = def[1] || null;
-    subprop = parts[0];
-  }
-  params.parent = subprop;
-  return params;
-};
-
-/**
- * Parse the parameters from a string.
- *
- * @param  {String} `param`
- * @return {Object}
- */
-
-parser.mergeSubprops = function (c, subprop) {
-  if (c.hasOwnProperty(subprop) && typeof c[subprop] === 'object') {
-    var o = {};
-
-    c[subprop].forEach(function (child) {
-      o[child.parent] = o[child.parent] || [];
-      o[child.parent].push(child);
-      delete child.parent;
-    });
-
-    if (c.hasOwnProperty('params')) {
-      c.params = c.params.map(function (param) {
-        if (o[param.name]) {
-          param[subprop] = o[param.name];
-        }
-        return param;
-      });
-    }
-  }
-  return c;
-};
-
-/**
- * Parse `@return` comments.
- *
- * @param  {String} `str`
- * @return {Object}
- */
-
-parser.parseReturns = function (str) {
-  var match = /^\{([^\}]+)\}/.exec(str);
-  return match && match[1];
-};
-
-/**
- * Parse the "lead" from a description.
- *
- * @param  {String} `str`
- * @return {Object}
- */
-
-parser.parseLead = function (str) {
-  var re = /^([\s\S]+?)(?:\n\n)/;
-
-  var lead = '';
-  var description = str.replace(re, function (match, a) {
-    lead += a.split('\n').join(' ');
-    return match.replace(a, '');
-  });
-
-  return {
-    desc: description,
-    lead: lead
-  };
-};
-
-/**
- * Parse the method name from a string.
- *
- * @param  {String} `str`
- * @return {Object}
- */
-
-parser.parseHeading = function (str) {
-  var re = /(#{1,6})\s+(\.?[\s\S]+?)(?:(\([\s\S]+\)?)|$)/;
-  var match = str.match(re);
-  if (match) {
-    return {
-      level: match[1].split('').length,
-      text: match[2].trim()
-    };
-  }
-};
-
-/**
- * Parse the method name from a string.
- *
- * @param  {String} `str`
- * @return {Object}
- */
-
-parser.splitHeading = function (str) {
-  var lines = str.split('\n\n');
-  var obj = {}, non = [];
-  lines.forEach(function (line) {
-    if (/^#/.test(line)) {
-      obj = parser.parseHeading(line);
-    } else {
-      non.push(line);
-    }
-  });
-  return {heading: obj, desc: non};
-};
-
-/**
- * Normalize the title based on the given fields.
- *
- * @param  {String} `obj`
- * @return {Object}
- */
-
-parser.normalizeHeading = function (obj) {
-  var o = obj || {};
-  obj.context = obj.context || {};
-
-  o.name = obj.name || obj.context.name || null;
-  o.heading = o.heading || {};
-  o.heading.level = o.heading.level || 2;
-
-  if (o.name && o.name === 'exports') {
-    o.name = null;
-  }
-
-  // @method tags
-  if (o.hasOwnProperty('method')) {
-    o.type = 'method';
-  }
-
-  // @class tags
-  if (o.hasOwnProperty('class')) {
-    o.type = 'class';
-    o.heading.level = 1;
   } else {
-    o.heading.level = 2;
+    this.plugins.middleware[type] = fn;
   }
-
-  var heading = o.name || o.class || o.method || '';
-  // Strip backticks from headings
-  o.heading.text = stripBackticks(o.heading.text, heading);
-  o.name = o.name || o.heading.text || '';
-
-  // optionally prefix prototype methods with `.`
-  if (o.context && o.context.type &&
-    /(?:prototype )?(?:method|property)/.test(o.context.type)) {
-    o.heading.prefix = '.';
-  }
-
-  if (/^[A-Z]/.test(o.name)) {
-    o.type = 'class';
-  }
-  return o;
-};
-
-function stripBackticks(text, heading) {
-  var str = (text || heading).trim();
-  return str.replace(/^[`.]|`$/gm, '');
-}
-
-/**
- * Parse sub-headings from a string.
- *
- * @param  {String} `str`
- * @return {Object}
- */
-
-parser.parseSubHeading = function (str) {
-  var re = /^\*\*([\s\S]+?):?\*\*(?!\*)/;
-  var match = str.match(re);
-  if (match) {
-    return match[1];
-  }
+  return this;
 };
 
 /**
- * Parse links.
+ * Register a handler that will be called by the compiler on every node
+ * of the given `type`, _before other middleware are called_ on that node.
  *
- * @param  {String} `str`
- * @return {Object}
+ * ```js
+ * comments.before('param', function(node) {
+ *   // do stuff to node
+ * });
+ *
+ * // or
+ * comments.before(['param', 'returns'], function(node) {
+ *   // do stuff to node
+ * });
+ *
+ * // or
+ * comments.before({
+ *   param: function(node) {
+ *     // do stuff to node
+ *   },
+ *   returns: function(node) {
+ *     // do stuff to node
+ *   }
+ * });
+ * ```
+ * @param {String|Object|Array} `type` Handler name(s), or an object of middleware
+ * @param {Function} `fn` Handler function, if `type` is a string or array. Otherwise this argument is ignored.
+ * @return {Object} Returns the instance for chaining.
+ * @api public
  */
 
-parser.parseLink = function (str) {
-  var re = /^!?\[((?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\(\s*<?([\s\S]*?)>?(?:\s+['"]([\s\S]*?)['"])?\s*\)/;
-  var match = str.match(re);
-  if (match) {
-    return {
-      text: match[1],
-      url: match[2],
-      alt: match[3]
-    };
-  }
-};
-
-/**
- * Parse nolinks.
- *
- * @param  {String} `str`
- * @return {Object}
- */
-
-parser.parseNolink = function (str) {
-  var nolink = /^!?\[((?:\[[^\]]*\]|[^\[\]])*)\]/;
-  var ref = /^!?\[((?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\s*\[([^\]]*)\]/;
-  var match;
-  if (match = str.match(nolink)) {
-    return match[0];
-  } else if (match = str.match(ref)) {
-    return match[0];
-  }
-  return null;
-};
-
-/**
- * Extract links
- *
- * @param {Object} `c` Comment object.
- * @param {String} `line`
- */
-
-parser.extractLinks = function (c, line) {
-  var href = parser.parseLink(line);
-  if (href) {
-    parser.links[href.text] = href;
-  }
-
-  var nolink = parser.parseNolink(line);
-  if (nolink) {
-    parser.nolinks.push(nolink);
-  }
-
-  c.subheads = c.subheads || [];
-  var subhead = parser.parseSubHeading(line);
-  if (subhead) {
-    c.subheads.push(subhead);
-  }
-};
-
-/**
- * Parse `@tags`.
- *
- * @param  {Object} `comment` A comment object.
- * @param  {Object} `options`
- * @return {Object}
- */
-
-parser.parseTags = function (comment, options) {
-  var opts = options || {};
-
-  // parse @param tags (`singular: plural`)
-  var props = _.merge({
-    'return': 'returns',
-    param   : 'params',
-    property: 'properties',
-    option  : 'options'
-  }, opts.subprops);
-
-  props = _.omit(props, ['api', 'constructor', 'class', 'static', 'type']);
-
-  Object.keys(props).forEach(function (key) {
-    var value = props[key];
-    if (comment[key]) {
-
-      var arr = comment[key] || [];
-      comment[value] = arrayify(arr).map(function (str) {
-        return parser.parseParams(str);
-      });
-    }
-  });
-  return comment;
-};
-
-/**
- * Parse comments from the given `content` string with the
- * specified `options.`
- *
- * @param  {String} `content`
- * @param  {Object} `options`
- * @return {Object}
- */
-
-parser.parseComment = function (content, options) {
-  var opts = options || {};
-  var afterNewLine = false;
-  var afterTags = false;
-  var props = [];
-  var lastTag;
-  var i = 0;
-
-  var lines = content.split('\n');
-  var comment = lines.reduce(function (c, str) {
-    // strip leading asterisks
-    var line = utils.stripStars(str);
-    if (/\s*@/.test(line)) {
-      line = line.replace(/^\s+/, '');
-    }
-
-    if (line) {
-      parser.extractLinks(c, line);
-
-      var match = line.match(/^(\s*@[\S]+)\s*(.*)/);
-      if (match) {
-        afterTags = true;
-        var tagname = match[1].replace(/@/, '');
-        props.push(tagname);
-
-        var tagvalue = match[2].replace(/^\s+/, '');
-        lastTag = tagname;
-        if (c.hasOwnProperty(tagname)) {
-          // tag already exists
-          if (!Array.isArray(c[tagname])) {
-            c[tagname] = [c[tagname]];
-          }
-
-          c[tagname].push(tagvalue);
-        } else {
-          // new tag
-          c[tagname] = tagvalue || true;
-        }
-      } else if (lastTag && !afterNewLine) {
-        var val = line.replace(/^\s+/, '');
-        if (Array.isArray(c[lastTag])) {
-          c[lastTag][c[lastTag].length - 1] += ' ' + val;
-        } else {
-          c[lastTag] += ' ' + val;
-        }
-      } else {
-        lastTag = null;
-        if (!afterTags) {
-          if (c.description) {
-            c.description += '\n' + line;
-          } else {
-            c.description = line;
-          }
-        } else {
-          if (c.example) {
-            c.example += '\n' + line;
-          } else {
-            c.example = line;
-          }
-        }
+Comments.prototype.before = function(type, fn) {
+  if (isObject(type)) {
+    for (var key in type) {
+      if (type.hasOwnProperty(key)) {
+        this.before(key, type[key]);
       }
-      afterNewLine = false;
+    }
+  } else if (Array.isArray(type)) {
+    for (var i = 0; i < type.length; i++) {
+      this.before(type[i], fn);
+    }
+  } else {
+    this.plugins.before[type] = (this.plugins.before[type] || []).concat(fn);
+  }
+  return this;
+};
+
+/**
+ * Register a handler that will be called by the compiler on every node
+ * of the given `type`, _after other middleware are called_ on that node.
+ *
+ * ```js
+ * comments.after('param', function(node) {
+ *   // do stuff to node
+ * });
+ *
+ * // or
+ * comments.after(['param', 'returns'], function(node) {
+ *   // do stuff to node
+ * });
+ *
+ * // or
+ * comments.after({
+ *   param: function(node) {
+ *     // do stuff to node
+ *   },
+ *   returns: function(node) {
+ *     // do stuff to node
+ *   }
+ * });
+ * ```
+ * @param {String|Object|Array} `type` Handler name(s), or an object of middleware
+ * @param {Function} `fn` Handler function, if `type` is a string or array. Otherwise this argument is ignored.
+ * @return {Object} Returns the instance for chaining.
+ * @api public
+ */
+
+Comments.prototype.after = function(type, fn) {
+  if (isObject(type)) {
+    for (var key in type) {
+      if (type.hasOwnProperty(key)) {
+        this.after(key, type[key]);
+      }
+    }
+  } else if (Array.isArray(type)) {
+    for (var i = 0; i < type.length; i++) {
+      this.after(type[i], fn);
+    }
+  } else {
+    this.plugins.after[type] = (this.plugins.after[type] || []).concat(fn);
+  }
+  return this;
+};
+
+/**
+ * Run plugin functions on a node of the given `type`.
+ *
+ * @param {String} `type` Either `before` or `after`
+ * @param {Object} `compiler` Snapdragon compiler instance
+ * @return {Function} Returns a function that takes a `node`. Any plugins registered for that `node.type` will be run on the node.
+ */
+
+Comments.prototype.run = function(type, compiler) {
+  var plugins = this.plugins[type];
+  return function(node) {
+    var fns = plugins[node.type] || [];
+
+    for (var i = 0; i < fns.length; i++) {
+      var plugin = fns[i];
+      if (typeof plugin !== 'function') {
+        var err = new TypeError('expected plugin to be a function:' + plugin);
+        err.node = node;
+        err.type = type;
+        throw err;
+      }
+      node = plugin.call(compiler, node) || node;
+    }
+    return node;
+  };
+};
+
+/**
+ * Parses a string of `javascript` and returns an AST.
+ *
+ * ```js
+ * var comments = new Comments();
+ * var ast = comments.parse([string]);
+ * ```
+ * @param {String} `javascript` String of javascript
+ * @param {Object} `options`
+ * @return {Object} AST (abstract syntax tree)
+ * @api public
+ */
+
+Comments.prototype.parse = function(str, options) {
+  let opts = extend({}, this.options, options);
+  let ast = { type: 'root', nodes: [] };
+
+  this.extract(str, options, function(comment) {
+    // console.log('-----');
+    comment.tags = [];
+
+    let name = get(comment, 'code.context.name');
+
+    if (typeof name === 'undefined') {
+      return comment;
+    }
+
+    let tok = this.tokenize(comment.val, opts);
+    this.tokens.push(tok);
+
+    let tags = tok.tags.slice();
+    let len = tags.length;
+    let idx = -1;
+
+    set(this.cache, name, comment);
+
+    while (++idx < len) {
+      let tag = tok.tags[idx];
+      // console.log(tag)
+      let node = this.parseTag(tag.val, opts);
+      node.type = tag.key;
+      ast.nodes.push(node);
+      node.parent = ast;
+      define(node, 'parent', ast);
+      comment.tags.push(tag.key);
+
+      // if (types.indexOf(tag.key) === -1) {
+      //   types.push(tag.key);
+      // }
+    }
+    // console.log(tok)
+
+    // let ast = this.snapdragon.parse(node.val.trim(), opts);
+    // console.log(ast);
+    // ast.type = 'comment';
+    // ast.nodes = ast.nodes.slice(1, ast.nodes.length - 1);
+    // // console.log(ast);
+
+    return comment;
+  });
+
+  // console.log(this.cache);
+
+  // console.log(types)
+  ast.nodes.unshift({type: 'bos'});
+  ast.nodes.push({type: 'eos'});
+  return ast;
+};
+
+Comments.prototype.parseTypes = function(str, options) {
+  return this.typeParser.parse(str, options);
+};
+
+Comments.prototype.parseTag = function(str, options) {
+  return this.tagParser.parse(str, options);
+  // switch (tag.key) {
+  //   case 'api':
+  //     break;
+  //   case 'kind':
+  //     break;
+  //   case 'license':
+  //     break;
+  //   case 'module':
+  //     break;
+  //   case 'name':
+  //     break;
+  //   case 'option':
+  //     break;
+  //   case 'param':
+  //     break;
+  //   case 'private':
+  //     break;
+  //   case 'protected':
+  //     break;
+  //   case 'public':
+  //     break;
+  //   case 'return':
+  //   case 'returns':
+  //     break;
+  // }
+};
+
+Comments.prototype.tokenize = function(str, options) {
+  return tokenize(str, extend({}, this.options, options));
+};
+
+Comments.prototype.filter = function(comment, options) {
+  if (!isObject(comment)) {
+    throw new TypeError('expected comment to be an object');
+  }
+  var opts = extend({}, this.options, options);
+  if (typeof opts.filter === 'function') {
+    return opts.filter(comment);
+  }
+  if (comment.type !== 'block' || comment.raw.charAt(0) !== '*') {
+    return false;
+  }
+  if (comment.raw.charAt(1) === '!') {
+    return false;
+  }
+  return !/(jslint|jshint|eshint)/.test(comment.val);
+};
+
+Comments.prototype.extract = function(str, options, fn) {
+  if (typeof options === 'function') {
+    fn = options;
+    options = {};
+  }
+
+  var opts = extend({}, this.options, options);
+  var extractFn = opts.extractFn || extract;
+  var comments = extractFn(str, opts);
+
+  for (var i = 0; i < comments.length; i++) {
+    var comment = comments[i];
+
+    if (this.filter(comment) === false) {
+      continue;
+    }
+
+    var token = utils.copyNode(comment);
+    token.code = utils.copyNode(comment.code);
+    token.code.context = utils.copyNode(comment.code.context);
+
+    this.emit('token', token);
+    if (typeof fn === 'function') {
+      comments[i] = fn.call(this, token) || token;
     } else {
-      afterNewLine = true;
-      if (!afterTags) {
-        if (c.description) {
-          c.description += '\n' + line;
-        }
-      } else {
-        if (c.example) {
-          c.example += '\n' + line;
-        }
-      }
+      comments[i] = token;
     }
-    i++;
-    return c;
-  }, {});
-
-  var singular = _.keys(opts.subprops);
-  var plural = _.values(opts.subprops);
-
-  var diff = _.difference(props, singular).filter(function (prop) {
-    return prop !== 'param' &&
-      prop !== 'constructor' &&
-      prop !== 'return' &&
-      prop !== 'static' &&
-      prop !== 'class' &&
-      prop !== 'type' &&
-      prop !== 'api';
-  });
-
-  var pluralized = diff.map(function (name) {
-    return inflect.pluralize(name);
-  });
-
-  singular = _.union(diff, singular);
-  plural = _.union([], pluralized, plural);
-
-  var comments = this.parseTags(comment, {
-    subprops: _.zipObject(singular, plural)
-  });
-
-  // Pass custom subprops (plural/arrays)
-  plural.forEach(function (prop) {
-    this.mergeSubprops(comments, prop);
-  }.bind(this));
+  }
 
   return comments;
 };
 
 /**
- * Expose `parser`
+ * Getter for lazily instantiating Snapdragon when `.parse` or
+ * `.compile` is called.
  */
 
-module.exports = parser;
+Object.defineProperty(Comments.prototype, 'snapdragon', {
+  set: function(snapdragon) {
+    define(this, '_snapdragon', snapdragon);
+  },
+  get: function() {
+    if (!this._snapdragon) {
+      this._snapdragon = new Snapdragon(this.options);
+    }
+    return this._snapdragon;
+  }
+});
+
+/**
+ * Getter for lazily instantiating Snapdragon when `.parse` or
+ * `.compile` is called.
+ */
+
+Object.defineProperty(Comments.prototype, 'typeParser', {
+  set: function(typeParser) {
+    define(this, '_typeParser', typeParser);
+  },
+  get: function() {
+    if (!this._typeParser) {
+      this._typeParser = new Snapdragon(this.options);
+      this._typeParser.use(types(this, this.options));
+    }
+    return this._typeParser;
+  }
+});
+
+/**
+ * Getter for lazily instantiating Snapdragon when `.parse` or
+ * `.compile` is called.
+ */
+
+Object.defineProperty(Comments.prototype, 'tagParser', {
+  set: function(tagParser) {
+    define(this, '_tagParser', tagParser);
+  },
+  get: function() {
+    if (!this._tagParser) {
+      this._tagParser = new Snapdragon(this.options);
+      this._tagParser.use(tags(this, this.options));
+    }
+    return this._tagParser;
+  }
+});
+
+/**
+ * Expose `Comments`
+ * @type {Constructor}
+ */
+
+module.exports = Comments;
