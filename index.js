@@ -14,6 +14,7 @@ var tokenize = require('tokenize-comment');
 var utils = require('./lib/utils');
 var types = require('./lib/types');
 var tags = require('./lib/tags');
+var tag = require('./lib/tag');
 
 /**
  * Create an instance of `Comments` with the given `options`.
@@ -278,18 +279,8 @@ Comments.prototype.run = function(type, compiler) {
 
 Comments.prototype.parse = function(str, options) {
   let opts = extend({}, this.options, options);
-  let ast = this.snapdragon.parser.node({ type: 'root', nodes: [] });
 
-  this.extract(str, options, function(comment) {
-    // console.log('-----');
-    comment.tags = [];
-
-    let name = get(comment, 'code.context.name');
-
-    // if (typeof name === 'undefined') {
-    //   return comment;
-    // }
-
+  return this.extract(str, options, function(comment) {
     let tok = this.tokenize(comment.val, opts);
     this.tokens.push(tok);
 
@@ -297,40 +288,15 @@ Comments.prototype.parse = function(str, options) {
     let len = tags.length;
     let idx = -1;
 
-    set(this.cache, name, comment);
-
     while (++idx < len) {
-      let tag = tok.tags[idx];
-      // console.log(tag)
-      let node = this.parseTag(tag, opts);
-      ast.addNode(node);
-
-      // let obj = {};
-      // obj[tag.key] = {};
-      // comment.tags.push(tag.key);
-      // console.log(util.inspect(tag, {depth: null}))
-
-      // if (types.indexOf(tag.key) === -1) {
-      //   types.push(tag.key);
-      // }
+      let tag = this.parseTag(tok.tags[idx], opts);
+      union(comment, 'tags', tag);
     }
-    // console.log(tok)
 
-    // let ast = this.snapdragon.parse(node.val.trim(), opts);
-    // console.log(ast);
-    // ast.type = 'comment';
-    // ast.nodes = ast.nodes.slice(1, ast.nodes.length - 1);
-    // // console.log(ast);
-
+    let name = get(comment, 'code.context.name');
+    set(this.cache, name, comment);
     return comment;
   });
-
-  // console.log(this.cache);
-
-  // console.log(types)
-  ast.nodes.unshift({type: 'bos'});
-  ast.nodes.push({type: 'eos'});
-  return ast;
 };
 
 Comments.prototype.parseTypes = function(val, tag, options) {
@@ -343,42 +309,18 @@ Comments.prototype.parseTypes = function(val, tag, options) {
   return parser.parse(val);
 };
 
-Comments.prototype.parseTag = function(tag) {
+Comments.prototype.parseTag = function(tok) {
   if (typeof this.parsers.tag === 'function') {
-    return this.parsers.tag.call(this, tag);
+    return this.parsers.tag.call(this, tok.raw, this.options);
   }
-  console.log(tag)
-  var parser = new Snapdragon(this.options);
-  parser.use(tags(this, tag, this.options));
-  return parser.parse(tag.val);
 
-  // switch (tag.key) {
-  //   case 'api':
-  //     break;
-  //   case 'kind':
-  //     break;
-  //   case 'license':
-  //     break;
-  //   case 'module':
-  //     break;
-  //   case 'name':
-  //     break;
-  //   case 'option':
-  //     break;
-  //   case 'param':
-  //     break;
-  //   case 'private':
-  //     break;
-  //   case 'protected':
-  //     break;
-  //   case 'public':
-  //     break;
-  //   case 'return':
-  //   case 'returns':
-  //     break;
-  // }
+  return tag(tok.val);
+
+  // var parser = new Snapdragon(this.options);
+  // parser.use(tags(this, tag, this.options));
+  // var ast = parser.parse(tag.val);
+  // return ast.nodes.slice(1, ast.nodes.length - 1);
 };
-
 
 Comments.prototype.tokenize = function(str, options) {
   return tokenize(str, extend({}, this.options, options));
@@ -389,23 +331,6 @@ Comments.prototype.decorate = function(name, obj) {
   if (typeof fn === 'function') {
     fn.call(this, obj);
   }
-};
-
-Comments.prototype.filter = function(comment, options) {
-  if (!isObject(comment)) {
-    throw new TypeError('expected comment to be an object');
-  }
-  var opts = extend({}, this.options, options);
-  if (typeof opts.filter === 'function') {
-    return opts.filter(comment);
-  }
-  if (comment.type !== 'block' || comment.raw.charAt(0) !== '*') {
-    return false;
-  }
-  if (comment.raw.charAt(1) === '!') {
-    return false;
-  }
-  return !/(jslint|jshint|eshint)/.test(comment.val);
 };
 
 Comments.prototype.extract = function(str, options, fn) {
@@ -421,7 +346,7 @@ Comments.prototype.extract = function(str, options, fn) {
   for (var i = 0; i < comments.length; i++) {
     var comment = comments[i];
 
-    if (this.filter(comment) === false) {
+    if (this.isValid(comment) === false) {
       continue;
     }
 
@@ -429,15 +354,57 @@ Comments.prototype.extract = function(str, options, fn) {
     token.code = utils.copyNode(comment.code);
     token.code.context = utils.copyNode(comment.code.context);
 
-    this.emit('token', token);
     if (typeof fn === 'function') {
       comments[i] = fn.call(this, token) || token;
     } else {
       comments[i] = token;
     }
+
+    this.emit('token', token);
   }
 
   return comments;
+};
+
+/**
+ * Returns true if the given `comment` is valid. By default, comments
+ * are considered valid when they begin with `/**`, and do not contain
+ * `jslint`, `jshint`, `eshint`, or `eslint`. A custom `isValid` function may be
+ * passed on the constructor options.
+ *
+ * @param {Object} `comment`
+ * @param {Object} `options`
+ * @return {Boolean}
+ * @api public
+ */
+
+Comments.prototype.isValid = function(comment, options) {
+  if (!isObject(comment)) {
+    throw new TypeError('expected comment to be an object');
+  }
+  var opts = extend({}, this.options, options);
+  if (typeof opts.isValid === 'function') {
+    return opts.isValid(comment);
+  }
+  if (comment.type !== 'block' || comment.raw.charAt(0) !== '*') {
+    return false;
+  }
+  if (comment.raw.charAt(1) === '!') {
+    return false;
+  }
+  return !/(es|js)(hint|lint)/.test(comment.val);
+};
+
+Comments.prototype.expects = function(key, prop) {
+
+};
+
+Comments.prototype.allows = function(key, prop) {
+
+};
+
+Comments.prototype.normalize = function(kind, key) {
+
 };
 
 /**
