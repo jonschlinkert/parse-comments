@@ -24,24 +24,26 @@
   "scripts": {
     "test": "mocha"
   },
+  "keywords": [
+    "code",
+    "comments",
+    "parse"
+  ],
   "dependencies": {
     "component-emitter": "^1.2.1",
     "define-property": "^0.2.5",
+    "export-files": "^2.1.1",
     "extend-shallow": "^2.0.1",
     "extract-comments": "^0.10.1",
     "get-value": "^2.0.6",
     "isobject": "^3.0.0",
     "set-value": "^0.4.3",
     "snapdragon": "^0.11.0",
-    "tokenize-comment": "^1.0.1"
+    "tokenize-comment": "^1.0.1",
+    "union-value": "^1.0.0"
   },
   "devDependencies": {
     "cache-base": "^1.0.0",
     "mocha": "^3.2.0"
-  },
-  "keywords": [
-    "code",
-    "comments",
-    "parse"
-  ]
+  }
 }

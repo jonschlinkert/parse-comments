@@ -1,7 +1,9 @@
 'use strict';
 
+var util = require('util');
 var get = require('get-value');
 var set = require('set-value');
+var union = require('union-value');
 var isObject = require('isobject');
 var Snapdragon = require('snapdragon');
 var Emitter = require('component-emitter');
@@ -35,6 +37,7 @@ function Comments(options) {
 
   this.define('cache', {});
   this.options = extend({}, options);
+  this.parsers = {};
   this.tokens = [];
   this.plugins = {
     fns: [],
@@ -49,6 +52,11 @@ function Comments(options) {
  */
 
 Emitter(Comments.prototype);
+
+Comments.prototype.parser = function(name, fn) {
+  this.parsers[name] = fn;
+  return this;
+};
 
 /**
  * Register a compiler plugin `fn`. Plugin functions should take an
@@ -270,7 +278,7 @@ Comments.prototype.run = function(type, compiler) {
 
 Comments.prototype.parse = function(str, options) {
   let opts = extend({}, this.options, options);
-  let ast = { type: 'root', nodes: [] };
+  let ast = this.snapdragon.parser.node({ type: 'root', nodes: [] });
 
   this.extract(str, options, function(comment) {
     // console.log('-----');
@@ -278,9 +286,9 @@ Comments.prototype.parse = function(str, options) {
 
     let name = get(comment, 'code.context.name');
 
-    if (typeof name === 'undefined') {
-      return comment;
-    }
+    // if (typeof name === 'undefined') {
+    //   return comment;
+    // }
 
     let tok = this.tokenize(comment.val, opts);
     this.tokens.push(tok);
@@ -294,12 +302,13 @@ Comments.prototype.parse = function(str, options) {
     while (++idx < len) {
       let tag = tok.tags[idx];
       // console.log(tag)
-      let node = this.parseTag(tag.val, opts);
-      node.type = tag.key;
-      ast.nodes.push(node);
-      node.parent = ast;
-      define(node, 'parent', ast);
-      comment.tags.push(tag.key);
+      let node = this.parseTag(tag, opts);
+      ast.addNode(node);
+
+      // let obj = {};
+      // obj[tag.key] = {};
+      // comment.tags.push(tag.key);
+      // console.log(util.inspect(tag, {depth: null}))
 
       // if (types.indexOf(tag.key) === -1) {
       //   types.push(tag.key);
@@ -324,12 +333,25 @@ Comments.prototype.parse = function(str, options) {
   return ast;
 };
 
-Comments.prototype.parseTypes = function(str, options) {
-  return this.typeParser.parse(str, options);
+Comments.prototype.parseTypes = function(val, tag, options) {
+  if (typeof this.parsers.types === 'function') {
+    return this.parsers.types.call(this, tag);
+  }
+
+  var parser = new Snapdragon(this.options);
+  parser.use(types(this, tag, this.options));
+  return parser.parse(val);
 };
 
-Comments.prototype.parseTag = function(str, options) {
-  return this.tagParser.parse(str, options);
+Comments.prototype.parseTag = function(tag) {
+  if (typeof this.parsers.tag === 'function') {
+    return this.parsers.tag.call(this, tag);
+  }
+  console.log(tag)
+  var parser = new Snapdragon(this.options);
+  parser.use(tags(this, tag, this.options));
+  return parser.parse(tag.val);
+
   // switch (tag.key) {
   //   case 'api':
   //     break;
@@ -357,8 +379,16 @@ Comments.prototype.parseTag = function(str, options) {
   // }
 };
 
+
 Comments.prototype.tokenize = function(str, options) {
   return tokenize(str, extend({}, this.options, options));
+};
+
+Comments.prototype.decorate = function(name, obj) {
+  var fn = this.decorators[name];
+  if (typeof fn === 'function') {
+    fn.call(this, obj);
+  }
 };
 
 Comments.prototype.filter = function(comment, options) {
@@ -442,24 +472,6 @@ Object.defineProperty(Comments.prototype, 'typeParser', {
       this._typeParser.use(types(this, this.options));
     }
     return this._typeParser;
-  }
-});
-
-/**
- * Getter for lazily instantiating Snapdragon when `.parse` or
- * `.compile` is called.
- */
-
-Object.defineProperty(Comments.prototype, 'tagParser', {
-  set: function(tagParser) {
-    define(this, '_tagParser', tagParser);
-  },
-  get: function() {
-    if (!this._tagParser) {
-      this._tagParser = new Snapdragon(this.options);
-      this._tagParser.use(tags(this, this.options));
-    }
-    return this._tagParser;
   }
 });
 
