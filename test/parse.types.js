@@ -2,7 +2,10 @@
 
 require('mocha');
 var assert = require('assert');
-var parseTypes = require('../lib/types');
+var doctrine = require('doctrine');
+var catharsis = require('catharsis');
+var doctrine = require('doctrine');
+var parseTypes = require('../lib/parse/types');
 
 function parse(str, options) {
   var tag = {};
@@ -11,11 +14,11 @@ function parse(str, options) {
 }
 
 describe('parseTypes', function() {
-  // describe('empty', function() {
-  //   it('should parse an empty entries object', function() {
-  //     assert.deepEqual(parse('{}'), { types: [ { name: 'boolean' } ] });
-  //   });
-  // });
+  describe('empty', function() {
+    it('should parse an empty entries object', function() {
+      assert.deepEqual(parse('{}'), { types: [ { name: 'boolean' } ] });
+    });
+  });
 
   describe('types', function() {
     it('should parse a single type', function() {
@@ -517,7 +520,10 @@ describe('parseTypes', function() {
         }]
       });
 
-      // assert.deepEqual(parse('function(string|object, array): number'), {
+      let fixture = 'function(string|object, array): number';
+      // assert.deepEqual(parse(fixture), doctrine.parseType(fixture));
+      // assert.deepEqual(parse(fixture), catharsis.parse(fixture));
+      // assert.deepEqual(parse(fixture), {
       //   types: [{
       //     parameterTypeUnions: [{
       //       types: [{
@@ -730,8 +736,10 @@ describe('parseTypes', function() {
           }]
         }]
       });
+    });
 
-      assert.deepEqual(parse('{foo: number, bar: string, array}'), {
+    it.skip('should parse multiple comma-separated entries', function() {
+      assert.deepEqual(doctrine.parseType('{foo: number, bar: string, array}'), {
         types: [{
           entries: [{
             name: 'foo',
