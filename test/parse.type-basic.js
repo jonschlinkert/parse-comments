@@ -3,8 +3,6 @@
 require('mocha');
 var assert = require('assert');
 var doctrine = require('doctrine');
-var catharsis = require('catharsis');
-var doctrine = require('doctrine');
 var parseTypes = require('../lib/parse/type');
 
 function parse(str, options) {
@@ -38,7 +36,7 @@ describe('parseTypes', function() {
       assert.deepEqual(parse('boolean|string'), {
         types: [
           { name: 'boolean' },
-          { name: 'string' },
+          { name: 'string' }
         ]
       });
     });
@@ -54,7 +52,7 @@ describe('parseTypes', function() {
       assert.deepEqual(parse('(boolean|string)'), {
         types: [
           { name: 'boolean' },
-          { name: 'string' },
+          { name: 'string' }
         ]
       });
 
@@ -62,7 +60,7 @@ describe('parseTypes', function() {
         types: [
           { name: 'boolean' },
           { name: 'string' },
-          { name: 'array' },
+          { name: 'array' }
         ]
       });
     });
@@ -102,7 +100,7 @@ describe('parseTypes', function() {
       assert.deepEqual(parse('boolean|string|...'), {
         types: [
           { name: 'boolean' },
-          { name: 'string' },
+          { name: 'string' }
         ],
         variadic: true
       });
@@ -110,7 +108,7 @@ describe('parseTypes', function() {
       assert.deepEqual(parse('(boolean|string)...'), {
         types: [
           { name: 'boolean' },
-          { name: 'string' },
+          { name: 'string' }
         ],
         variadic: true
       });
@@ -118,7 +116,7 @@ describe('parseTypes', function() {
       assert.deepEqual(parse('(boolean|...|string)'), {
         types: [
           { name: 'boolean' },
-          { name: 'string' },
+          { name: 'string' }
         ],
         variadic: true
       });
@@ -126,7 +124,7 @@ describe('parseTypes', function() {
       assert.deepEqual(parse('(boolean|string|...)'), {
         types: [
           { name: 'boolean' },
-          { name: 'string' },
+          { name: 'string' }
         ],
         variadic: true
       });
@@ -162,7 +160,7 @@ describe('parseTypes', function() {
       assert.deepEqual(parse('boolean|string='), {
         types: [
           { name: 'boolean' },
-          { name: 'string' },
+          { name: 'string' }
         ],
         optional: true
       });
@@ -170,7 +168,7 @@ describe('parseTypes', function() {
       assert.deepEqual(parse('(boolean|string=)'), {
         types: [
           { name: 'boolean' },
-          { name: 'string' },
+          { name: 'string' }
         ],
         optional: true
       });
@@ -178,7 +176,7 @@ describe('parseTypes', function() {
       assert.deepEqual(parse('(boolean=|string)'), {
         types: [
           { name: 'boolean' },
-          { name: 'string' },
+          { name: 'string' }
         ],
         optional: true
       });
@@ -188,7 +186,7 @@ describe('parseTypes', function() {
       assert.deepEqual(parse('boolean|=string'), {
         types: [
           { name: 'boolean' },
-          { name: 'string' },
+          { name: 'string' }
         ],
         optional: true
       });
@@ -196,7 +194,7 @@ describe('parseTypes', function() {
       assert.deepEqual(parse('(boolean|=string)'), {
         types: [
           { name: 'boolean' },
-          { name: 'string' },
+          { name: 'string' }
         ],
         optional: true
       });
@@ -204,7 +202,7 @@ describe('parseTypes', function() {
       assert.deepEqual(parse('(=boolean|string)'), {
         types: [
           { name: 'boolean' },
-          { name: 'string' },
+          { name: 'string' }
         ],
         optional: true
       });
@@ -214,7 +212,7 @@ describe('parseTypes', function() {
       assert.deepEqual(parse('boolean|=string='), {
         types: [
           { name: 'boolean' },
-          { name: 'string' },
+          { name: 'string' }
         ],
         optional: true
       });
@@ -222,7 +220,7 @@ describe('parseTypes', function() {
       assert.deepEqual(parse('(=boolean=|=string)'), {
         types: [
           { name: 'boolean' },
-          { name: 'string' },
+          { name: 'string' }
         ],
         optional: true
       });
@@ -230,7 +228,7 @@ describe('parseTypes', function() {
       assert.deepEqual(parse('(=boolean=|=string=)'), {
         types: [
           { name: 'boolean' },
-          { name: 'string' },
+          { name: 'string' }
         ],
         optional: true
       });
@@ -243,7 +241,7 @@ describe('parseTypes', function() {
         types: [
           { name: 'number' }
         ],
-        nullable: true,
+        nullable: true
       });
 
       assert.deepEqual(parse('?number|string'), {
@@ -251,7 +249,7 @@ describe('parseTypes', function() {
           { name: 'number' },
           { name: 'string' }
         ],
-        nullable: true,
+        nullable: true
       });
     });
 
@@ -351,7 +349,7 @@ describe('parseTypes', function() {
   });
 
   describe('parameterTypeUnions', function() {
-    it('should parse function union types', function () {
+    it('should parse function union types', function() {
       assert.deepEqual(parse('function()'), {
         types: [{
           parameterTypeUnions: []
@@ -416,8 +414,8 @@ describe('parseTypes', function() {
         types: [{
           parameterTypeUnions: [{
             types: [
-              {name: 'string', nullable: true, optional: true},
-            ],
+              {name: 'string', nullable: true, optional: true}
+            ]
           }, {
             types: [
               {name: 'number', optional: true}
@@ -521,29 +519,29 @@ describe('parseTypes', function() {
       });
 
       let fixture = 'function(string|object, array): number';
-      // assert.deepEqual(parse(fixture), doctrine.parseType(fixture));
+      assert.deepEqual(parse(fixture), doctrine.parseType(fixture));
       // assert.deepEqual(parse(fixture), catharsis.parse(fixture));
-      // assert.deepEqual(parse(fixture), {
-      //   types: [{
-      //     parameterTypeUnions: [{
-      //       types: [{
-      //         name: 'string'
-      //       },
-      //       {
-      //         name: 'object'
-      //       }]
-      //     }, {
-      //       types: [{
-      //         name: 'array'
-      //       }]
-      //     }],
-      //     returnTypeUnion: {
-      //       types: [{
-      //         name: 'number'
-      //       }]
-      //     }
-      //   }]
-      // });
+      assert.deepEqual(parse(fixture), {
+        types: [{
+          parameterTypeUnions: [{
+            types: [{
+              name: 'string'
+            },
+            {
+              name: 'object'
+            }]
+          }, {
+            types: [{
+              name: 'array'
+            }]
+          }],
+          returnTypeUnion: {
+            types: [{
+              name: 'number'
+            }]
+          }
+        }]
+      });
 
       // assert.deepEqual(parse('function((string|object), array): number'), {
       //   types: [{
@@ -602,7 +600,7 @@ describe('parseTypes', function() {
           returnTypeUnion: {
             types: [{
               name: 'number'
-            },{
+            }, {
               name: 'string'
             }]
           }
@@ -623,7 +621,7 @@ describe('parseTypes', function() {
           returnTypeUnion: {
             types: [{
               name: 'number'
-            },{
+            }, {
               name: 'string'
             }]
           }
@@ -645,7 +643,7 @@ describe('parseTypes', function() {
             optional: true,
             types: [{
               name: 'number'
-            },{
+            }, {
               name: 'string'
             }]
           }
@@ -790,7 +788,7 @@ describe('parseTypes', function() {
         assert.deepEqual(parse('boolean|string|...', {jsdoc: true}), {
           types: [
             { name: 'boolean' },
-            { name: 'string' },
+            { name: 'string' }
           ],
           variable: true
         });
@@ -798,7 +796,7 @@ describe('parseTypes', function() {
         assert.deepEqual(parse('(boolean|string)...', {jsdoc: true}), {
           types: [
             { name: 'boolean' },
-            { name: 'string' },
+            { name: 'string' }
           ],
           variable: true
         });
@@ -806,7 +804,7 @@ describe('parseTypes', function() {
         assert.deepEqual(parse('(boolean|...|string)', {jsdoc: true}), {
           types: [
             { name: 'boolean' },
-            { name: 'string' },
+            { name: 'string' }
           ],
           variable: true
         });
@@ -814,7 +812,7 @@ describe('parseTypes', function() {
         assert.deepEqual(parse('(boolean|string|...)', {jsdoc: true}), {
           types: [
             { name: 'boolean' },
-            { name: 'string' },
+            { name: 'string' }
           ],
           variable: true
         });
@@ -849,7 +847,7 @@ describe('parseTypes', function() {
   describe('errors', function() {
     it('should throw when a paren is unclosed', function() {
       assert.throws(function() {
-        parse('(boolean=|string')
+        parse('(boolean=|string');
       }, /unclosed paren: \(boolean=\|string/);
     });
   });

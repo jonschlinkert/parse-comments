@@ -3,13 +3,6 @@
 require('mocha');
 require('should');
 var doctrine = require('doctrine');
-var parseTypes = require('../lib/parse/type');
-
-function parseType(str, options) {
-  var tag = {};
-  tag.types = parseTypes(str, tag, options);
-  return tag;
-}
 
 /**
  * integration tests from doctrine (since we use doctrine for parsing tags)

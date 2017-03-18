@@ -17,7 +17,7 @@ describe('indented', function() {
       ' *     @foo',
       ' *     @bar',
       ' *     @baz',
-      ' */',
+      ' */'
     ].join('\n'));
 
     assert.deepEqual(tok, {
@@ -41,7 +41,7 @@ describe('indented', function() {
       ' *       @foo',
       ' *       @bar',
       ' *       @baz',
-      ' */',
+      ' */'
     ].join('\n'));
 
     assert.deepEqual(tok, {
@@ -65,7 +65,7 @@ describe('indented', function() {
       '     @foo',
       '     @bar',
       '     @baz',
-      '',
+      ''
     ].join('\n'));
 
     assert.deepEqual(tok, {
@@ -91,7 +91,7 @@ describe('indented', function() {
       ' *',
       ' * @param {string} something',
       ' * @param {string} else',
-      ' */',
+      ' */'
     ].join('\n'));
 
     assert.deepEqual(tok, {
@@ -128,7 +128,7 @@ describe('indented', function() {
       ' *',
       ' * @param {string} something',
       ' * @param {string} else',
-      ' */',
+      ' */'
     ].join('\n'));
 
     assert.deepEqual(tok, {
@@ -168,7 +168,7 @@ describe('indented', function() {
       ' *',
       ' * @param {string} something',
       ' * @param {string} else',
-      ' */',
+      ' */'
     ].join('\n'));
 
     assert.deepEqual(tok, {
@@ -205,7 +205,7 @@ describe('indented', function() {
       ' *',
       ' * @param {string} something',
       ' * @param {string} else',
-      ' */',
+      ' */'
     ].join('\n'));
 
     assert.deepEqual(tok, {
@@ -245,7 +245,7 @@ describe('indented', function() {
       ' *',
       ' * @param {string} something',
       ' * @param {string} else',
-      ' */',
+      ' */'
     ].join('\n'));
 
     assert.deepEqual(tok, {
@@ -284,7 +284,7 @@ describe('indented', function() {
       ' *',
       ' * @param {string} something',
       ' * @param {string} else',
-      ' */',
+      ' */'
     ].join('\n'));
 
     assert.deepEqual(tok, {

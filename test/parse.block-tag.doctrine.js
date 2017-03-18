@@ -2,8 +2,6 @@
 
 require('mocha');
 require('should');
-var fs = require('fs');
-var path = require('path');
 var doctrine = require('doctrine');
 var Comments = require('..');
 var comments;
@@ -32,7 +30,7 @@ describe('parse tag', function() {
       },
       format: function(comment, options) {
         return comment;
-      },
+      }
     });
   });
 
@@ -684,7 +682,7 @@ describe('parse tag', function() {
         description: '[bye] hi'
       });
 
-      var res = comments.parseComment([
+      res = comments.parseComment([
         '/**',
         ' * @param userName',
         '*/'
@@ -699,7 +697,7 @@ describe('parse tag', function() {
         description: null
       });
 
-      var res = comments.parseComment([
+      res = comments.parseComment([
         '/**',
         ' * @param userName Something descriptive',
         '*/'
@@ -714,7 +712,7 @@ describe('parse tag', function() {
         description: 'Something descriptive'
       });
 
-      var res = comments.parseComment([
+      res = comments.parseComment([
         '/**',
         ' * @param user.name Something descriptive',
         '*/'
@@ -2319,31 +2317,31 @@ describe('parse tag', function() {
   describe('optional params', function() {
     // should fail since sloppy option not set
     it('failure 0', function() {
-      var res = comments.parseComment(['/**', ' * @param {String} [val]', ' */'].join('\n'), {
+      comments.parseComment(['/**', ' * @param {String} [val]', ' */'].join('\n'), {
         unwrap: true
       }).should.eql({
-          'description': '',
-          'tags': []
-        });
+        'description': '',
+        'tags': []
+      });
     });
 
     it('failure 1', function() {
       comments.parseComment(['/**', ' * @param [val', ' */'].join('\n'), {
-          unwrap: true,
-          sloppy: true
-        }).should.eql({
-          'description': '',
-          'tags': []
-        });
+        unwrap: true,
+        sloppy: true
+      }).should.eql({
+        'description': '',
+        'tags': []
+      });
     });
 
     it('success 1', function() {
       comments.parseComment(['/**', ' * @param {String} [val]', ' */'].join('\n'), {
-          unwrap: true,
-          sloppy: true
-        }).should.eql({
-          'description': '',
-          'tags': [{
+        unwrap: true,
+        sloppy: true
+      }).should.eql({
+        'description': '',
+        'tags': [{
           'title': 'param',
           'description': null,
           'type': {
@@ -2355,16 +2353,16 @@ describe('parse tag', function() {
           },
           'name': 'val'
         }]
-        });
+      });
     });
 
     it('success 2', function() {
       comments.parseComment(['/**', ' * @param {String=} val', ' */'].join('\n'), {
-          unwrap: true,
-          sloppy: true
-        }).should.eql({
-          'description': '',
-          'tags': [{
+        unwrap: true,
+        sloppy: true
+      }).should.eql({
+        'description': '',
+        'tags': [{
           'title': 'param',
           'description': null,
           'type': {
@@ -2376,14 +2374,14 @@ describe('parse tag', function() {
           },
           'name': 'val'
         }]
-        });
+      });
     });
 
     it('success 3', function() {
       comments.parseComment(['/**', ' * @param {String=} [val=abc] some description', ' */'].join('\n'), {
-          unwrap: true,
-          sloppy: true
-        }
+        unwrap: true,
+        sloppy: true
+      }
       ).should.eql({
         'description': '',
         'tags': [{
@@ -2404,9 +2402,9 @@ describe('parse tag', function() {
 
     it('success 4', function() {
       comments.parseComment(['/**', ' * @param {String=} [val = abc] some description', ' */'].join('\n'), {
-          unwrap: true,
-          sloppy: true
-        }
+        unwrap: true,
+        sloppy: true
+      }
       ).should.eql({
         'description': '',
         'tags': [{
@@ -2427,9 +2425,9 @@ describe('parse tag', function() {
 
     it('default string', function() {
       comments.parseComment(['/**', ' * @param {String} [val="foo"] some description', ' */'].join('\n'), {
-          unwrap: true,
-          sloppy: true
-        }
+        unwrap: true,
+        sloppy: true
+      }
       ).should.eql({
         'description': '',
         'tags': [{
@@ -2450,9 +2448,9 @@ describe('parse tag', function() {
 
     it('default string surrounded by whitespace', function() {
       comments.parseComment(['/**', " * @param {String} [val=   'foo'  ] some description", ' */'].join('\n'), {
-          unwrap: true,
-          sloppy: true
-        }
+        unwrap: true,
+        sloppy: true
+      }
       ).should.eql({
         'description': '',
         'tags': [{
@@ -2473,9 +2471,9 @@ describe('parse tag', function() {
 
     it('should preserve whitespace in default string', function() {
       comments.parseComment(['/**', ' * @param {String} [val=   "   foo"  ] some description', ' */'].join('\n'), {
-          unwrap: true,
-          sloppy: true
-        }
+        unwrap: true,
+        sloppy: true
+      }
       ).should.eql({
         'description': '',
         'tags': [{
@@ -2496,9 +2494,9 @@ describe('parse tag', function() {
 
     it('default array', function() {
       comments.parseComment(['/**', " * @param {String} [val=['foo']] some description", ' */'].join('\n'), {
-          unwrap: true,
-          sloppy: true
-        }
+        unwrap: true,
+        sloppy: true
+      }
       ).should.eql({
         'description': '',
         'tags': [{
@@ -2519,9 +2517,9 @@ describe('parse tag', function() {
 
     it('default array', function() {
       comments.parseComment(['/**', " * @param {String} [val=['foo']] some description", ' */'].join('\n'), {
-          unwrap: true,
-          sloppy: true
-        }
+        unwrap: true,
+        sloppy: true
+      }
       ).should.eql({
         'description': '',
         'tags': [{
@@ -2542,9 +2540,9 @@ describe('parse tag', function() {
 
     it('default array within white spaces', function() {
       comments.parseComment(['/**', " * @param {String} [val = [ 'foo' ]] some description", ' */'].join('\n'), {
-          unwrap: true,
-          sloppy: true
-        }
+        unwrap: true,
+        sloppy: true
+      }
       ).should.eql({
         'description': '',
         'tags': [{
@@ -2638,21 +2636,21 @@ describe('parse tag', function() {
 
     it('failure 1', function() {
       comments.parseComment(['/**', ' * @property [val', ' */'].join('\n'), {
-          unwrap: true,
-          sloppy: true
-        }).should.eql({
-          'description': '',
-          'tags': []
-        });
+        unwrap: true,
+        sloppy: true
+      }).should.eql({
+        'description': '',
+        'tags': []
+      });
     });
 
     it('success 1', function() {
       comments.parseComment(['/**', ' * @property {String} [val]', ' */'].join('\n'), {
-          unwrap: true,
-          sloppy: true
-        }).should.eql({
-          'description': '',
-          'tags': [{
+        unwrap: true,
+        sloppy: true
+      }).should.eql({
+        'description': '',
+        'tags': [{
           'title': 'property',
           'description': null,
           'type': {
@@ -2664,16 +2662,16 @@ describe('parse tag', function() {
           },
           'name': 'val'
         }]
-        });
+      });
     });
 
     it('success 2', function() {
       comments.parseComment(['/**', ' * @property {String=} val', ' */'].join('\n'), {
-          unwrap: true,
-          sloppy: true
-        }).should.eql({
-          'description': '',
-          'tags': [{
+        unwrap: true,
+        sloppy: true
+      }).should.eql({
+        'description': '',
+        'tags': [{
           'title': 'property',
           'description': null,
           'type': {
@@ -2685,14 +2683,14 @@ describe('parse tag', function() {
           },
           'name': 'val'
         }]
-        });
+      });
     });
 
     it('success 3', function() {
       comments.parseComment(['/**', ' * @property {String=} [val=abc] some description', ' */'].join('\n'), {
-          unwrap: true,
-          sloppy: true
-        }
+        unwrap: true,
+        sloppy: true
+      }
       ).should.eql({
         'description': '',
         'tags': [{
@@ -2713,9 +2711,9 @@ describe('parse tag', function() {
 
     it('success 4', function() {
       comments.parseComment(['/**', ' * @property {String=} [val = abc] some description', ' */'].join('\n'), {
-          unwrap: true,
-          sloppy: true
-        }
+        unwrap: true,
+        sloppy: true
+      }
       ).should.eql({
         'description': '',
         'tags': [{
@@ -2736,9 +2734,9 @@ describe('parse tag', function() {
 
     it('default string', function() {
       comments.parseComment(['/**', ' * @property {String} [val="foo"] some description', ' */'].join('\n'), {
-          unwrap: true,
-          sloppy: true
-        }
+        unwrap: true,
+        sloppy: true
+      }
       ).should.eql({
         'description': '',
         'tags': [{
@@ -2759,9 +2757,9 @@ describe('parse tag', function() {
 
     it('default string surrounded by whitespace', function() {
       comments.parseComment(['/**', " * @property {String} [val=   'foo'  ] some description", ' */'].join('\n'), {
-          unwrap: true,
-          sloppy: true
-        }
+        unwrap: true,
+        sloppy: true
+      }
       ).should.eql({
         'description': '',
         'tags': [{
@@ -2782,9 +2780,9 @@ describe('parse tag', function() {
 
     it('should preserve whitespace in default string', function() {
       comments.parseComment(['/**', ' * @property {String} [val=   "   foo"  ] some description', ' */'].join('\n'), {
-          unwrap: true,
-          sloppy: true
-        }
+        unwrap: true,
+        sloppy: true
+      }
       ).should.eql({
         'description': '',
         'tags': [{
@@ -2805,9 +2803,9 @@ describe('parse tag', function() {
 
     it('default array', function() {
       comments.parseComment(['/**', " * @property {String} [val=['foo']] some description", ' */'].join('\n'), {
-          unwrap: true,
-          sloppy: true
-        }
+        unwrap: true,
+        sloppy: true
+      }
       ).should.eql({
         'description': '',
         'tags': [{
@@ -2828,9 +2826,9 @@ describe('parse tag', function() {
 
     it('default array within white spaces', function() {
       comments.parseComment(['/**', " * @property {String} [val = [ 'foo' ]] some description", ' */'].join('\n'), {
-          unwrap: true,
-          sloppy: true
-        }
+        unwrap: true,
+        sloppy: true
+      }
       ).should.eql({
         'description': '',
         'tags': [{
@@ -3066,21 +3064,21 @@ describe('parse tag', function() {
   describe('@ mark contained descriptions', function() {
     it('comment description #10', function() {
       comments.parseComment([
-          '/**',
-          ' * Prevents the default action. It is equivalent to',
-          ' * {@code e.preventDefault()}, but can be used as the callback argument of',
-          ' * {@link goog.events.listen} without declaring another function.',
-          ' * @param {!goog.events.Event} e An event.',
-          ' */'
-        ].join('\n'), {
-          unwrap: true,
-          sloppy: true
-        }).should.eql({
-          'description': 'Prevents the default action. It is equivalent to\n{@code e.preventDefault()}, but can be used as the callback argument of\n{@link goog.events.listen} without declaring another function.',
-          'tags': [{
-            'title': 'param',
-            'description': 'An event.',
-            'type': {
+        '/**',
+        ' * Prevents the default action. It is equivalent to',
+        ' * {@code e.preventDefault()}, but can be used as the callback argument of',
+        ' * {@link goog.events.listen} without declaring another function.',
+        ' * @param {!goog.events.Event} e An event.',
+        ' */'
+      ].join('\n'), {
+        unwrap: true,
+        sloppy: true
+      }).should.eql({
+        'description': 'Prevents the default action. It is equivalent to\n{@code e.preventDefault()}, but can be used as the callback argument of\n{@link goog.events.listen} without declaring another function.',
+        'tags': [{
+          'title': 'param',
+          'description': 'An event.',
+          'type': {
             'type': 'NonNullableType',
             'expression': {
               'type': 'NameExpression',
@@ -3088,28 +3086,28 @@ describe('parse tag', function() {
             },
             'prefix': true
           },
-            'name': 'e'
-          }]
-        });
+          'name': 'e'
+        }]
+      });
     });
 
     it('tag description', function() {
       comments.parseComment([
-          '/**',
-          ' * Prevents the default action. It is equivalent to',
-          ' * @param {!goog.events.Event} e An event.',
-          ' * {@code e.preventDefault()}, but can be used as the callback argument of',
-          ' * {@link goog.events.listen} without declaring another function.',
-          ' */'
-        ].join('\n'), {
-          unwrap: true,
-          sloppy: true
-        }).should.eql({
-          'description': 'Prevents the default action. It is equivalent to',
-          'tags': [{
-            'title': 'param',
-            'description': 'An event.\n{@code e.preventDefault()}, but can be used as the callback argument of\n{@link goog.events.listen} without declaring another function.',
-            'type': {
+        '/**',
+        ' * Prevents the default action. It is equivalent to',
+        ' * @param {!goog.events.Event} e An event.',
+        ' * {@code e.preventDefault()}, but can be used as the callback argument of',
+        ' * {@link goog.events.listen} without declaring another function.',
+        ' */'
+      ].join('\n'), {
+        unwrap: true,
+        sloppy: true
+      }).should.eql({
+        'description': 'Prevents the default action. It is equivalent to',
+        'tags': [{
+          'title': 'param',
+          'description': 'An event.\n{@code e.preventDefault()}, but can be used as the callback argument of\n{@link goog.events.listen} without declaring another function.',
+          'type': {
             'type': 'NonNullableType',
             'expression': {
               'type': 'NameExpression',
@@ -3117,17 +3115,15 @@ describe('parse tag', function() {
             },
             'prefix': true
           },
-            'name': 'e'
-          }]
-        });
+          'name': 'e'
+        }]
+      });
     });
   });
 
   describe('function', function() {
     it('recognize "function" type', function() {
-      var res = comments.parseComment([
-        '@param {function} foo description',
-      ].join('\n'), {});
+      var res = comments.parseComment('@param {function} foo description', {});
       res.tags.should.have.length(1);
       res.tags[0].should.have.property('title', 'param');
       res.tags[0].should.have.property('type');

@@ -2,7 +2,6 @@
 
 require('mocha');
 var assert = require('assert');
-var extract = require('extract-comments');
 var support = require('./support');
 var Comments = require('..');
 var comments;

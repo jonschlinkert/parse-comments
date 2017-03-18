@@ -2,10 +2,7 @@
 
 require('mocha');
 require('should');
-var fs = require('fs');
-var path = require('path');
 var assert = require('assert');
-var catharsis = require('catharsis');
 var doctrine = require('doctrine');
 var Comments = require('..');
 var comments;
@@ -665,7 +662,7 @@ describe('parse tag', function() {
         description: '[bye] hi'
       });
 
-      var res = comments.parse([
+      res = comments.parse([
         '/**',
         ' * @param userName',
         '*/'
@@ -680,7 +677,7 @@ describe('parse tag', function() {
         description: null
       });
 
-      var res = comments.parse([
+      res = comments.parse([
         '/**',
         ' * @param userName Something descriptive',
         '*/'
@@ -695,7 +692,7 @@ describe('parse tag', function() {
         description: 'Something descriptive'
       });
 
-      var res = comments.parse([
+      res = comments.parse([
         '/**',
         ' * @param user.name Something descriptive',
         '*/'
@@ -1566,7 +1563,7 @@ describe('parse tag', function() {
 
       // console.log(res2[0].tags[0].type)
       // console.log('---')
-      console.log(res[0].tags[0].type)
+      console.log(res[0].tags[0].type);
 
       // res[0].tags.should.have.length(2);
       res[0].tags[1].should.have.property('title', 'property');
@@ -1593,9 +1590,9 @@ describe('parse tag', function() {
       var res = comments.parse(fixture, {unwrap: true});
       var res2 = [doctrine.parse(fixture, {unwrap: true})];
 
-      console.log(res2[0].tags[0].type.elements)
-      console.log('---')
-      console.log(res[0].tags[0].type)
+      console.log(res2[0].tags[0].type.elements);
+      console.log('---');
+      console.log(res[0].tags[0].type);
 
       res[0].tags.should.have.length(1);
       // res[0].tags[0].should.have.property('title', 'typedef');

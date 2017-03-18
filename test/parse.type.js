@@ -4,7 +4,6 @@ require('mocha');
 require('should');
 var assert = require('assert');
 var doctrine = require('doctrine');
-var catharsis = require('catharsis');
 var parseType = require('../lib/parse/type');
 
 /**
@@ -36,19 +35,19 @@ describe('parse type', function() {
 
     it('should parse jsdoc "all" expressions', function() {
       assert.deepEqual(parseType('*'), {
-        type: 'AllLiteral',
+        type: 'AllLiteral'
       });
     });
 
     it('should parse jsdoc "?"', function() {
       assert.deepEqual(parseType('?'), {
-        type: 'NullableLiteral',
+        type: 'NullableLiteral'
       });
     });
 
     it('should parse jsdoc "!"', function() {
       assert.deepEqual(parseType('!'), {
-        type: 'NonNullableLiteral',
+        type: 'NonNullableLiteral'
       });
     });
 
@@ -695,19 +694,19 @@ describe('parse type', function() {
 
     it.skip('function type union', function() {
       var type = parseType('function(): ?|number');
-      // assert.deepEqual(type, {
-      //   type: 'UnionType',
-      //   elements: [{
-      //     type: 'FunctionType',
-      //     params: [],
-      //     result: {
-      //       type: 'NullableLiteral'
-      //     }
-      //   }, {
-      //     type: 'NameExpression',
-      //     name: 'number'
-      //   }]
-      // });
+      assert.deepEqual(type, {
+        type: 'UnionType',
+        elements: [{
+          type: 'FunctionType',
+          params: [],
+          result: {
+            type: 'NullableLiteral'
+          }
+        }, {
+          type: 'NameExpression',
+          name: 'number'
+        }]
+      });
     });
   });
 });

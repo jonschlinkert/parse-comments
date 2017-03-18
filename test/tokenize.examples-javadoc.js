@@ -20,7 +20,7 @@ describe('javadoc', function() {
       ' *',
       ' * @param {string} something',
       ' * @param {string} else',
-      ' */',
+      ' */'
     ].join('\n'));
 
     assert.deepEqual(tok, {
@@ -58,7 +58,7 @@ describe('javadoc', function() {
       ' *',
       ' * @param {string} something',
       ' * @param {string} else',
-      ' */',
+      ' */'
     ].join('\n'));
 
     assert.deepEqual(tok, {
@@ -97,7 +97,7 @@ describe('javadoc', function() {
       ' *',
       ' * @param {string} something',
       ' * @param {string} else',
-      ' */',
+      ' */'
     ].join('\n'));
 
     assert.deepEqual(tok, {
@@ -137,7 +137,7 @@ describe('javadoc', function() {
       ' *',
       ' * @param {string} something',
       ' * @param {string} else',
-      ' */',
+      ' */'
     ].join('\n'));
 
     assert.deepEqual(tok, {

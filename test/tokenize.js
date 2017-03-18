@@ -64,7 +64,7 @@ describe('tokenize', function() {
       ' *      ',
       ' *      @param {string} something',
       ' *      @param {string} else',
-      ' */',
+      ' */'
     ].join('\n'));
 
     assert.deepEqual(tok, {
@@ -96,7 +96,7 @@ describe('tokenize', function() {
       ' ',
       ' @param {string} something',
       ' @param {string} else',
-      '',
+      ''
     ].join('\n'));
 
     assert.deepEqual(tok1, {
@@ -124,7 +124,7 @@ describe('tokenize', function() {
       '',
       '',
       '@param {string} something',
-      '@param {string} else',
+      '@param {string} else'
     ].join('\n'));
 
     assert.deepEqual(tok2, {
@@ -163,7 +163,6 @@ describe('tokenize', function() {
       tags: []
     });
   });
-
 
   it('should tokenize a comment with a tag', function() {
     var tok = comments.tokenize('/* foo\nbar\nbaz\n * \n@param {string} something */');

@@ -24,7 +24,7 @@ describe('gfm', function() {
       ' *',
       ' * @param {string} something',
       ' * @param {string} else',
-      ' */',
+      ' */'
     ].join('\n'));
 
     assert.deepEqual(tok, {
@@ -68,7 +68,7 @@ describe('gfm', function() {
       ' *',
       ' * @param {string} something',
       ' * @param {string} else',
-      ' */',
+      ' */'
     ].join('\n'));
 
     assert.deepEqual(tok, {
@@ -113,7 +113,7 @@ describe('gfm', function() {
       ' *',
       ' * @param {string} something',
       ' * @param {string} else',
-      ' */',
+      ' */'
     ].join('\n'));
 
     assert.deepEqual(tok, {
@@ -159,7 +159,7 @@ describe('gfm', function() {
       ' *',
       ' * @param {string} something',
       ' * @param {string} else',
-      ' */',
+      ' */'
     ].join('\n'));
 
     assert.deepEqual(tok, {
@@ -203,7 +203,7 @@ describe('gfm', function() {
       ' * ```',
       ' * @param {string} something',
       ' * @param {string} else',
-      ' */',
+      ' */'
     ].join('\n'));
 
     assert.deepEqual(tok, {
