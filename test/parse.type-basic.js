@@ -5,11 +5,11 @@ var assert = require('assert');
 var doctrine = require('doctrine');
 var catharsis = require('catharsis');
 var doctrine = require('doctrine');
-var parseTypes = require('../lib/parse/types');
+var parseTypes = require('../lib/parse/type');
 
 function parse(str, options) {
   var tag = {};
-  tag.types = parseTypes(tag, str, options);
+  tag.types = parseTypes(str, tag, options);
   return tag;
 }
 

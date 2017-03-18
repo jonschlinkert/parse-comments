@@ -1,21 +1,16 @@
 'use strict';
 
-var util = require('util');
 var get = require('get-value');
 var set = require('set-value');
-var union = require('union-value');
-var isObject = require('isobject');
 var Snapdragon = require('snapdragon');
 var Emitter = require('component-emitter');
-var extract = require('extract-comments');
 var define = require('define-property');
 var extend = require('extend-shallow');
+var extract = require('extract-comments');
 var tokenize = require('tokenize-comment');
-var tokenizeTag = require('./lib/tokenize/tag');
-var parseTypes = require('./lib/parse/types');
-var tags = require('./lib/parse/tags');
+var parseType = require('./lib/parse/type');
+var parseTag = require('./lib/parse/tag');
 var utils = require('./lib/utils');
-var schema = {};
 
 /**
  * Create an instance of `Comments` with the given `options`.
@@ -26,13 +21,13 @@ var schema = {};
 
 function Comments(options) {
   if (typeof options === 'string') {
-    let proto = Object.create(Comments.prototype);
+    var proto = Object.create(Comments.prototype);
     Comments.call(proto);
     return proto.render.apply(proto, arguments);
   }
 
   if (!(this instanceof Comments)) {
-    let proto = Object.create(Comments.prototype);
+    var proto = Object.create(Comments.prototype);
     Comments.call(proto);
     return proto;
   }
@@ -175,7 +170,7 @@ Comments.prototype.set = function(type, fn) {
  */
 
 Comments.prototype.before = function(type, fn) {
-  if (isObject(type)) {
+  if (utils.isObject(type)) {
     for (var key in type) {
       if (type.hasOwnProperty(key)) {
         this.before(key, type[key]);
@@ -222,7 +217,7 @@ Comments.prototype.before = function(type, fn) {
  */
 
 Comments.prototype.after = function(type, fn) {
-  if (isObject(type)) {
+  if (utils.isObject(type)) {
     for (var key in type) {
       if (type.hasOwnProperty(key)) {
         this.after(key, type[key]);
@@ -287,7 +282,7 @@ Comments.prototype.tokenize = function(str, options) {
  *
  * ```js
  * var parser = new ParseComments();
- * var comments = parser.parse([string]);
+ * var comments = parser.parse(string);
  * ```
  * @param {String} `str` String of javascript
  * @param {Object} `options`
@@ -296,32 +291,59 @@ Comments.prototype.tokenize = function(str, options) {
  */
 
 Comments.prototype.parse = function(str, options) {
-  let opts = extend({}, this.options, options);
-
   return this.extract(str, options, function(comment) {
-    let tok = this.tokenize(comment.val, opts);
-    this.tokens.push(tok);
-
-    comment = extend({}, comment, tok);
-    let tags = [];
-
-    for (let i = 0; i < comment.tags.length; i++) {
-      let raw = comment.tags[i];
-      let tag = this.parseTag(raw, opts);
-      if (tag) {
-        define(tag, 'raw', raw);
-        tags.push(tag);
-      }
-    }
-
-    comment.tags = tags;
-
-    let name = get(comment, 'code.context.name');
-    if (name) {
-      set(this.cache, name, comment);
-    }
-    return comment;
+    return this.parseComment(comment, options);
   });
+};
+
+/**
+ * Parse a single code comment.
+ *
+ * ```js
+ * var parser = new ParseComments();
+ * var comments = parser.parseComment(string);
+ * ```
+ * @param {String} `str` JavaScript comment
+ * @param {Object} `options`
+ * @return {Object} Parsed comment object
+ * @api public
+ */
+
+Comments.prototype.parseComment = function(comment, options) {
+  var opts = extend({}, this.options, options);
+  var parsers = extend({}, this.parsers, opts.parse);
+
+  if (typeof parsers.comment === 'function') {
+    return parsers.comment.call(this, comment, opts);
+  }
+
+  if (typeof comment === 'string') {
+    return this.parse.apply(this, arguments)[0];
+  }
+
+  var tok = this.tokenize(comment.val, opts);
+  this.tokens.push(tok);
+
+  comment = extend({}, comment, tok);
+  var tags = [];
+
+  for (var i = 0; i < comment.tags.length; i++) {
+    var raw = comment.tags[i];
+    var tag = this.parseTag(raw, opts);
+
+    if (tag) {
+      define(tag, 'raw', raw);
+      tags.push(tag);
+    }
+  }
+
+  comment.tags = tags;
+
+  var name = get(comment, 'code.context.name');
+  if (name) {
+    set(this.cache, name, comment);
+  }
+  return comment;
 };
 
 /**
@@ -341,8 +363,8 @@ Comments.prototype.parse = function(str, options) {
  */
 
 Comments.prototype.parseTag = function(tok, options) {
-  let opts = extend({}, this.options, options);
-  let parsers = extend({}, this.parsers, opts.parsers);
+  var opts = extend({}, this.options, options);
+  var parsers = extend({}, this.parsers, opts.parse);
 
   if (typeof tok === 'string') {
     tok = { raw: tok, val: tok };
@@ -352,8 +374,13 @@ Comments.prototype.parseTag = function(tok, options) {
     return parsers.tag.call(this, tok.raw, opts);
   }
 
-  var tag = tokenizeTag(tok);
-  tag.type = this.parseTypes(tag.rawType);
+  var tag = parseTag(tok);
+  if (tag && tag.invalid === true) {
+    return null;
+  }
+  if (tag && tag.rawType) {
+    tag.type = this.parseType(tag.rawType.slice(1, -1));
+  }
   return tag;
 };
 
@@ -372,16 +399,34 @@ Comments.prototype.parseTag = function(tok, options) {
  * @api public
  */
 
-Comments.prototype.parseTypes = function(val, tag, options) {
+Comments.prototype.parseType = function(val, tag, options) {
   if (typeof val !== 'string') {
     throw new TypeError('expected a string');
   }
 
-  if (typeof this.parsers.types === 'function') {
-    return this.parsers.types.call(this, tag);
+  var opts = extend({}, this.options, options);
+  var parsers = extend({}, this.parsers, opts.parse);
+
+  if (typeof parsers.type === 'function') {
+    return parsers.type.call(this, val, tag, opts);
   }
 
-  return parseTypes(tag, val, options);
+  return parseType(val, tag, options);
+};
+
+Comments.prototype.parseParamType = function(str, options) {
+  if (typeof str !== 'string') {
+    throw new TypeError('expected a string');
+  }
+
+  var opts = extend({}, this.options, options);
+  var parsers = extend({}, this.parsers, opts.parse);
+
+  if (typeof parsers.paramType === 'function') {
+    return parsers.paramType.call(this, str, opts);
+  }
+
+  return str;
 };
 
 Comments.prototype.decorate = function(name, obj) {
@@ -398,80 +443,46 @@ Comments.prototype.extract = function(str, options, fn) {
   }
 
   var opts = extend({}, this.options, options);
-  var extractFn = opts.extractFn || extract;
-  var comments = extractFn(str, opts);
+  var comments = [];
+  var res = [];
+
+  if (typeof opts.extract === 'function') {
+    comments = utils.arrayify(opts.extract.call(this, str, opts));
+  } else {
+    comments = extract(str, opts);
+  }
 
   for (var i = 0; i < comments.length; i++) {
-    var comment = comments[i];
-
-    if (this.isValid(comment) === false) {
+    if (this.isValid(comments[i]) === false) {
       continue;
     }
 
-    var token = utils.copyNode(comment);
-    token.code = utils.copyNode(comment.code);
-    token.code.context = utils.copyNode(comment.code.context);
+    var comment = this.normalize(comments[i]);
 
     if (typeof fn === 'function') {
-      comments[i] = fn.call(this, token) || token;
+      comment = fn.call(this, comment) || comment;
     } else {
-      comments[i] = token;
+      comment = comment;
     }
 
-    this.emit('token', token);
+    this.emit('comment', comment);
+    res.push(comment);
   }
 
-  return comments;
+  return res;
 };
 
-Comments.prototype.field = function(name) {
-  var field = schema[this.defaultName(name)];
-  if (typeof field === 'undefined') {
-    throw new Error(`field "${key}" does not exist`);
+Comments.prototype.normalize = function(comment, options) {
+  var opts = extend({}, this.options, options);
+
+  if (typeof opts.normalize === 'function') {
+    return opts.normalize.call(this, comment, opts);
   }
-  return field;
-};
 
-Comments.prototype.expects = function(key, val) {
-  return this.field(name).expects(val);
-};
-
-Comments.prototype.allows = function(key, val) {
-  return this.field(name).allows(val);
-};
-
-Comments.prototype.isValid = function(key, val) {
-  return this.field(name).isValid(val);
-};
-
-Comments.prototype.normalize = function(key, val) {
-  return this.field(name).normalize(val);
-};
-
-Comments.prototype.defaultName = function(name) {
-  switch (name) {
-    case 'return':
-    case 'returns':
-      return 'returns';
-
-    case 'prop':
-    case 'property':
-    case 'arg':
-    case 'argument':
-      return 'prop';
-
-    case 'ctor':
-    case 'constructor':
-      return 'ctor';
-
-    case 'proto':
-    case 'prototype':
-      return 'ptype';
-
-    default: {
-      return name;
-    }
-  }
+  var newComment = utils.copyNode(comment);
+  newComment.code = utils.copyNode(comment.code);
+  newComment.code.context = utils.copyNode(comment.code.context);
+  return newComment;
 };
 
 /**
@@ -487,7 +498,7 @@ Comments.prototype.defaultName = function(name) {
  */
 
 Comments.prototype.isValid = function(comment, options) {
-  if (!isObject(comment)) {
+  if (!utils.isObject(comment)) {
     throw new TypeError('expected comment to be an object');
   }
 
@@ -496,9 +507,12 @@ Comments.prototype.isValid = function(comment, options) {
     return opts.isValid(comment);
   }
 
-  if (comment.type !== 'block' || comment.raw.charAt(0) !== '*') {
-    return false;
+  if (opts.allowSingleStar !== true) {
+    if (comment.type !== 'block' || comment.raw.charAt(0) !== '*') {
+      return false;
+    }
   }
+
   if (comment.raw.charAt(1) === '!') {
     return false;
   }
