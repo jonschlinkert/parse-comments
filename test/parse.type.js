@@ -147,7 +147,7 @@ describe('parse type', function() {
       });
     });
 
-    it.only('type application', function() {
+    it('type application', function() {
       var type = parseType('Array.<String>');
       assert.deepEqual(type, {
         type: 'TypeApplication',
@@ -246,6 +246,7 @@ describe('parse type', function() {
         'result': null
       });
     });
+
     it('function type with name and type', function() {
       var type = parseType('function(a:b)');
       assert.deepEqual(type, {
@@ -263,6 +264,7 @@ describe('parse type', function() {
         'result': null
       });
     });
+
     it('function type with optional param', function() {
       var type = parseType('function(a=)');
       assert.deepEqual(type, {
@@ -279,6 +281,7 @@ describe('parse type', function() {
         'result': null
       });
     });
+
     it('function type with optional param name and type', function() {
       var type = parseType('function(a:b=)');
       assert.deepEqual(type, {
@@ -299,6 +302,7 @@ describe('parse type', function() {
         'result': null
       });
     });
+
     it('function type with rest param', function() {
       var type = parseType('function(...a)');
       assert.deepEqual(type, {
@@ -315,6 +319,7 @@ describe('parse type', function() {
         'result': null
       });
     });
+
     it('function type with rest param name and type', function() {
       var type = parseType('function(...a:b)');
       assert.deepEqual(type, {
@@ -678,7 +683,7 @@ describe('parse type', function() {
       });
     });
 
-    it('function option parameters latter', function() {
+    it.only('function option parameters latter', function() {
       var type = parseType('function(number, ?)');
       assert.deepEqual(type, {
         type: 'FunctionType',
