@@ -13,7 +13,7 @@ var validate = require('./lib/validate');
 var allows = require('./lib/allows');
 var expects = require('./lib/expects');
 var parseName = require('./lib/parse/name');
-var parseType = require('./lib/parse/type');
+var parseType = require('./lib/parse/typed');
 var parseTag = require('./lib/parse/tag');
 var utils = require('./lib/utils');
 
@@ -384,7 +384,7 @@ Comments.prototype.parseTag = function(tok, options) {
     return;
   }
 
-  if (tag && tag.rawType) {
+  if (tag.rawType) {
     if (!allows.type(tok)) {
       return;
     }

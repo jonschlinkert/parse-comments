@@ -4,7 +4,7 @@ require('mocha');
 require('should');
 var assert = require('assert');
 var doctrine = require('doctrine');
-var parseType = require('../lib/parse/type');
+var parseType = require('../lib/parse/typed');
 
 describe('parse type', function() {
   describe('empty', function() {
@@ -749,16 +749,19 @@ describe('parse type', function() {
       var type = parseType('function(): ?|number');
       assert.deepEqual(type, {
         type: 'UnionType',
-        elements: [{
-          type: 'FunctionType',
-          params: [],
-          result: {
-            type: 'NullableLiteral'
+        elements: [
+          {
+            type: 'FunctionType',
+            params: [],
+            result: {
+              type: 'NullableLiteral'
+            }
+          },
+          {
+            type: 'NameExpression',
+            name: 'number'
           }
-        }, {
-          type: 'NameExpression',
-          name: 'number'
-        }]
+        ]
       });
     });
   });

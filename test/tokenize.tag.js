@@ -6,8 +6,8 @@ var tag = require('../lib/parse/tag');
 
 describe('tokenize-tag', function() {
   it('should return null when an empty string is passed', function() {
-    assert.deepEqual(tag(''), null);
-    assert.deepEqual(tag(' '), null);
+    assert.deepEqual(tag(''), { description: '', rawType: '', name: '' });
+    assert.deepEqual(tag(' '), { description: '', rawType: '', name: '' });
   });
 
   it('should tokenize type', function() {

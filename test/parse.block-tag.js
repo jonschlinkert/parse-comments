@@ -779,6 +779,30 @@ describe('parse tag', function() {
       res[0].tags.should.be.empty;
     });
 
+    it('param multiple', function() {
+      var res = comments.parse([
+        '/**',
+        ' * @param {string|array|function} foo',
+        '*/'
+      ].join('\n'), {
+        unwrap: true
+      });
+
+      assert.deepEqual(res[0].tags[0].type, {
+        type: 'UnionType',
+        elements: [{
+          type: 'NameExpression',
+          name: 'string'
+        }, {
+          type: 'NameExpression',
+          name: 'array'
+        }, {
+          type: 'NameExpression',
+          name: 'function'
+        }]
+      });
+    });
+
     it('param multiple lines', function() {
       var res = comments.parse([
         '/**',
@@ -1474,6 +1498,37 @@ describe('parse tag', function() {
       res[0].tags[0].should.have.property('name', 'thingName.name');
     });
 
+    it('this with multiple application types', function() {
+      var res = comments.parse([
+        '/**',
+        ' * @this {Array<string, object>} foo',
+        '*/'
+      ].join('\n'), {
+        unwrap: true,
+        recoverable: true
+      });
+
+      res[0].tags.should.have.length(1);
+      res[0].tags[0].should.have.property('title', 'this');
+      assert.deepEqual(res[0].tags[0].type, {
+        'type': 'TypeApplication',
+        'applications': [
+          {
+            'name': 'string',
+            'type': 'NameExpression'
+          },
+          {
+            'name': 'object',
+            'type': 'NameExpression'
+          }
+        ],
+        'expression': {
+          'name': 'Array',
+          'type': 'NameExpression'
+        }
+      });
+    });
+
     it('this error with type application', function() {
       var res = comments.parse([
         '/**',
@@ -1641,60 +1696,58 @@ describe('parse tag', function() {
       });
     });
 
-    it.only('complex union with literal types', function() {
-      var res = doctrine.parse([
+    it('complex union with literal types', function() {
+      var res = comments.parse([
         '/**',
         ' * @typedef {({ok: true, data: string} | {ok: false, error: Error})} Result',
         '*/'
       ].join('\n'), {unwrap: true});
 
-      console.log(util.inspect(res.tags, {depth: null}))
+      res[0].tags.should.have.length(1);
+      res[0].tags[0].should.have.property('title', 'typedef');
+      res[0].tags[0].should.have.property('name', 'Result');
+      res[0].tags[0].type.should.have.property('type', 'UnionType');
+      res[0].tags[0].type.elements.should.have.length(2);
 
-    //   res[0].tags.should.have.length(1);
-    //   res[0].tags[0].should.have.property('title', 'typedef');
-    //   res[0].tags[0].should.have.property('name', 'Result');
-    //   res[0].tags[0].type.should.have.property('type', 'UnionType');
-    //   res[0].tags[0].type.elements.should.have.length(2);
+      var e0 = res[0].tags[0].type.elements[0];
+      e0.should.have.property('type', 'RecordType');
+      e0.fields.should.have.length(2);
+      assert.deepEqual(e0.fields[0], {
+        type: 'FieldType',
+        key: 'ok',
+        value: {
+          type: 'BooleanLiteralType',
+          value: true
+        }
+      });
+      assert.deepEqual(e0.fields[1], {
+        type: 'FieldType',
+        key: 'data',
+        value: {
+          type: 'NameExpression',
+          name: 'string'
+        }
+      });
 
-    //   var e0 = res[0].tags[0].type.elements[0];
-    //   e0.should.have.property('type', 'RecordType');
-    //   e0.fields.should.have.length(2);
-    //   e0.fields.should.containEql({
-    //     type: 'FieldType',
-    //     key: 'ok',
-    //     value: {
-    //       type: 'BooleanLiteralType',
-    //       value: true
-    //     }
-    //   });
-    //   e0.fields.should.containEql({
-    //     type: 'FieldType',
-    //     key: 'data',
-    //     value: {
-    //       type: 'NameExpression',
-    //       name: 'string'
-    //     }
-    //   });
-
-    //   var e1 = res[0].tags[0].type.elements[1];
-    //   e1.should.have.property('type', 'RecordType');
-    //   e1.fields.should.have.length(2);
-    //   e1.fields.should.containEql({
-    //     type: 'FieldType',
-    //     key: 'ok',
-    //     value: {
-    //       type: 'BooleanLiteralType',
-    //       value: false
-    //     }
-    //   });
-    //   e1.fields.should.containEql({
-    //     type: 'FieldType',
-    //     key: 'error',
-    //     value: {
-    //       type: 'NameExpression',
-    //       name: 'Error'
-    //     }
-    //   });
+      var e1 = res[0].tags[0].type.elements[1];
+      e1.should.have.property('type', 'RecordType');
+      e1.fields.should.have.length(2);
+      assert.deepEqual(e1.fields[0], {
+        type: 'FieldType',
+        key: 'ok',
+        value: {
+          type: 'BooleanLiteralType',
+          value: false
+        }
+      });
+      assert.deepEqual(e1.fields[1], {
+        type: 'FieldType',
+        key: 'error',
+        value: {
+          type: 'NameExpression',
+          name: 'Error'
+        }
+      });
     });
   });
 });
