@@ -8,6 +8,11 @@ var define = require('define-property');
 var extend = require('extend-shallow');
 var extract = require('extract-comments');
 var tokenize = require('tokenize-comment');
+var normalize = require('./lib/normalize');
+var validate = require('./lib/validate');
+var allows = require('./lib/allows');
+var expects = require('./lib/expects');
+var parseName = require('./lib/parse/name');
 var parseType = require('./lib/parse/type');
 var parseTag = require('./lib/parse/tag');
 var utils = require('./lib/utils');
@@ -330,11 +335,11 @@ Comments.prototype.parseComment = function(comment, options) {
   for (var i = 0; i < comment.tags.length; i++) {
     var raw = comment.tags[i];
     var tag = this.parseTag(raw, opts);
+    if (!tag) continue;
 
-    if (tag) {
-      define(tag, 'raw', raw);
-      tags.push(tag);
-    }
+    define(tag, 'rawType', tag.rawType);
+    define(tag, 'raw', raw);
+    tags.push(tag);
   }
 
   comment.tags = tags;
@@ -375,12 +380,27 @@ Comments.prototype.parseTag = function(tok, options) {
   }
 
   var tag = parseTag(tok);
-  if (tag && tag.invalid === true) {
-    return null;
+  if (!tag) {
+    return;
   }
+
   if (tag && tag.rawType) {
-    tag.type = this.parseType(tag.rawType.slice(1, -1));
+    if (!allows.type(tok)) {
+      return;
+    }
+
+    tag.type = this.parseType(tag.rawType.slice(1, -1), tag, options);
   }
+
+  if (tag && expects.type(tag) && !tag.type) {
+    if (opts.strict === true) {
+      return;
+    }
+    tag.type = null;
+  }
+
+  tag = normalize.tag(tag, opts);
+  tag = validate.tag(tag, opts);
   return tag;
 };
 
@@ -453,12 +473,11 @@ Comments.prototype.extract = function(str, options, fn) {
   }
 
   for (var i = 0; i < comments.length; i++) {
-    if (this.isValid(comments[i]) === false) {
+    if (this.isValid(comments[i], options) === false) {
       continue;
     }
 
-    var comment = this.normalize(comments[i]);
-
+    var comment = this.normalize(comments[i], options);
     if (typeof fn === 'function') {
       comment = fn.call(this, comment) || comment;
     } else {

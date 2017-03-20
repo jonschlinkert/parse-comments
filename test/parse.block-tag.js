@@ -2,6 +2,7 @@
 
 require('mocha');
 require('should');
+var util = require('util');
 var assert = require('assert');
 var doctrine = require('doctrine');
 var Comments = require('..');
@@ -16,6 +17,14 @@ describe('parse tag', function() {
     it('alias', function() {
       var res = comments.parse('/** @alias */', {
         unwrap: true
+      });
+      res[0].tags.should.have.length(1);
+    });
+
+    it('alias (strict)', function() {
+      var res = comments.parse('/** @alias */', {
+        unwrap: true,
+        strict: true
       });
       res[0].tags.should.have.length(0);
     });
@@ -83,15 +92,14 @@ describe('parse tag', function() {
     });
 
     it('const with type and name', function() {
-      var res = comments.parse('/** @const {String|Array} constname */', {
+      var res = comments.parse('/** @const {String} constname */', {
         unwrap: true
       });
-
       res[0].tags.should.have.length(1);
       res[0].tags[0].should.have.property('title', 'const');
       res[0].tags[0].should.have.property('name', 'constname');
       res[0].tags[0].should.have.property('type');
-      res[0].tags[0].type[0].should.eql({
+      assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'String'
       });
@@ -101,11 +109,12 @@ describe('parse tag', function() {
       var res = comments.parse('/** @Const {String} constname */', {
         unwrap: true
       });
+
       res[0].tags.should.have.length(1);
       res[0].tags[0].should.have.property('title', 'Const');
       res[0].tags[0].should.have.property('name', 'constname');
       res[0].tags[0].should.have.property('type');
-      res[0].tags[0].type[0].should.eql({
+      assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'String'
       });
@@ -119,7 +128,7 @@ describe('parse tag', function() {
       res[0].tags[0].should.have.property('title', 'constant');
       res[0].tags[0].should.have.property('name', 'constname');
       res[0].tags[0].should.have.property('type');
-      res[0].tags[0].type[0].should.eql({
+      assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'String'
       });
@@ -173,7 +182,7 @@ describe('parse tag', function() {
       });
       res[0].tags.should.have.length(1);
       res[0].tags[0].should.have.property('title', 'constructor');
-      res[0].tags[0].type[0].should.eql({
+      assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'Object'
       });
@@ -186,7 +195,7 @@ describe('parse tag', function() {
       res[0].tags.should.have.length(1);
       res[0].tags[0].should.have.property('title', 'constructor');
       res[0].tags[0].should.have.property('name', 'objName');
-      res[0].tags[0].type[0].should.eql({
+      assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'Object'
       });
@@ -206,7 +215,7 @@ describe('parse tag', function() {
       });
       res[0].tags.should.have.length(1);
       res[0].tags[0].should.have.property('title', 'class');
-      res[0].tags[0].type[0].should.eql({
+      assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'Object'
       });
@@ -219,7 +228,7 @@ describe('parse tag', function() {
       res[0].tags.should.have.length(1);
       res[0].tags[0].should.have.property('title', 'class');
       res[0].tags[0].should.have.property('name', 'objName');
-      res[0].tags[0].type[0].should.eql({
+      assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'Object'
       });
@@ -231,10 +240,8 @@ describe('parse tag', function() {
       });
       res[0].tags.should.have.length(1);
       res[0].tags[0].should.have.property('title', 'deprecated');
-    });
 
-    it('deprecated', function() {
-      var res = comments.parse('/** @deprecated some text here describing why it is deprecated */', {
+      res = comments.parse('/** @deprecated some text here describing why it is deprecated */', {
         unwrap: true
       });
       res[0].tags.should.have.length(1);
@@ -317,7 +324,7 @@ describe('parse tag', function() {
       res[0].tags[0].should.have.property('title', 'member');
       res[0].tags[0].should.have.property('name', 'thingName.name');
       res[0].tags[0].should.have.property('type');
-      res[0].tags[0].type[0].should.eql({
+      assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'Object'
       });
@@ -351,6 +358,14 @@ describe('parse tag', function() {
     it('mixes', function() {
       var res = comments.parse('/** @mixes */', {
         unwrap: true
+      });
+      res[0].tags.should.have.length(1);
+    });
+
+    it('mixes (strict)', function() {
+      var res = comments.parse('/** @mixes */', {
+        unwrap: true,
+        strict: true
       });
       res[0].tags.should.have.length(0);
     });
@@ -433,7 +448,7 @@ describe('parse tag', function() {
       res[0].tags[0].should.have.property('title', 'module');
       res[0].tags[0].should.have.property('name', 'thingName.name');
       res[0].tags[0].should.have.property('type');
-      res[0].tags[0].type[0].should.eql({
+      assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'Object'
       });
@@ -508,7 +523,7 @@ describe('parse tag', function() {
       res[0].tags[0].should.have.property('title', 'namespace');
       res[0].tags[0].should.have.property('name', 'thingName.name');
       res[0].tags[0].should.have.property('type');
-      res[0].tags[0].type[0].should.eql({
+      assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'Object'
       });
@@ -527,7 +542,7 @@ describe('parse tag', function() {
       res[0].tags[0].should.have.property('title', 'param');
       res[0].tags[0].should.have.property('name', 'userName');
       res[0].tags[0].should.have.property('type');
-      assert.deepEqual(res[0].tags[0].type[0], {
+      assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'String'
       });
@@ -545,7 +560,7 @@ describe('parse tag', function() {
       res[0].tags[0].should.have.property('title', 'param');
       res[0].tags[0].should.have.property('name', 'user.name');
       res[0].tags[0].should.have.property('type');
-      res[0].tags[0].type[0].should.eql({
+      assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'String'
       });
@@ -564,7 +579,7 @@ describe('parse tag', function() {
       res[0].tags[0].should.have.property('name', 'user.name');
       res[0].tags[0].should.have.property('description', 'hi');
       res[0].tags[0].should.have.property('type');
-      res[0].tags[0].type[0].should.eql({
+      assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'String'
       });
@@ -583,7 +598,7 @@ describe('parse tag', function() {
       res[0].tags[0].should.have.property('name', 'employee[].name');
       res[0].tags[0].should.have.property('description', 'hi');
       res[0].tags[0].should.have.property('type');
-      res[0].tags[0].type[0].should.eql({
+      assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'string'
       });
@@ -600,9 +615,9 @@ describe('parse tag', function() {
       res[0].tags.should.have.length(1);
       res[0].tags[0].should.have.property('title', 'param');
       res[0].tags[0].should.have.property('name', 'employee[].name');
-      res[0].tags[0].should.have.property('description', null);
+      res[0].tags[0].should.have.property('description', '');
       res[0].tags[0].should.have.property('type');
-      res[0].tags[0].type[0].should.eql({
+      assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'string'
       });
@@ -620,7 +635,7 @@ describe('parse tag', function() {
       res[0].tags[0].should.have.property('title', 'arg');
       res[0].tags[0].should.have.property('name', 'user.name');
       res[0].tags[0].should.have.property('type');
-      res[0].tags[0].type[0].should.eql({
+      assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'String'
       });
@@ -638,7 +653,7 @@ describe('parse tag', function() {
       res[0].tags[0].should.have.property('title', 'argument');
       res[0].tags[0].should.have.property('name', 'user.name');
       res[0].tags[0].should.have.property('type');
-      res[0].tags[0].type[0].should.eql({
+      assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'String'
       });
@@ -651,13 +666,13 @@ describe('parse tag', function() {
         '*/'
       ].join('\n'), {
         unwrap: true,
-        sloppy: true
+        strict: false
       });
 
       res[0].tags.should.have.length(1);
       res[0].tags[0].should.eql({
         title: 'param',
-        type: undefined,
+        type: null,
         name: 'something',
         description: '[bye] hi'
       });
@@ -674,7 +689,7 @@ describe('parse tag', function() {
         title: 'param',
         type: null,
         name: 'userName',
-        description: null
+        description: ''
       });
 
       res = comments.parse([
@@ -722,7 +737,7 @@ describe('parse tag', function() {
       res[0].tags[0].should.have.property('title', 'param');
       res[0].tags[0].should.have.property('name', 'userName');
       res[0].tags[0].should.have.property('type');
-      res[0].tags[0].type[0].should.eql({
+      assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'String'
       });
@@ -740,7 +755,7 @@ describe('parse tag', function() {
       res[0].tags[0].should.have.property('title', 'param');
       res[0].tags[0].should.have.property('name', 'userName');
       res[0].tags[0].should.have.property('type');
-      res[0].tags[0].type[0].should.eql({
+      assert.deepEqual(res[0].tags[0].type, {
         type: 'RecordType',
         fields: [{
           type: 'FieldType',
@@ -778,7 +793,7 @@ describe('parse tag', function() {
       res[0].tags[0].should.have.property('title', 'param');
       res[0].tags[0].should.have.property('name', 'userName');
       res[0].tags[0].should.have.property('type');
-      res[0].tags[0].type[0].should.eql({
+      assert.deepEqual(res[0].tags[0].type, {
         type: 'UnionType',
         elements: [{
           type: 'NameExpression',
@@ -814,7 +829,7 @@ describe('parse tag', function() {
         unwrap: true
       });
       res[0].tags.should.have.length(1);
-      res[0].tags[0].should.eql({
+      assert.deepEqual(res[0].tags[0], {
         title: 'param',
         type: {
           type: 'NameExpression',
@@ -834,14 +849,14 @@ describe('parse tag', function() {
         unwrap: true
       });
       res[0].tags.should.have.length(1);
-      res[0].tags[0].should.eql({
+      assert.deepEqual(res[0].tags[0], {
         title: 'param',
         type: {
           type: 'NameExpression',
           name: 'string'
         },
         name: 'name',
-        description: '  description'
+        description: 'description'
       });
     });
 
@@ -862,20 +877,21 @@ describe('parse tag', function() {
       res[0].tags[0].should.have.property('title', 'param');
       res[0].tags[0].should.have.property('name', 'name');
       res[0].tags[0].should.have.property('type');
-      res[0].tags[0].type[0].should.eql({
+      assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'string'
       });
       res[0].tags[0].should.have.property('description', 'description');
     });
 
-    it.skip('regular block comment instead of jsdoc-style block comment', function() {
+    it('regular block comment instead of jsdoc-style block comment', function() {
       var res = comments.parse([
         '/*',
         ' * Description',
         ' * blah blah blah',
         '*/'
       ].join('\n'), {
+        allowSingleStar: true,
         unwrap: true
       });
 
@@ -902,15 +918,16 @@ describe('parse tag', function() {
       var res = comments.parse('/** @augments {ClassName} */', {
         unwrap: true
       });
+
       res[0].tags.should.have.length(1);
       res[0].tags[0].should.have.property('title', 'augments');
-      res[0].tags[0].should.have.property('type', {
+      assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'ClassName'
       });
     });
 
-    it('augments with name', function() {
+    it('augments with dot-notation name', function() {
       var res = comments.parse('/** @augments ClassName.OK */', {
         unwrap: true
       });
@@ -941,7 +958,7 @@ describe('parse tag', function() {
       });
       res[0].tags.should.have.length(1);
       res[0].tags[0].should.have.property('title', 'extends');
-      res[0].tags[0].should.have.property('type', {
+      assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'ClassName'
       });
@@ -976,7 +993,7 @@ describe('parse tag', function() {
       res[0].tags.should.have.length(1);
       res[0].tags[0].should.have.property('title', 'prop');
       res[0].tags[0].should.have.property('description', 'does some stuff');
-      res[0].tags[0].type[0].should.have.property('name', 'string');
+      res[0].tags[0].type.should.have.property('name', 'string');
       res[0].tags[0].should.have.property('name', 'thingName');
     });
 
@@ -988,6 +1005,18 @@ describe('parse tag', function() {
       ].join('\n'), {
         unwrap: true
       });
+
+      res[0].tags.should.have.length(1);
+
+      res = comments.parse([
+        '/**',
+        ' * @prop thingName - does some stuff',
+        '*/'
+      ].join('\n'), {
+        unwrap: true,
+        strict: true
+      });
+
       res[0].tags.should.have.length(0);
     });
 
@@ -1002,7 +1031,7 @@ describe('parse tag', function() {
       res[0].tags.should.have.length(1);
       res[0].tags[0].should.have.property('title', 'property');
       res[0].tags[0].should.have.property('description', 'does some stuff');
-      res[0].tags[0].type[0].should.have.property('name', 'string');
+      res[0].tags[0].type.should.have.property('name', 'string');
       res[0].tags[0].should.have.property('name', 'thingName');
     });
 
@@ -1012,7 +1041,8 @@ describe('parse tag', function() {
         ' * @property thingName - does some stuff',
         '*/'
       ].join('\n'), {
-        unwrap: true
+        unwrap: true,
+        strict: true
       });
 
       res[0].tags.should.have.length(0);
@@ -1027,12 +1057,12 @@ describe('parse tag', function() {
           '*/'
         ].join('\n'), {
           unwrap: true,
-          sloppy: true
+          strict: false
         });
 
       res[0].tags[1].should.have.property('title', 'property');
       res[0].tags[1].should.have.property('type');
-      res[0].tags[1]['type'].should.have.property('type', 'OptionalType');
+      assert.equal(res[0].tags[1].type.type, 'OptionalType');
     });
 
     it('property with nested name', function() {
@@ -1046,7 +1076,7 @@ describe('parse tag', function() {
       res[0].tags.should.have.length(1);
       res[0].tags[0].should.have.property('title', 'property');
       res[0].tags[0].should.have.property('description', 'does some stuff');
-      res[0].tags[0].type[0].should.have.property('name', 'string');
+      res[0].tags[0].type.should.have.property('name', 'string');
       res[0].tags[0].should.have.property('name', 'thingName.name');
     });
 
@@ -1061,7 +1091,7 @@ describe('parse tag', function() {
       res[0].tags.should.have.length(1);
       res[0].tags[0].should.have.property('title', 'throws');
       res[0].tags[0].should.have.property('description', 'if something goes wrong');
-      res[0].tags[0].type[0].should.have.property('name', 'Error');
+      res[0].tags[0].type.should.have.property('name', 'Error');
     });
 
     it('throws without type', function() {
@@ -1094,7 +1124,7 @@ describe('parse tag', function() {
       res[0].tags.should.have.length(1);
       res[0].tags[0].should.have.property('errors');
       res[0].tags[0].errors.should.have.length(1);
-      res[0].tags[0].errors[0].should.equal('Invalid kind name \'ng\'');
+      res[0].tags[0].errors[0].should.equal('Invalid kind name "ng"');
     });
 
     it('todo', function() {
@@ -1112,7 +1142,7 @@ describe('parse tag', function() {
       });
       res[0].tags.should.have.length(1);
       res[0].tags[0].should.have.property('type');
-      res[0].tags[0].type[0].should.eql({
+      assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'Object'
       });
@@ -1148,7 +1178,7 @@ describe('parse tag', function() {
       res[0].tags.should.have.length(1);
       res[0].tags[0].should.have.property('errors');
       res[0].tags[0].errors.should.have.length(1);
-      res[0].tags[0].errors[0].should.equal('Invalid variation \'Animation\'');
+      res[0].tags[0].errors[0].should.equal('Invalid variation "Animation"');
     });
 
     it('access', function() {
@@ -1168,7 +1198,7 @@ describe('parse tag', function() {
       res[0].tags.should.have.length(1);
       res[0].tags[0].should.have.property('errors');
       res[0].tags[0].errors.should.have.length(1);
-      res[0].tags[0].errors[0].should.equal('Invalid access name \'ng\'');
+      res[0].tags[0].errors[0].should.equal('Invalid access name "ng"');
     });
 
     it('public', function() {
@@ -1188,7 +1218,7 @@ describe('parse tag', function() {
       res[0].tags[0].should.have.property('title', 'public');
       res[0].tags[0].should.have.property('description', 'ok');
       res[0].tags[0].should.have.property('type');
-      res[0].tags[0].type[0].should.eql({
+      assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'number'
       });
@@ -1211,7 +1241,7 @@ describe('parse tag', function() {
       res[0].tags[0].should.have.property('title', 'protected');
       res[0].tags[0].should.have.property('description', 'ok');
       res[0].tags[0].should.have.property('type');
-      res[0].tags[0].type[0].should.eql({
+      assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'number'
       });
@@ -1234,7 +1264,7 @@ describe('parse tag', function() {
       res[0].tags[0].should.have.property('title', 'private');
       res[0].tags[0].should.have.property('description', 'ok');
       res[0].tags[0].should.have.property('type');
-      res[0].tags[0].type[0].should.eql({
+      assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'number'
       });
@@ -1244,24 +1274,39 @@ describe('parse tag', function() {
       var res = comments.parse('/** @readonly */', {
         unwrap: true
       });
+
       res[0].tags.should.have.length(1);
       res[0].tags[0].should.have.property('title', 'readonly');
+    });
+
+    it('readonly description (non-strict)', function() {
+      var res = comments.parse('/** @readonly ng */', {unwrap: true});
+      res[0].tags.should.have.length(1);
+      res[0].tags[0].description.should.equal('ng');
     });
 
     it('readonly error', function() {
       var res = comments.parse('/** @readonly ng */', {
         unwrap: true,
-        recoverable: true
+        strict: true
       });
       res[0].tags.should.have.length(1);
       res[0].tags[0].should.have.property('errors');
       res[0].tags[0].errors.should.have.length(1);
-      res[0].tags[0].errors[0].should.equal('Unknown content \'ng\'');
+      res[0].tags[0].errors[0].should.equal('@readonly cannot have a description in strict mode');
     });
 
     it('requires', function() {
       var res = comments.parse('/** @requires */', {
         unwrap: true
+      });
+      res[0].tags.should.have.length(1);
+    });
+
+    it('requires (strict)', function() {
+      var res = comments.parse('/** @requires */', {
+        unwrap: true,
+        strict: true
       });
       res[0].tags.should.have.length(0);
     });
@@ -1283,15 +1328,23 @@ describe('parse tag', function() {
       res[0].tags[0].should.have.property('title', 'global');
     });
 
-    it('global error', function() {
+    it('global description', function() {
+      var res = comments.parse('/** @global ng */', {
+        unwrap: true
+      });
+      res[0].tags.should.have.length(1);
+      res[0].tags[0].description.should.equal('ng');
+    });
+
+    it('global error (strict)', function() {
       var res = comments.parse('/** @global ng */', {
         unwrap: true,
-        recoverable: true
+        strict: true
       });
       res[0].tags.should.have.length(1);
       res[0].tags[0].should.have.property('errors');
       res[0].tags[0].errors.should.have.length(1);
-      res[0].tags[0].errors[0].should.equal('Unknown content \'ng\'');
+      res[0].tags[0].errors[0].should.equal('@global cannot have a description in strict mode');
     });
 
     it('inner', function() {
@@ -1302,15 +1355,24 @@ describe('parse tag', function() {
       res[0].tags[0].should.have.property('title', 'inner');
     });
 
-    it('inner error', function() {
+    it('inner description', function() {
+      var res = comments.parse('/** @inner ng */', {
+        unwrap: true
+      });
+      res[0].tags.should.have.length(1);
+      res[0].tags.should.have.length(1);
+      res[0].tags[0].description.should.equal('ng');
+    });
+
+    it('inner error (strict)', function() {
       var res = comments.parse('/** @inner ng */', {
         unwrap: true,
-        recoverable: true
+        strict: true
       });
       res[0].tags.should.have.length(1);
       res[0].tags[0].should.have.property('errors');
       res[0].tags[0].errors.should.have.length(1);
-      res[0].tags[0].errors[0].should.equal('Unknown content \'ng\'');
+      res[0].tags[0].errors[0].should.equal('@inner cannot have a description in strict mode');
     });
 
     it('instance', function() {
@@ -1321,15 +1383,21 @@ describe('parse tag', function() {
       res[0].tags[0].should.have.property('title', 'instance');
     });
 
-    it('instance error', function() {
+    it('instance description', function() {
+      var res = comments.parse('/** @instance ng */', {unwrap: true});
+      res[0].tags.should.have.length(1);
+      res[0].tags[0].description.should.equal('ng');
+    });
+
+    it('instance error (strict)', function() {
       var res = comments.parse('/** @instance ng */', {
         unwrap: true,
-        recoverable: true
+        strict: true
       });
       res[0].tags.should.have.length(1);
       res[0].tags[0].should.have.property('errors');
       res[0].tags[0].errors.should.have.length(1);
-      res[0].tags[0].errors[0].should.equal('Unknown content \'ng\'');
+      res[0].tags[0].errors[0].should.equal('@instance cannot have a description in strict mode');
     });
 
     it('since', function() {
@@ -1349,15 +1417,21 @@ describe('parse tag', function() {
       res[0].tags[0].should.have.property('title', 'static');
     });
 
+    it('static description', function() {
+      var res = comments.parse('/** @static ng */', {unwrap: true});
+      res[0].tags.should.have.length(1);
+      res[0].tags[0].should.have.property('description', 'ng');
+    });
+
     it('static error', function() {
       var res = comments.parse('/** @static ng */', {
         unwrap: true,
-        recoverable: true
+        strict: true
       });
       res[0].tags.should.have.length(1);
       res[0].tags[0].should.have.property('errors');
       res[0].tags[0].errors.should.have.length(1);
-      res[0].tags[0].errors[0].should.equal('Unknown content \'ng\'');
+      res[0].tags[0].errors[0].should.equal('@static cannot have a description in strict mode');
     });
 
     it('this', function() {
@@ -1394,6 +1468,7 @@ describe('parse tag', function() {
       ].join('\n'), {
         unwrap: true
       });
+
       res[0].tags.should.have.length(1);
       res[0].tags[0].should.have.property('title', 'this');
       res[0].tags[0].should.have.property('name', 'thingName.name');
@@ -1408,11 +1483,12 @@ describe('parse tag', function() {
         unwrap: true,
         recoverable: true
       });
+
       res[0].tags.should.have.length(1);
       res[0].tags[0].should.have.property('title', 'this');
       res[0].tags[0].should.have.property('errors');
       res[0].tags[0].errors.should.have.length(1);
-      res[0].tags[0].errors[0].should.equal('Invalid name for this');
+      res[0].tags[0].errors[0].should.equal('Invalid name for @this');
     });
 
     it('this error', function() {
@@ -1421,14 +1497,14 @@ describe('parse tag', function() {
         ' * @this',
         '*/'
       ].join('\n'), {
-        unwrap: true,
-        recoverable: true
+        unwrap: true
       });
+
       res[0].tags.should.have.length(1);
       res[0].tags[0].should.have.property('title', 'this');
       res[0].tags[0].should.have.property('errors');
       res[0].tags[0].errors.should.have.length(1);
-      res[0].tags[0].errors[0].should.equal('Missing or invalid tag name');
+      res[0].tags[0].errors[0].should.equal('expected @this tag to have type and name properties');
     });
 
     it('var', function() {
@@ -1456,7 +1532,7 @@ describe('parse tag', function() {
       res[0].tags[0].should.have.property('title', 'var');
       res[0].tags[0].should.have.property('name', 'thingName.name');
       res[0].tags[0].should.have.property('type');
-      res[0].tags[0].type[0].should.eql({
+      assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'Object'
       });
@@ -1471,16 +1547,15 @@ describe('parse tag', function() {
       res[0].tags[0].should.have.property('description', '1.2.1');
     });
 
-    it('incorrect name', function() {
+    it('invalid name', function() {
       var res = comments.parse('/** @name thingName#%name */', {
-        unwrap: true
+        unwrap: true,
+        strict: true
       });
+
       // name does not accept type
       res[0].tags.should.have.length(0);
-      res[0].should.eql({
-        'description': '',
-        'tags': []
-      });
+      res[0].description.should.equal('');
     });
 
     it('string literal property', function() {
@@ -1498,17 +1573,17 @@ describe('parse tag', function() {
       res[0].tags[1].should.have.property('name', 'access');
       res[0].tags[1].type.should.have.property('type', 'UnionType');
       res[0].tags[1].type.elements.should.have.length(3);
-      res[0].tags[1].type.elements.should.containEql({
+      assert.deepEqual(res[0].tags[1].type.elements[0], {
         type: 'StringLiteralType',
         value: 'public'
       });
-      res[0].tags[1].type.elements.should.containEql({
-        type: 'StringLiteralType',
-        value: 'private'
-      });
-      res[0].tags[1].type.elements.should.containEql({
+      assert.deepEqual(res[0].tags[1].type.elements[1], {
         type: 'StringLiteralType',
         value: 'protected'
+      });
+      assert.deepEqual(res[0].tags[1].type.elements[2], {
+        type: 'StringLiteralType',
+        value: 'private'
       });
     });
 
@@ -1527,119 +1602,99 @@ describe('parse tag', function() {
       res[0].tags[1].should.have.property('name', 'access');
       res[0].tags[1].type.should.have.property('type', 'UnionType');
       res[0].tags[1].type.elements.should.have.length(3);
-      res[0].tags[1].type.elements.should.containEql({
+      assert.deepEqual(res[0].tags[1].type.elements[0], {
         type: 'NumericLiteralType',
         value: -42
       });
-      res[0].tags[1].type.elements.should.containEql({
+      assert.deepEqual(res[0].tags[1].type.elements[1], {
         type: 'NumericLiteralType',
         value: 1.5
       });
-      res[0].tags[1].type.elements.should.containEql({
+      assert.deepEqual(res[0].tags[1].type.elements[2], {
         type: 'NumericLiteralType',
         value: 0
       });
     });
 
     it('boolean literal property', function() {
-      // var res = comments.parse([
-      //   '/**',
-      //   ' * @typedef {Object} comment',
-      //   ' * @property {(true|false)} access',
-      //   '*/'
-      // ].join('\n'), {
-      //   unwrap: true
-      // });
-
-      var fixture = [
+      var res = comments.parse([
         '/**',
         ' * @typedef {Object} comment',
         ' * @property {(true|false)} access',
         '*/'
-      ].join('\n');
+      ].join('\n'), {
+        unwrap: true
+      });
 
-      var res = comments.parse(fixture, {unwrap: true});
-      // var res2 = [doctrine.parse(fixture, {unwrap: true})];
-
-      // console.log(res2[0].tags[0].type)
-      // console.log('---')
-      console.log(res[0].tags[0].type);
-
-      // res[0].tags.should.have.length(2);
+      res[0].tags.should.have.length(2);
       res[0].tags[1].should.have.property('title', 'property');
       res[0].tags[1].should.have.property('name', 'access');
       res[0].tags[1].type.should.have.property('type', 'UnionType');
       res[0].tags[1].type.elements.should.have.length(2);
-      res[0].tags[1].type.elements.should.containEql({
+      assert.deepEqual(res[0].tags[1].type.elements[0], {
         type: 'BooleanLiteralType',
         value: true
       });
-      res[0].tags[1].type.elements.should.containEql({
+      assert.deepEqual(res[0].tags[1].type.elements[1], {
         type: 'BooleanLiteralType',
         value: false
       });
     });
 
-    it('complex union with literal types', function() {
-      var fixture = [
+    it.only('complex union with literal types', function() {
+      var res = doctrine.parse([
         '/**',
         ' * @typedef {({ok: true, data: string} | {ok: false, error: Error})} Result',
         '*/'
-      ].join('\n');
+      ].join('\n'), {unwrap: true});
 
-      var res = comments.parse(fixture, {unwrap: true});
-      var res2 = [doctrine.parse(fixture, {unwrap: true})];
+      console.log(util.inspect(res.tags, {depth: null}))
 
-      console.log(res2[0].tags[0].type.elements);
-      console.log('---');
-      console.log(res[0].tags[0].type);
+    //   res[0].tags.should.have.length(1);
+    //   res[0].tags[0].should.have.property('title', 'typedef');
+    //   res[0].tags[0].should.have.property('name', 'Result');
+    //   res[0].tags[0].type.should.have.property('type', 'UnionType');
+    //   res[0].tags[0].type.elements.should.have.length(2);
 
-      res[0].tags.should.have.length(1);
-      // res[0].tags[0].should.have.property('title', 'typedef');
-      // res[0].tags[0].should.have.property('name', 'Result');
-      // console.log(res[0].tags[0].type[0])
-      // res[0].tags[0].type[0].should.have.property('type', 'UnionType');
-      // res[0].tags[0].type[0].elements.should.have.length(2);
+    //   var e0 = res[0].tags[0].type.elements[0];
+    //   e0.should.have.property('type', 'RecordType');
+    //   e0.fields.should.have.length(2);
+    //   e0.fields.should.containEql({
+    //     type: 'FieldType',
+    //     key: 'ok',
+    //     value: {
+    //       type: 'BooleanLiteralType',
+    //       value: true
+    //     }
+    //   });
+    //   e0.fields.should.containEql({
+    //     type: 'FieldType',
+    //     key: 'data',
+    //     value: {
+    //       type: 'NameExpression',
+    //       name: 'string'
+    //     }
+    //   });
 
-      // var e0 = res[0].tags[0].type[0].elements[0];
-      // e0.should.have.property('type', 'RecordType');
-      // e0.fields.should.have.length(2);
-      // e0.fields.should.containEql({
-      //   type: 'FieldType',
-      //   key: 'ok',
-      //   value: {
-      //     type: 'BooleanLiteralType',
-      //     value: true
-      //   }
-      // });
-      // e0.fields.should.containEql({
-      //   type: 'FieldType',
-      //   key: 'data',
-      //   value: {
-      //     type: 'NameExpression',
-      //     name: 'string'
-      //   }
-      // });
-
-      // var e1 = res[0].tags[0].type[0].elements[1];
-      // e1.should.have.property('type', 'RecordType');
-      // e1.fields.should.have.length(2);
-      // e1.fields.should.containEql({
-      //   type: 'FieldType',
-      //   key: 'ok',
-      //   value: {
-      //     type: 'BooleanLiteralType',
-      //     value: false
-      //   }
-      // });
-      // e1.fields.should.containEql({
-      //   type: 'FieldType',
-      //   key: 'error',
-      //   value: {
-      //     type: 'NameExpression',
-      //     name: 'Error'
-      //   }
-      // });
+    //   var e1 = res[0].tags[0].type.elements[1];
+    //   e1.should.have.property('type', 'RecordType');
+    //   e1.fields.should.have.length(2);
+    //   e1.fields.should.containEql({
+    //     type: 'FieldType',
+    //     key: 'ok',
+    //     value: {
+    //       type: 'BooleanLiteralType',
+    //       value: false
+    //     }
+    //   });
+    //   e1.fields.should.containEql({
+    //     type: 'FieldType',
+    //     key: 'error',
+    //     value: {
+    //       type: 'NameExpression',
+    //       name: 'Error'
+    //     }
+    //   });
     });
   });
 });

@@ -6,25 +6,57 @@ var assert = require('assert');
 var doctrine = require('doctrine');
 var parseType = require('../lib/parse/type');
 
-/**
- * Some of these unit tests are based on tests from doctrine
- * https://github.com/eslint/doctrine
- * https://github.com/eslint/doctrine/LICENSE.BSD
- * https://github.com/eslint/doctrine/LICENSE.closure-compiler
- * https://github.com/eslint/doctrine/LICENSE.esprima
- */
-
-//   '{ a: number, b: string }',
-//   '{a: number, b: string}',
-//   '{a: number, b: string, c}',
-//   '{ a: number, b : string, c }',
-//   '{ a : number, b : string, c }',
-//   '?number',
-//   '!number',
-//   'function()',
-//   'function(foo, bar)',
-
 describe('parse type', function() {
+  describe('empty', function() {
+    it('should parse an empty entries object', function() {
+      assert.deepEqual(parseType('{}'), doctrine.parseType('{}'));
+    });
+  });
+
+  describe('types', function() {
+    it('should parse a single type', function() {
+      assert.deepEqual(parseType('boolean'), doctrine.parseType('boolean'));
+      assert.deepEqual(parseType('Window'), doctrine.parseType('Window'));
+      assert.deepEqual(parseType('number'), doctrine.parseType('number'));
+      assert.deepEqual(parseType('_'), doctrine.parseType('_'));
+      assert.deepEqual(parseType('$'),  doctrine.parseType('$'));
+    });
+
+    it('should parse a type with dot-notation', function() {
+      assert.deepEqual(parseType('foo.bar'), doctrine.parseType('foo.bar'));
+      assert.deepEqual(parseType('a.b.c'), doctrine.parseType('a.b.c'));
+    });
+
+    it('should parse multiple types', function() {
+      assert.deepEqual(parseType('boolean|string'), doctrine.parseType('boolean|string'));
+    });
+
+    it('should parse string literal union types', function() {
+      assert.deepEqual(parseType("('public'|'protected'|'private')"), doctrine.parseType("('public'|'protected'|'private')"));
+    });
+  });
+
+  describe('parens', function() {
+    it('should parse a type in parens', function() {
+      assert.deepEqual(parseType('(boolean)'), doctrine.parseType('(boolean)'));
+      assert.deepEqual(parseType('(Window)'), doctrine.parseType('(Window)'));
+    });
+
+    it('should parse multiple types in parens', function() {
+      assert.deepEqual(parseType('(boolean|string)'), doctrine.parseType('(boolean|string)'));
+
+      assert.deepEqual(parseType('(boolean|string|array)'), doctrine.parseType('(boolean|string|array)'));
+    });
+  });
+
+  /**
+   * Some of these following unit tests are based on tests from doctrine
+   * https://github.com/eslint/doctrine
+   * https://github.com/eslint/doctrine/LICENSE.BSD
+   * https://github.com/eslint/doctrine/LICENSE.closure-compiler
+   * https://github.com/eslint/doctrine/LICENSE.esprima
+   */
+
   describe('parseType', function() {
     it('should parse jsdoc expressions', function() {
       assert.deepEqual(parseType('number'), {
@@ -145,6 +177,19 @@ describe('parse type', function() {
         type: 'RecordType',
         fields: []
       });
+    });
+
+    it('should parse record types', function() {
+      var fixture = '{ a: number, b: string }';
+      assert.deepEqual(parseType(fixture), doctrine.parseType(fixture));
+      fixture = '{a: number, b: string}';
+      assert.deepEqual(parseType(fixture), doctrine.parseType(fixture));
+      fixture = '{a: number, b: string, c}';
+      assert.deepEqual(parseType(fixture), doctrine.parseType(fixture));
+      fixture = '{ a: number, b : string, c }';
+      assert.deepEqual(parseType(fixture), doctrine.parseType(fixture));
+      fixture = '{ a : number, b : string, c }';
+      assert.deepEqual(parseType(fixture), doctrine.parseType(fixture));
     });
 
     it('type application', function() {
@@ -367,15 +412,18 @@ describe('parse type', function() {
         'type': 'FunctionType',
         'params': [
           {
-            'type': 'RestType',
-            'expression': {
-              'type': 'OptionalType',
-              'expression': {
-                'type': 'ParameterType',
-                'name': 'a',
-                'expression': {
-                  'type': 'NameExpression',
-                  'name': 'b'
+            type: 'RestType',
+
+            expression: {
+              type: 'OptionalType',
+
+              expression: {
+                type: 'ParameterType',
+                name: 'a',
+
+                expression: {
+                  type: 'NameExpression',
+                  name: 'b'
                 }
               }
             }
@@ -697,7 +745,7 @@ describe('parse type', function() {
       });
     });
 
-    it.skip('function type union', function() {
+    it('function type union', function() {
       var type = parseType('function(): ?|number');
       assert.deepEqual(type, {
         type: 'UnionType',
