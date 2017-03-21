@@ -12,8 +12,7 @@ var normalize = require('./lib/normalize');
 var validate = require('./lib/validate');
 var allows = require('./lib/allows');
 var expects = require('./lib/expects');
-var parseName = require('./lib/parse/name');
-var parseType = require('./lib/parse/typed');
+var parseType = require('./lib/parse/type');
 var parseTag = require('./lib/parse/tag');
 var utils = require('./lib/utils');
 

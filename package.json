@@ -32,18 +32,34 @@
   "dependencies": {
     "component-emitter": "^1.2.1",
     "define-property": "^0.2.5",
-    "export-files": "^2.1.1",
     "extend-shallow": "^2.0.1",
     "extract-comments": "^0.10.1",
+    "floating-point-regex": "^0.1.0",
     "get-value": "^2.0.6",
-    "isobject": "^3.0.0",
+    "is-number": "^3.0.0",
+    "kind-of": "^3.1.0",
     "set-value": "^0.4.3",
     "snapdragon": "^0.11.0",
-    "tokenize-comment": "^1.0.1",
-    "union-value": "^1.0.0"
+    "tokenize-comment": "^1.0.2"
   },
   "devDependencies": {
     "cache-base": "^1.0.0",
-    "mocha": "^3.2.0"
+    "doctrine": "^2.0.0",
+    "gulp-format-md": "^0.1.11",
+    "mocha": "^3.2.0",
+    "should": "^11.2.1"
+  },
+  "verb": {
+    "toc": false,
+    "layout": "default",
+    "tasks": [
+      "readme"
+    ],
+    "plugins": [
+      "gulp-format-md"
+    ],
+    "lint": {
+      "reflinks": true
+    }
   }
 }
