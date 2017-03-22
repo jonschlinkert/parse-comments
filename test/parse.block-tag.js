@@ -1083,10 +1083,32 @@ describe('parse tag', function() {
           unwrap: true,
           strict: false
         });
-
       res[0].tags[1].should.have.property('title', 'property');
       res[0].tags[1].should.have.property('type');
-      assert.equal(res[0].tags[1].type.type, 'OptionalType');
+      assert.deepEqual(res[0].tags[1].type, {
+        type: 'OptionalType',
+        expression: {
+          type: 'NameExpression',
+          name: 'String'
+        }
+      });
+
+      res = comments.parse(
+        ['/**',
+          '* testtypedef',
+          '* @typedef {object} abc',
+          '* @property {String} val value description',
+          '*/'
+        ].join('\n'), {
+          unwrap: true,
+          strict: false
+        });
+      res[0].tags[1].should.have.property('title', 'property');
+      res[0].tags[1].should.have.property('type');
+      assert.deepEqual(res[0].tags[1].type, {
+        type: 'NameExpression',
+        name: 'String'
+      });
     });
 
     it('property with nested name', function() {
