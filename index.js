@@ -319,13 +319,17 @@ Comments.prototype.parseComment = function(comment, options) {
 
   if (typeof parsers.comment === 'function') {
     comment = parsers.comment.call(this, comment, opts);
+
   } else if (typeof comment === 'string') {
     comment = this.parse.apply(this, arguments)[0];
+
   } else {
     var tok = this.tokenize(comment.val, opts);
     this.tokens.push(tok);
 
     comment = extend({}, comment, tok);
+    normalize.examples(comment, opts);
+
     var tags = [];
 
     for (var i = 0; i < comment.tags.length; i++) {
@@ -378,7 +382,15 @@ Comments.prototype.parseTag = function(tok, options) {
     return parsers.tag.call(this, tok.raw, opts);
   }
 
-  var tag = parseTag(tok);
+  try {
+    var tag = parseTag(tok);
+  } catch (err) {
+    if (opts.strict) {
+      throw err;
+    }
+    return;
+  }
+
   if (!tag) {
     return;
   }
