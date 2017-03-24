@@ -4,9 +4,9 @@
 
 **Steps**
 
-1. Lexer 
+1. Lexer
   - token stream
-2. Parser 
+2. Parser
   - AST
   - Context object
 
@@ -20,20 +20,78 @@
 - normalizers
 - actions
 
+
+```
+templates/Views#prototype.setView
+```
+
+
 ## File based
 
 - context transformers
+
 
 ## App level
 
 - namespaces/nested events
 - app "middleware" (stages)
 
+
 ## Parsers
 
 - name
 - block tags
 - inline tags
+
+
+## Types
+
+### RecordType
+
+Object
+
+- `fields` **Array**
+
+```js
+{
+  key: 'foo',
+  value: {
+    name:
+  }
+}
+```
+
+
+### FunctionType
+
+
+- `params` **Array**
+
+
+### TypeApplication
+
+
+- `applications` **Array**
+
+
+### UnionType
+
+Array of types
+
+- `elements` **Array**
+
+
+### ArrayType
+
+Array of types
+
+- `elements` **Array**
+
+
+## Proposed type properties
+
+- `parameterTypeUnions` => `takes`
+- `returnTypeUnion` => `returns`
 
 
 ## Tags
@@ -110,7 +168,7 @@ These tags are useful in cases where it's ambiguous how a variable should be int
 - `@external` - (aliases: `@host`) Identifies an external class, namespace, or module.
 - `@file` - (aliases: `@fileoverview`, `@overview`) Describe a file.
 - `@function` - (aliases: `@func`, `@method`) Describe a function or method.
-- `@frozen` 
+- `@frozen`
 - `@global` - Document a global object.
 - `@ignore` - Omit a member from the documentation.
 - `@implements` - This member implements an interface.
@@ -131,7 +189,7 @@ These tags are useful in cases where it's ambiguous how a variable should be int
 - `@namespace` - Document a namespaces object.
 - `@overrides` - (aliases: `@override`) Indicate that a member overrides its parent.
 - `@param` - (aliases: `@arg`, `@argument`) Document the parameter to a function.
-- `@placeholder` - (aliases: `@abstract`, `@virtual`) Indicates the the member is only a placeholder and must be implemented or overridden by the implementor. 
+- `@placeholder` - (aliases: `@abstract`, `@virtual`) Indicates the the member is only a placeholder and must be implemented or overridden by the implementor.
 - `@private` - Indicates that a member is private and is not intended to be exposed for public use.
 - `@prop` - (aliases: `@property`) Document a property of an object.
 - `@protected` - Indicates that a member is protected.
@@ -157,12 +215,12 @@ These tags are useful in cases where it's ambiguous how a variable should be int
 
 ### Not supported
 
-The following JSDoc tags are not supported. Reasoning is described next to some of the tags, but please feel comfortable opening an issue to discuss if you think we've missed a valid use case. 
+The following JSDoc tags are not supported. Reasoning is described next to some of the tags, but please feel comfortable opening an issue to discuss if you think we've missed a valid use case.
 
 _(Note that any of these tags may also be implemented using plugins)_
 
-- `@variation` - This tag is intended to allow the developer to disambiguate between two members with the same exact name. We believe a better way to disambiguate is to rename one of the members. 
-- `@tutorial` 
+- `@variation` - This tag is intended to allow the developer to disambiguate between two members with the same exact name. We believe a better way to disambiguate is to rename one of the members.
+- `@tutorial`
 
 
 ## javadoc Tags
