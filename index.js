@@ -17,7 +17,7 @@ var parseTag = require('./lib/parse/tag');
 var utils = require('./lib/utils');
 
 /**
- * Create an instance of `Comments` with the given `options`.
+ * Create an instance of `{@foo module/foo}` with the given `options`.
  *
  * @param {Object|String} `options` Pass options if you need to instantiate Comments, or a string to convert HTML to markdown.
  * @api public
@@ -318,35 +318,35 @@ Comments.prototype.parseComment = function(comment, options) {
   var parsers = extend({}, this.parsers, opts.parse);
 
   if (typeof parsers.comment === 'function') {
-    return parsers.comment.call(this, comment, opts);
+    comment = parsers.comment.call(this, comment, opts);
+  } else if (typeof comment === 'string') {
+    comment = this.parse.apply(this, arguments)[0];
+  } else {
+    var tok = this.tokenize(comment.val, opts);
+    this.tokens.push(tok);
+
+    comment = extend({}, comment, tok);
+    var tags = [];
+
+    for (var i = 0; i < comment.tags.length; i++) {
+      var raw = comment.tags[i];
+      var tag = this.parseTag(raw, opts);
+      if (!tag) continue;
+
+      define(tag, 'rawType', tag.rawType);
+      define(tag, 'raw', raw);
+      tags.push(tag);
+    }
+
+    comment.tags = tags;
+
+    var name = get(comment, 'code.context.name');
+    if (name) {
+      set(this.cache, name, comment);
+    }
   }
 
-  if (typeof comment === 'string') {
-    return this.parse.apply(this, arguments)[0];
-  }
-
-  var tok = this.tokenize(comment.val, opts);
-  this.tokens.push(tok);
-
-  comment = extend({}, comment, tok);
-  var tags = [];
-
-  for (var i = 0; i < comment.tags.length; i++) {
-    var raw = comment.tags[i];
-    var tag = this.parseTag(raw, opts);
-    if (!tag) continue;
-
-    define(tag, 'rawType', tag.rawType);
-    define(tag, 'raw', raw);
-    tags.push(tag);
-  }
-
-  comment.tags = tags;
-
-  var name = get(comment, 'code.context.name');
-  if (name) {
-    set(this.cache, name, comment);
-  }
+  this.emit('comment', comment);
   return comment;
 };
 
@@ -399,6 +399,10 @@ Comments.prototype.parseTag = function(tok, options) {
   }
 
   tag = normalize.tag(tag, opts);
+  if (!tag) {
+    return;
+  }
+
   tag = validate.tag(tag, opts);
   return tag;
 };
@@ -483,7 +487,6 @@ Comments.prototype.extract = function(str, options, fn) {
       comment = comment;
     }
 
-    this.emit('comment', comment);
     res.push(comment);
   }
 
@@ -497,10 +500,10 @@ Comments.prototype.normalize = function(comment, options) {
     return opts.normalize.call(this, comment, opts);
   }
 
-  var newComment = utils.copyNode(comment);
-  newComment.code = utils.copyNode(comment.code);
-  newComment.code.context = utils.copyNode(comment.code.context);
-  return newComment;
+  var obj = utils.copyNode(comment);
+  obj.code = utils.copyNode(comment.code);
+  obj.code.context = utils.copyNode(comment.code.context);
+  return obj;
 };
 
 /**

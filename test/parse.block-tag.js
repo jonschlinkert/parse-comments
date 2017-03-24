@@ -1073,16 +1073,15 @@ describe('parse tag', function() {
     });
 
     it('property with optional type', function() {
-      var res = comments.parse(
-        ['/**',
-          '* testtypedef',
-          '* @typedef {object} abc',
-          '* @property {String} [val] value description',
-          '*/'
-        ].join('\n'), {
-          unwrap: true,
-          strict: false
-        });
+      var res = comments.parse(['/**',
+        '* testtypedef',
+        '* @typedef {object} abc',
+        '* @property {String} [val] value description',
+        '*/'
+      ].join('\n'), {
+        unwrap: true,
+        strict: false
+      });
       res[0].tags[1].should.have.property('title', 'property');
       res[0].tags[1].should.have.property('type');
       assert.deepEqual(res[0].tags[1].type, {
@@ -1093,16 +1092,16 @@ describe('parse tag', function() {
         }
       });
 
-      res = comments.parse(
-        ['/**',
-          '* testtypedef',
-          '* @typedef {object} abc',
-          '* @property {String} val value description',
-          '*/'
-        ].join('\n'), {
-          unwrap: true,
-          strict: false
-        });
+      res = comments.parse(['/**',
+        '* testtypedef',
+        '* @typedef {object} abc',
+        '* @property {String} val value description',
+        '*/'
+      ].join('\n'), {
+        unwrap: true,
+        strict: false
+      });
+
       res[0].tags[1].should.have.property('title', 'property');
       res[0].tags[1].should.have.property('type');
       assert.deepEqual(res[0].tags[1].type, {
