@@ -3,7 +3,7 @@
  *
  * ```js
  * // foo.parser(name, replacements)
- * foo.parser("foo", function (a, b, c) {
+ * foo.parser("foo", function(a, b, c) {
  *     // body...
  * })
  * ```

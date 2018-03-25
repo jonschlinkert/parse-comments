@@ -10,6 +10,7 @@ describe('tokenize-tag', function() {
       assert.deepEqual(tag(''), {
         description: '',
         key: '',
+        title: '',
         rawType: '',
         name: ''
       });
@@ -17,6 +18,7 @@ describe('tokenize-tag', function() {
       assert.deepEqual(tag(' '), {
         description: '',
         key: '',
+        title: '',
         rawType: '',
         name: ''
       });
@@ -27,6 +29,7 @@ describe('tokenize-tag', function() {
     it('should tokenize a tag', function() {
       assert.deepEqual(tag('@param {String|Array} foo This is a description'), {
         key: '@param',
+        title: 'param',
         rawType: '{String|Array}',
         name: 'foo',
         description: 'This is a description'
@@ -36,6 +39,7 @@ describe('tokenize-tag', function() {
     it('should tokenize tag with nested optional name with default', function() {
       assert.deepEqual(tag('@param {String|Array} [val=[\'foo\']] some description'), {
         key: '@param',
+        title: 'param',
         rawType: '{String|Array}',
         name: '[val=[\'foo\']]',
         description: 'some description'
@@ -43,6 +47,7 @@ describe('tokenize-tag', function() {
 
       assert.deepEqual(tag('{String|Array} [val=[\'foo\']] some description'), {
         key: '',
+        title: '',
         rawType: '{String|Array}',
         name: '[val=[\'foo\']]',
         description: 'some description'
@@ -50,6 +55,7 @@ describe('tokenize-tag', function() {
 
       assert.deepEqual(tag('{(String|Array)} [val=[\'foo\']] some description'), {
         key: '',
+        title: '',
         rawType: '{(String|Array)}',
         name: '[val=[\'foo\']]',
         description: 'some description'
@@ -57,6 +63,7 @@ describe('tokenize-tag', function() {
 
       assert.deepEqual(tag("@param {(String|Array<foo>)} [val=['foo']] some description"), {
         key: '@param',
+        title: 'param',
         rawType: '{(String|Array<foo>)}',
         name: '[val=[\'foo\']]',
         description: 'some description'
@@ -66,6 +73,7 @@ describe('tokenize-tag', function() {
     it('should tokenize a multi-line tag', function() {
       assert.deepEqual(tag('{string|\n number} userName\n }}'), {
         key: '',
+        title: '',
         rawType: '{string|\n number}',
         name: 'userName',
         description: ''
@@ -73,6 +81,7 @@ describe('tokenize-tag', function() {
 
       assert.deepEqual(tag('{string|\n number} userName\nFoo bar baz }}'), {
         key: '',
+        title: '',
         rawType: '{string|\n number}',
         name: 'userName',
         description: 'Foo bar baz '
@@ -84,13 +93,15 @@ describe('tokenize-tag', function() {
     it('should tokenize type', function() {
       assert.deepEqual(tag('{String}'), {
         key: '',
+        title: '',
         rawType: '{String}',
         name: '',
         description: ''
       });
 
-      assert.deepEqual(tag("{foo}"), {
+      assert.deepEqual(tag('{foo}'), {
         key: '',
+        title: '',
         rawType: '{foo}',
         name: '',
         description: ''
@@ -102,6 +113,7 @@ describe('tokenize-tag', function() {
     it('should tokenize name', function() {
       assert.deepEqual(tag('foo'), {
         key: '',
+        title: '',
         rawType: '',
         name: 'foo',
         description: ''
@@ -111,6 +123,7 @@ describe('tokenize-tag', function() {
     it('should tokenize nested optional name with default', function() {
       assert.deepEqual(tag("[val=['foo']]"), {
         key: '',
+        title: '',
         rawType: '',
         name: '[val=[\'foo\']]',
         description: ''
@@ -120,55 +133,63 @@ describe('tokenize-tag', function() {
     it('should tokenize optional name', function() {
       assert.deepEqual(tag("[val=['foo']]"), {
         key: '',
+        title: '',
         rawType: '',
         name: '[val=[\'foo\']]',
         description: ''
       });
 
-      assert.deepEqual(tag("[val=foo]"), {
+      assert.deepEqual(tag('[val=foo]'), {
         key: '',
+        title: '',
         rawType: '',
         name: '[val=foo]',
         description: ''
       });
 
-      assert.deepEqual(tag("[val = foo]"), {
+      assert.deepEqual(tag('[val = foo]'), {
         key: '',
+        title: '',
         rawType: '',
         name: '[val = foo]',
         description: ''
       });
 
-      assert.deepEqual(tag("(val=foo)"), {
+      assert.deepEqual(tag('(val=foo)'), {
         key: '',
+        title: '',
         rawType: '',
         name: '(val=foo)',
         description: ''
       });
 
-      assert.deepEqual(tag("([val={foo}])"), {
+      assert.deepEqual(tag('([val={foo}])'), {
         key: '',
+        title: '',
         rawType: '',
         name: '([val={foo}])',
         description: ''
       });
 
-      assert.deepEqual(tag("[val={foo}]"), {
+      assert.deepEqual(tag('[val={foo}]'), {
         key: '',
+        title: '',
         rawType: '',
         name: '[val={foo}]',
         description: ''
       });
 
-      assert.deepEqual(tag("`val=foo`"), {
+      assert.deepEqual(tag('`val=foo`'), {
         key: '',
+        title: '',
         rawType: '',
         name: '`val=foo`',
         description: ''
       });
 
-      assert.deepEqual(tag("`val = foo`"), {
+      assert.deepEqual(tag('`val = foo`'), {
         key: '',
+        title: '',
         rawType: '',
         name: '`val = foo`',
         description: ''
@@ -180,6 +201,7 @@ describe('tokenize-tag', function() {
     it('should tokenize record type and name', function() {
       assert.deepEqual(tag('{{foo: bar, baz}} qux'), {
         key: '',
+        title: '',
         rawType: '{{foo: bar, baz}}',
         name: 'qux',
         description: ''
@@ -189,6 +211,7 @@ describe('tokenize-tag', function() {
     it('should tokenize union type and name', function() {
       assert.deepEqual(tag('{(string|array)} qux'), {
         key: '',
+        title: '',
         rawType: '{(string|array)}',
         name: 'qux',
         description: ''
@@ -198,6 +221,7 @@ describe('tokenize-tag', function() {
     it('should tokenize type and optional name', function() {
       assert.deepEqual(tag('{(string|array)} [qux]'), {
         key: '',
+        title: '',
         rawType: '{(string|array)}',
         name: '[qux]',
         description: ''
@@ -207,6 +231,7 @@ describe('tokenize-tag', function() {
     it('should tokenize name with backticks', function() {
       assert.deepEqual(tag('{String|Array} `qux`'), {
         key: '',
+        title: '',
         rawType: '{String|Array}',
         name: '`qux`',
         description: ''
@@ -216,6 +241,7 @@ describe('tokenize-tag', function() {
     it('should tokenize type and optional name with default', function() {
       assert.deepEqual(tag('{(string|array)} [qux=bar]'), {
         key: '',
+        title: '',
         rawType: '{(string|array)}',
         name: '[qux=bar]',
         description: ''
@@ -225,6 +251,7 @@ describe('tokenize-tag', function() {
     it('should tokenize type and optional name with spaces', function() {
       assert.deepEqual(tag('{(string|array)} [qux = bar]'), {
         key: '',
+        title: '',
         rawType: '{(string|array)}',
         name: '[qux = bar]',
         description: ''
@@ -232,6 +259,7 @@ describe('tokenize-tag', function() {
 
       assert.deepEqual(tag('{(string|array)} [qux= bar]'), {
         key: '',
+        title: '',
         rawType: '{(string|array)}',
         name: '[qux= bar]',
         description: ''
@@ -239,6 +267,7 @@ describe('tokenize-tag', function() {
 
       assert.deepEqual(tag('{(string|array)} [qux =bar]'), {
         key: '',
+        title: '',
         rawType: '{(string|array)}',
         name: '[qux =bar]',
         description: ''
@@ -250,6 +279,7 @@ describe('tokenize-tag', function() {
     it('should tokenize name and description', function() {
       assert.deepEqual(tag('some description'), {
         key: '',
+        title: '',
         rawType: '',
         name: 'some',
         description: 'description'
@@ -257,6 +287,7 @@ describe('tokenize-tag', function() {
 
       assert.deepEqual(tag('foo bar'), {
         key: '',
+        title: '',
         rawType: '',
         name: 'foo',
         description: 'bar'
@@ -264,6 +295,7 @@ describe('tokenize-tag', function() {
 
       assert.deepEqual(tag('foo some description'), {
         key: '',
+        title: '',
         rawType: '',
         name: 'foo',
         description: 'some description'
@@ -273,6 +305,7 @@ describe('tokenize-tag', function() {
     it('should tokenize optional name and description', function() {
       assert.deepEqual(tag('[qux = bar] The description'), {
         key: '',
+        title: '',
         rawType: '',
         name: '[qux = bar]',
         description: 'The description'
@@ -280,6 +313,7 @@ describe('tokenize-tag', function() {
 
       assert.deepEqual(tag('[qux=bar] The description'), {
         key: '',
+        title: '',
         rawType: '',
         name: '[qux=bar]',
         description: 'The description'
@@ -291,6 +325,7 @@ describe('tokenize-tag', function() {
     it('should tokenize type, name and description', function() {
       assert.deepEqual(tag('{String} foo bar'), {
         key: '',
+        title: '',
         rawType: '{String}',
         name: 'foo',
         description: 'bar'
@@ -300,13 +335,15 @@ describe('tokenize-tag', function() {
     it('should tokenize type, optional name with spaces and description', function() {
       assert.deepEqual(tag('{(string|array)} [qux = bar] The description'), {
         key: '',
+        title: '',
         rawType: '{(string|array)}',
         name: '[qux = bar]',
         description: 'The description'
       });
 
-      assert.deepEqual(tag("{Array<String>} [val= foo] some description"), {
+      assert.deepEqual(tag('{Array<String>} [val= foo] some description'), {
         key: '',
+        title: '',
         rawType: '{Array<String>}',
         name: '[val= foo]',
         description: 'some description'

@@ -9,7 +9,7 @@ var Comments = require('..');
 var comments;
 
 /**
- * some of these integration tests are based on tests from doctrine
+ * some of these unit tests are based on tests from doctrine
  * https://github.com/eslint/doctrine/LICENSE.BSD
  * https://github.com/eslint/doctrine/LICENSE.closure-compiler
  * https://github.com/eslint/doctrine/LICENSE.esprima
@@ -36,7 +36,7 @@ describe('parse optional', function() {
       var res = comments.parseComment('/** * @param [val */', {
         unwrap: true,
         strict: false
-      })
+      });
 
       assert.deepEqual(pick(res, ['tags', 'description']), {
         'description': '',
@@ -293,18 +293,18 @@ describe('parse optional', function() {
       });
 
       res.tags[0].description.should.eql("f('blah'); // => undefined");
-      res.tags[0].caption.should.eql("hi");
+      res.tags[0].caption.should.eql('hi');
     });
 
     it('should handle \\r\\n line endings correctly', function() {
       var res = comments.parseComment([
-        "/**",
-        " * @param {string} foo",
-        " * @returns {string}",
-        " *",
-        " * @example",
+        '/**',
+        ' * @param {string} foo',
+        ' * @returns {string}',
+        ' *',
+        ' * @example',
         " * f('blah'); // => undefined",
-        " */"
+        ' */'
       ].join('\r\n'), {
         unwrap: true,
         jsdoc: true

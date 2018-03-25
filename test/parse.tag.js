@@ -2,11 +2,17 @@
 
 require('mocha');
 require('should');
-var util = require('util');
 var assert = require('assert');
 var doctrine = require('doctrine');
 var Comments = require('..');
 var comments;
+
+/**
+ * Some of these tests are based on tests from doctrine
+ * https://github.com/eslint/doctrine/LICENSE.BSD
+ * https://github.com/eslint/doctrine/LICENSE.closure-compiler
+ * https://github.com/eslint/doctrine/LICENSE.esprima
+ */
 
 describe('parse tag', function() {
   beforeEach(function() {
@@ -18,7 +24,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @alias */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
     });
 
     it('alias (strict)', function() {
@@ -26,14 +32,14 @@ describe('parse tag', function() {
         unwrap: true,
         strict: true
       });
-      res[0].tags.should.have.length(0);
+      assert.equal(res[0].tags.length, 0);
     });
 
     it('alias with name', function() {
       var res = comments.parse('/** @alias aliasName */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'alias');
       res[0].tags[0].should.have.property('name', 'aliasName');
     });
@@ -42,7 +48,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @alias aliasName.OK */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'alias');
       res[0].tags[0].should.have.property('name', 'aliasName.OK');
     });
@@ -51,7 +57,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @alias module:mymodule/mymodule.init */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'alias');
       res[0].tags[0].should.have.property('name', 'module:mymodule/mymodule.init');
     });
@@ -60,7 +66,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @alias module:mymodule/my-module */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'alias');
       res[0].tags[0].should.have.property('name', 'module:mymodule/my-module');
     });
@@ -69,7 +75,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @const */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'const');
     });
 
@@ -77,7 +83,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @const constname */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'const');
       res[0].tags[0].should.have.property('name', 'constname');
     });
@@ -86,7 +92,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @constant constname */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'constant');
       res[0].tags[0].should.have.property('name', 'constname');
     });
@@ -95,7 +101,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @const {String} constname */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'const');
       res[0].tags[0].should.have.property('name', 'constname');
       res[0].tags[0].should.have.property('type');
@@ -110,7 +116,7 @@ describe('parse tag', function() {
         unwrap: true
       });
 
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'Const');
       res[0].tags[0].should.have.property('name', 'constname');
       res[0].tags[0].should.have.property('type');
@@ -124,7 +130,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @constant {String} constname */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'constant');
       res[0].tags[0].should.have.property('name', 'constname');
       res[0].tags[0].should.have.property('type');
@@ -138,7 +144,7 @@ describe('parse tag', function() {
       var res = comments.parse('/**@const\n @const*/', {
         unwrap: true
       });
-      res[0].tags.should.have.length(2);
+      assert.equal(res[0].tags.length, 2);
       res[0].tags[0].should.have.property('title', 'const');
       res[0].tags[1].should.have.property('title', 'const');
     });
@@ -147,7 +153,7 @@ describe('parse tag', function() {
       var res = comments.parse('/**@const\n @const*/', {
         unwrap: true
       });
-      res[0].tags.should.have.length(2);
+      assert.equal(res[0].tags.length, 2);
       res[0].tags[0].should.have.property('title', 'const');
       res[0].tags[1].should.have.property('title', 'const');
     });
@@ -162,7 +168,7 @@ describe('parse tag', function() {
       ].join('\n'), {
         unwrap: true
       });
-      res[0].tags.should.have.length(3);
+      assert.equal(res[0].tags.length, 3);
       res[0].tags[0].should.have.property('title', 'const');
       res[0].tags[1].should.have.property('title', 'const');
       res[0].tags[2].should.have.property('title', 'const');
@@ -172,7 +178,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @constructor */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'constructor');
     });
 
@@ -180,7 +186,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @constructor {Object} */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'constructor');
       assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
@@ -192,7 +198,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @constructor {Object} objName */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'constructor');
       res[0].tags[0].should.have.property('name', 'objName');
       assert.deepEqual(res[0].tags[0].type, {
@@ -205,7 +211,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @class */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'class');
     });
 
@@ -213,7 +219,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @class {Object} */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'class');
       assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
@@ -225,7 +231,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @class {Object} objName */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'class');
       res[0].tags[0].should.have.property('name', 'objName');
       assert.deepEqual(res[0].tags[0].type, {
@@ -238,13 +244,13 @@ describe('parse tag', function() {
       var res = comments.parse('/** @deprecated */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'deprecated');
 
       res = comments.parse('/** @deprecated some text here describing why it is deprecated */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'deprecated');
       res[0].tags[0].should.have.property('description', 'some text here describing why it is deprecated');
     });
@@ -253,7 +259,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @func */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'func');
     });
 
@@ -261,7 +267,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @func thingName.func */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'func');
       res[0].tags[0].should.have.property('name', 'thingName.func');
     });
@@ -270,7 +276,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @func {Object} thingName.func */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(0);
+      assert.equal(res[0].tags.length, 0);
     // func does not accept type
     });
 
@@ -278,7 +284,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @function */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'function');
     });
 
@@ -286,24 +292,37 @@ describe('parse tag', function() {
       var res = comments.parse('/** @function thingName.function */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'function');
       res[0].tags[0].should.have.property('name', 'thingName.function');
     });
 
     it('function with type', function() {
+      // function does not accept type
       var res = comments.parse('/** @function {Object} thingName.function */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(0);
-    // function does not accept type
+      assert.equal(res[0].tags.length, 0);
+    });
+
+    it('recognize "function" type', function() {
+      var res = comments.parse('/** @param {function} foo description */', {});
+      assert.equal(res[0].tags.length, 1);
+      res[0].tags[0].should.have.property('title', 'param');
+      res[0].tags[0].should.have.property('type');
+      assert.deepEqual(res[0].tags[0].type, {
+        'name': 'function',
+        'type': 'NameExpression'
+      });
+      res[0].tags[0].should.have.property('name', 'foo');
+      res[0].tags[0].should.have.property('description', 'description');
     });
 
     it('member', function() {
       var res = comments.parse('/** @member */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'member');
     });
 
@@ -311,7 +330,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @member thingName.name */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'member');
       res[0].tags[0].should.have.property('name', 'thingName.name');
     });
@@ -320,7 +339,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @member {Object} thingName.name */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'member');
       res[0].tags[0].should.have.property('name', 'thingName.name');
       res[0].tags[0].should.have.property('type');
@@ -334,7 +353,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @method */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'method');
     });
 
@@ -342,7 +361,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @method thingName.function */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'method');
       res[0].tags[0].should.have.property('name', 'thingName.function');
     });
@@ -351,7 +370,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @method {Object} thingName.function */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(0);
+      assert.equal(res[0].tags.length, 0);
     // method does not accept type
     });
 
@@ -359,7 +378,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @mixes */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
     });
 
     it('mixes (strict)', function() {
@@ -367,14 +386,14 @@ describe('parse tag', function() {
         unwrap: true,
         strict: true
       });
-      res[0].tags.should.have.length(0);
+      assert.equal(res[0].tags.length, 0);
     });
 
     it('mixes with name', function() {
       var res = comments.parse('/** @mixes thingName */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'mixes');
       res[0].tags[0].should.have.property('name', 'thingName');
     });
@@ -383,7 +402,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @mixes thingName.name */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'mixes');
       res[0].tags[0].should.have.property('name', 'thingName.name');
     });
@@ -392,7 +411,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @mixin */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'mixin');
     });
 
@@ -400,7 +419,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @mixin thingName */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'mixin');
       res[0].tags[0].should.have.property('name', 'thingName');
     });
@@ -409,7 +428,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @mixin thingName.name */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'mixin');
       res[0].tags[0].should.have.property('name', 'thingName.name');
     });
@@ -418,7 +437,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @module */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'module');
     });
 
@@ -426,7 +445,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @module thingName.name */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'module');
       res[0].tags[0].should.have.property('name', 'thingName.name');
     });
@@ -435,7 +454,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @module thingName-name */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'module');
       res[0].tags[0].should.have.property('name', 'thingName-name');
     });
@@ -444,7 +463,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @module {Object} thingName.name */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'module');
       res[0].tags[0].should.have.property('name', 'thingName.name');
       res[0].tags[0].should.have.property('type');
@@ -458,7 +477,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @module path/to/thingName.name */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'module');
       res[0].tags[0].should.have.property('name', 'path/to/thingName.name');
     });
@@ -467,7 +486,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @name thingName.name */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'name');
       res[0].tags[0].should.have.property('name', 'thingName.name');
     });
@@ -476,7 +495,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @name thingName#name */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'name');
       res[0].tags[0].should.have.property('name', 'thingName#name');
     });
@@ -485,7 +504,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @name thingName~name */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'name');
       res[0].tags[0].should.have.property('name', 'thingName~name');
     });
@@ -495,14 +514,14 @@ describe('parse tag', function() {
         unwrap: true
       });
       // name does not accept type
-      res[0].tags.should.have.length(0);
+      assert.equal(res[0].tags.length, 0);
     });
 
     it('namespace', function() {
       var res = comments.parse('/** @namespace */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'namespace');
     });
 
@@ -510,7 +529,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @namespace thingName.name */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'namespace');
       res[0].tags[0].should.have.property('name', 'thingName.name');
     });
@@ -519,7 +538,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @namespace {Object} thingName.name */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'namespace');
       res[0].tags[0].should.have.property('name', 'thingName.name');
       res[0].tags[0].should.have.property('type');
@@ -538,7 +557,7 @@ describe('parse tag', function() {
         unwrap: true
       });
 
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'param');
       res[0].tags[0].should.have.property('name', 'userName');
       res[0].tags[0].should.have.property('type');
@@ -556,7 +575,7 @@ describe('parse tag', function() {
       ].join('\n'), {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'param');
       res[0].tags[0].should.have.property('name', 'user.name');
       res[0].tags[0].should.have.property('type');
@@ -574,7 +593,7 @@ describe('parse tag', function() {
       ].join('\n'), {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'param');
       res[0].tags[0].should.have.property('name', 'user.name');
       res[0].tags[0].should.have.property('description', 'hi');
@@ -593,7 +612,7 @@ describe('parse tag', function() {
       ].join('\n'), {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'param');
       res[0].tags[0].should.have.property('name', 'employee[].name');
       res[0].tags[0].should.have.property('description', 'hi');
@@ -612,7 +631,7 @@ describe('parse tag', function() {
       ].join('\n'), {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'param');
       res[0].tags[0].should.have.property('name', 'employee[].name');
       res[0].tags[0].should.have.property('description', '');
@@ -631,7 +650,7 @@ describe('parse tag', function() {
       ].join('\n'), {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'arg');
       res[0].tags[0].should.have.property('name', 'user.name');
       res[0].tags[0].should.have.property('type');
@@ -649,7 +668,7 @@ describe('parse tag', function() {
       ].join('\n'), {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'argument');
       res[0].tags[0].should.have.property('name', 'user.name');
       res[0].tags[0].should.have.property('type');
@@ -669,7 +688,7 @@ describe('parse tag', function() {
         strict: false
       });
 
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.eql({
         title: 'param',
         type: null,
@@ -684,7 +703,7 @@ describe('parse tag', function() {
       ].join('\n'), {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.eql({
         title: 'param',
         type: null,
@@ -699,7 +718,7 @@ describe('parse tag', function() {
       ].join('\n'), {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.eql({
         title: 'param',
         type: null,
@@ -714,7 +733,7 @@ describe('parse tag', function() {
       ].join('\n'), {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.eql({
         title: 'param',
         type: null,
@@ -733,7 +752,7 @@ describe('parse tag', function() {
         unwrap: true
       });
 
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'param');
       res[0].tags[0].should.have.property('name', 'userName');
       res[0].tags[0].should.have.property('type');
@@ -751,7 +770,7 @@ describe('parse tag', function() {
       ].join('\n'), {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'param');
       res[0].tags[0].should.have.property('name', 'userName');
       res[0].tags[0].should.have.property('type');
@@ -813,7 +832,7 @@ describe('parse tag', function() {
       ].join('\n'), {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'param');
       res[0].tags[0].should.have.property('name', 'userName');
       res[0].tags[0].should.have.property('type');
@@ -837,7 +856,7 @@ describe('parse tag', function() {
       ].join('\n'), {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'param');
       res[0].tags[0].should.have.property('name', 'string');
       res[0].tags[0].should.have.property('type', null);
@@ -852,7 +871,7 @@ describe('parse tag', function() {
       ].join('\n'), {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       assert.deepEqual(res[0].tags[0], {
         title: 'param',
         type: {
@@ -872,7 +891,7 @@ describe('parse tag', function() {
       ].join('\n'), {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       assert.deepEqual(res[0].tags[0], {
         title: 'param',
         type: {
@@ -897,7 +916,7 @@ describe('parse tag', function() {
       });
 
       res[0].description.should.eql('Description\nblah blah blah');
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'param');
       res[0].tags[0].should.have.property('name', 'name');
       res[0].tags[0].should.have.property('type');
@@ -926,14 +945,14 @@ describe('parse tag', function() {
       var res = comments.parse('/** @augments */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
     });
 
     it('augments with name', function() {
       var res = comments.parse('/** @augments ClassName */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'augments');
       res[0].tags[0].should.have.property('name', 'ClassName');
     });
@@ -943,7 +962,7 @@ describe('parse tag', function() {
         unwrap: true
       });
 
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'augments');
       assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
@@ -955,7 +974,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @augments ClassName.OK */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'augments');
       res[0].tags[0].should.have.property('name', 'ClassName.OK');
     });
@@ -964,14 +983,14 @@ describe('parse tag', function() {
       var res = comments.parse('/** @extends */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
     });
 
     it('extends with name', function() {
       var res = comments.parse('/** @extends ClassName */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'extends');
       res[0].tags[0].should.have.property('name', 'ClassName');
     });
@@ -980,7 +999,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @extends {ClassName} */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'extends');
       assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
@@ -992,7 +1011,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @extends ClassName.OK */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'extends');
       res[0].tags[0].should.have.property('name', 'ClassName.OK');
     });
@@ -1001,7 +1020,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @extends module:path/ClassName~OK */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'extends');
       res[0].tags[0].should.have.property('name', 'module:path/ClassName~OK');
     });
@@ -1014,7 +1033,7 @@ describe('parse tag', function() {
       ].join('\n'), {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'prop');
       res[0].tags[0].should.have.property('description', 'does some stuff');
       res[0].tags[0].type.should.have.property('name', 'string');
@@ -1030,7 +1049,7 @@ describe('parse tag', function() {
         unwrap: true
       });
 
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
 
       res = comments.parse([
         '/**',
@@ -1041,7 +1060,7 @@ describe('parse tag', function() {
         strict: true
       });
 
-      res[0].tags.should.have.length(0);
+      assert.equal(res[0].tags.length, 0);
     });
 
     it('property', function() {
@@ -1052,7 +1071,7 @@ describe('parse tag', function() {
       ].join('\n'), {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'property');
       res[0].tags[0].should.have.property('description', 'does some stuff');
       res[0].tags[0].type.should.have.property('name', 'string');
@@ -1069,7 +1088,7 @@ describe('parse tag', function() {
         strict: true
       });
 
-      res[0].tags.should.have.length(0);
+      assert.equal(res[0].tags.length, 0);
     });
 
     it('property with optional type', function() {
@@ -1118,7 +1137,7 @@ describe('parse tag', function() {
       ].join('\n'), {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'property');
       res[0].tags[0].should.have.property('description', 'does some stuff');
       res[0].tags[0].type.should.have.property('name', 'string');
@@ -1133,7 +1152,7 @@ describe('parse tag', function() {
       ].join('\n'), {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'throws');
       res[0].tags[0].should.have.property('description', 'if something goes wrong');
       res[0].tags[0].type.should.have.property('name', 'Error');
@@ -1147,7 +1166,7 @@ describe('parse tag', function() {
       ].join('\n'), {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'throws');
       res[0].tags[0].should.have.property('description', 'if something goes wrong');
     });
@@ -1156,7 +1175,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @kind class */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'kind');
       res[0].tags[0].should.have.property('kind', 'class');
     });
@@ -1166,9 +1185,9 @@ describe('parse tag', function() {
         unwrap: true,
         recoverable: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('errors');
-      res[0].tags[0].errors.should.have.length(1);
+      assert.equal(res[0].tags[0].errors.length, 1);
       res[0].tags[0].errors[0].should.equal('Invalid kind name "ng"');
     });
 
@@ -1176,7 +1195,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @todo Write the documentation */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'todo');
       res[0].tags[0].should.have.property('description', 'Write the documentation');
     });
@@ -1185,7 +1204,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @typedef {Object} NumberLike */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('type');
       assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
@@ -1199,7 +1218,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @summary ゆるゆり3期おめでとー */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'summary');
       res[0].tags[0].should.have.property('description', 'ゆるゆり3期おめでとー');
     });
@@ -1209,7 +1228,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @variation 42 */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'variation');
       res[0].tags[0].should.have.property('variation', 42);
     });
@@ -1220,9 +1239,9 @@ describe('parse tag', function() {
         unwrap: true,
         recoverable: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('errors');
-      res[0].tags[0].errors.should.have.length(1);
+      assert.equal(res[0].tags[0].errors.length, 1);
       res[0].tags[0].errors[0].should.equal('Invalid variation "Animation"');
     });
 
@@ -1230,7 +1249,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @access public */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'access');
       res[0].tags[0].should.have.property('access', 'public');
     });
@@ -1240,9 +1259,9 @@ describe('parse tag', function() {
         unwrap: true,
         recoverable: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('errors');
-      res[0].tags[0].errors.should.have.length(1);
+      assert.equal(res[0].tags[0].errors.length, 1);
       res[0].tags[0].errors[0].should.equal('Invalid access name "ng"');
     });
 
@@ -1250,7 +1269,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @public */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'public');
     });
 
@@ -1259,7 +1278,7 @@ describe('parse tag', function() {
         unwrap: true,
         recoverable: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'public');
       res[0].tags[0].should.have.property('description', 'ok');
       res[0].tags[0].should.have.property('type');
@@ -1273,7 +1292,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @protected */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'protected');
     });
 
@@ -1282,7 +1301,7 @@ describe('parse tag', function() {
         unwrap: true,
         recoverable: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'protected');
       res[0].tags[0].should.have.property('description', 'ok');
       res[0].tags[0].should.have.property('type');
@@ -1296,7 +1315,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @private */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'private');
     });
 
@@ -1305,7 +1324,7 @@ describe('parse tag', function() {
         unwrap: true,
         recoverable: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'private');
       res[0].tags[0].should.have.property('description', 'ok');
       res[0].tags[0].should.have.property('type');
@@ -1320,13 +1339,13 @@ describe('parse tag', function() {
         unwrap: true
       });
 
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'readonly');
     });
 
     it('readonly description (non-strict)', function() {
       var res = comments.parse('/** @readonly ng */', {unwrap: true});
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].description.should.equal('ng');
     });
 
@@ -1335,9 +1354,9 @@ describe('parse tag', function() {
         unwrap: true,
         strict: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('errors');
-      res[0].tags[0].errors.should.have.length(1);
+      assert.equal(res[0].tags[0].errors.length, 1);
       res[0].tags[0].errors[0].should.equal('@readonly cannot have a description in strict mode');
     });
 
@@ -1345,7 +1364,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @requires */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
     });
 
     it('requires (strict)', function() {
@@ -1353,14 +1372,14 @@ describe('parse tag', function() {
         unwrap: true,
         strict: true
       });
-      res[0].tags.should.have.length(0);
+      assert.equal(res[0].tags.length, 0);
     });
 
     it('requires with module name', function() {
       var res = comments.parse('/** @requires name.path */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'requires');
       res[0].tags[0].should.have.property('name', 'name.path');
     });
@@ -1369,7 +1388,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @global */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'global');
     });
 
@@ -1377,7 +1396,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @global ng */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].description.should.equal('ng');
     });
 
@@ -1386,9 +1405,9 @@ describe('parse tag', function() {
         unwrap: true,
         strict: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('errors');
-      res[0].tags[0].errors.should.have.length(1);
+      assert.equal(res[0].tags[0].errors.length, 1);
       res[0].tags[0].errors[0].should.equal('@global cannot have a description in strict mode');
     });
 
@@ -1396,7 +1415,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @inner */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'inner');
     });
 
@@ -1404,8 +1423,8 @@ describe('parse tag', function() {
       var res = comments.parse('/** @inner ng */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].description.should.equal('ng');
     });
 
@@ -1414,9 +1433,9 @@ describe('parse tag', function() {
         unwrap: true,
         strict: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('errors');
-      res[0].tags[0].errors.should.have.length(1);
+      assert.equal(res[0].tags[0].errors.length, 1);
       res[0].tags[0].errors[0].should.equal('@inner cannot have a description in strict mode');
     });
 
@@ -1424,13 +1443,13 @@ describe('parse tag', function() {
       var res = comments.parse('/** @instance */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'instance');
     });
 
     it('instance description', function() {
       var res = comments.parse('/** @instance ng */', {unwrap: true});
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].description.should.equal('ng');
     });
 
@@ -1439,9 +1458,9 @@ describe('parse tag', function() {
         unwrap: true,
         strict: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('errors');
-      res[0].tags[0].errors.should.have.length(1);
+      assert.equal(res[0].tags[0].errors.length, 1);
       res[0].tags[0].errors[0].should.equal('@instance cannot have a description in strict mode');
     });
 
@@ -1449,7 +1468,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @since 1.2.1 */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'since');
       res[0].tags[0].should.have.property('description', '1.2.1');
     });
@@ -1458,13 +1477,13 @@ describe('parse tag', function() {
       var res = comments.parse('/** @static */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'static');
     });
 
     it('static description', function() {
       var res = comments.parse('/** @static ng */', {unwrap: true});
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('description', 'ng');
     });
 
@@ -1473,9 +1492,9 @@ describe('parse tag', function() {
         unwrap: true,
         strict: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('errors');
-      res[0].tags[0].errors.should.have.length(1);
+      assert.equal(res[0].tags[0].errors.length, 1);
       res[0].tags[0].errors[0].should.equal('@static cannot have a description in strict mode');
     });
 
@@ -1487,7 +1506,7 @@ describe('parse tag', function() {
       ].join('\n'), {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'this');
       res[0].tags[0].should.have.property('name', 'thingName');
     });
@@ -1500,7 +1519,7 @@ describe('parse tag', function() {
       ].join('\n'), {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'this');
       res[0].tags[0].should.have.property('name', 'thingName.name');
     });
@@ -1514,7 +1533,7 @@ describe('parse tag', function() {
         unwrap: true
       });
 
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'this');
       res[0].tags[0].should.have.property('name', 'thingName.name');
     });
@@ -1529,7 +1548,7 @@ describe('parse tag', function() {
         recoverable: true
       });
 
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'this');
       assert.deepEqual(res[0].tags[0].type, {
         'type': 'TypeApplication',
@@ -1560,10 +1579,10 @@ describe('parse tag', function() {
         recoverable: true
       });
 
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'this');
       res[0].tags[0].should.have.property('errors');
-      res[0].tags[0].errors.should.have.length(1);
+      assert.equal(res[0].tags[0].errors.length, 1);
       res[0].tags[0].errors[0].should.equal('Invalid name for @this');
     });
 
@@ -1576,10 +1595,10 @@ describe('parse tag', function() {
         unwrap: true
       });
 
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'this');
       res[0].tags[0].should.have.property('errors');
-      res[0].tags[0].errors.should.have.length(1);
+      assert.equal(res[0].tags[0].errors.length, 1);
       res[0].tags[0].errors[0].should.equal('expected @this tag to have type and name properties');
     });
 
@@ -1587,7 +1606,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @var */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'var');
     });
 
@@ -1595,7 +1614,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @var thingName.name */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'var');
       res[0].tags[0].should.have.property('name', 'thingName.name');
     });
@@ -1604,7 +1623,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @var {Object} thingName.name */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'var');
       res[0].tags[0].should.have.property('name', 'thingName.name');
       res[0].tags[0].should.have.property('type');
@@ -1618,7 +1637,7 @@ describe('parse tag', function() {
       var res = comments.parse('/** @version 1.2.1 */', {
         unwrap: true
       });
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'version');
       res[0].tags[0].should.have.property('description', '1.2.1');
     });
@@ -1630,7 +1649,7 @@ describe('parse tag', function() {
       });
 
       // name does not accept type
-      res[0].tags.should.have.length(0);
+      assert.equal(res[0].tags.length, 0);
       res[0].description.should.equal('');
     });
 
@@ -1644,11 +1663,11 @@ describe('parse tag', function() {
         unwrap: true
       });
 
-      res[0].tags.should.have.length(2);
+      assert.equal(res[0].tags.length, 2);
       res[0].tags[1].should.have.property('title', 'property');
       res[0].tags[1].should.have.property('name', 'access');
       res[0].tags[1].type.should.have.property('type', 'UnionType');
-      res[0].tags[1].type.elements.should.have.length(3);
+      assert.equal(res[0].tags[1].type.elements.length, 3);
       assert.deepEqual(res[0].tags[1].type.elements[0], {
         type: 'StringLiteralType',
         value: 'public'
@@ -1673,11 +1692,11 @@ describe('parse tag', function() {
         unwrap: true
       });
 
-      res[0].tags.should.have.length(2);
+      assert.equal(res[0].tags.length, 2);
       res[0].tags[1].should.have.property('title', 'property');
       res[0].tags[1].should.have.property('name', 'access');
       res[0].tags[1].type.should.have.property('type', 'UnionType');
-      res[0].tags[1].type.elements.should.have.length(3);
+      assert.equal(res[0].tags[1].type.elements.length, 3);
       assert.deepEqual(res[0].tags[1].type.elements[0], {
         type: 'NumericLiteralType',
         value: -42
@@ -1702,11 +1721,11 @@ describe('parse tag', function() {
         unwrap: true
       });
 
-      res[0].tags.should.have.length(2);
+      assert.equal(res[0].tags.length, 2);
       res[0].tags[1].should.have.property('title', 'property');
       res[0].tags[1].should.have.property('name', 'access');
       res[0].tags[1].type.should.have.property('type', 'UnionType');
-      res[0].tags[1].type.elements.should.have.length(2);
+      assert.equal(res[0].tags[1].type.elements.length, 2);
       assert.deepEqual(res[0].tags[1].type.elements[0], {
         type: 'BooleanLiteralType',
         value: true
@@ -1724,15 +1743,15 @@ describe('parse tag', function() {
         '*/'
       ].join('\n'), {unwrap: true});
 
-      res[0].tags.should.have.length(1);
+      assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'typedef');
       res[0].tags[0].should.have.property('name', 'Result');
       res[0].tags[0].type.should.have.property('type', 'UnionType');
-      res[0].tags[0].type.elements.should.have.length(2);
+      assert.equal(res[0].tags[0].type.elements.length, 2);
 
       var e0 = res[0].tags[0].type.elements[0];
       e0.should.have.property('type', 'RecordType');
-      e0.fields.should.have.length(2);
+      assert.equal(e0.fields.length, 2);
       assert.deepEqual(e0.fields[0], {
         type: 'FieldType',
         key: 'ok',
@@ -1752,7 +1771,7 @@ describe('parse tag', function() {
 
       var e1 = res[0].tags[0].type.elements[1];
       e1.should.have.property('type', 'RecordType');
-      e1.fields.should.have.length(2);
+      assert.equal(e1.fields.length, 2);
       assert.deepEqual(e1.fields[0], {
         type: 'FieldType',
         key: 'ok',

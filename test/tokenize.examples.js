@@ -96,8 +96,8 @@ describe('examples', function() {
         type: 'gfm',
         language: 'js',
         description: '',
-        raw: '```js\n// foo.parser(name, replacements)\nfoo.parser("foo", function (a, b, c) {\n    // body...\n})\n```',
-        val: '\n// foo.parser(name, replacements)\nfoo.parser("foo", function (a, b, c) {\n    // body...\n})\n'
+        raw: '```js\n// foo.parser(name, replacements)\nfoo.parser("foo", function(a, b, c) {\n    // body...\n})\n```',
+        val: '\n// foo.parser(name, replacements)\nfoo.parser("foo", function(a, b, c) {\n    // body...\n})\n'
       }],
       tags: [{
         type: 'tag',

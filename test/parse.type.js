@@ -19,7 +19,7 @@ describe('parse type', function() {
       assert.deepEqual(parseType('Window'), doctrine.parseType('Window'));
       assert.deepEqual(parseType('number'), doctrine.parseType('number'));
       assert.deepEqual(parseType('_'), doctrine.parseType('_'));
-      assert.deepEqual(parseType('$'),  doctrine.parseType('$'));
+      assert.deepEqual(parseType('$'), doctrine.parseType('$'));
     });
 
     it('should parse a type with dot-notation', function() {

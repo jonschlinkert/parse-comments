@@ -5,8 +5,8 @@
   "homepage": "https://github.com/jonschlinkert/parse-comments",
   "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
   "contributors": [
-    "Brian Woodward <brian.woodward@gmail.com> (https://twitter.com/doowb)",
-    "Jon Schlinkert <jon.schlinkert@sellside.com> (http://twitter.com/jonschlinkert)"
+    "Brian Woodward (https://twitter.com/doowb)",
+    "Jon Schlinkert (http://twitter.com/jonschlinkert)"
   ],
   "repository": "jonschlinkert/parse-comments",
   "bugs": {
@@ -19,38 +19,40 @@
   ],
   "main": "index.js",
   "engines": {
-    "node": ">=0.10.0"
+    "node": ">=4"
   },
   "scripts": {
     "test": "mocha"
+  },
+  "dependencies": {
+    "@sellside/emitter": "^1.2.1",
+    "define-property": "^2.0.2",
+    "extend-shallow": "^3.0.2",
+    "extract-comments": "^1.0.0",
+    "floating-point-regex": "^0.1.0",
+    "get-value": "^3.0.1",
+    "inflection": "^1.12.0",
+    "is-number": "^5.0.0",
+    "kind-of": "^6.0.2",
+    "map-schema": "^0.2.4",
+    "set-value": "^3.0.0",
+    "snapdragon": "^0.11.3",
+    "tokenize-comment": "^2.0.0",
+    "union-value": "^1.0.0"
+  },
+  "devDependencies": {
+    "cache-base": "^3.0.0",
+    "doctrine": "^2.1.0",
+    "gulp-format-md": "^1.0.0",
+    "mocha": "^3.5.3",
+    "object.pick": "^1.3.0",
+    "should": "^13.2.1"
   },
   "keywords": [
     "code",
     "comments",
     "parse"
   ],
-  "dependencies": {
-    "component-emitter": "^1.2.1",
-    "define-property": "^0.2.5",
-    "extend-shallow": "^2.0.1",
-    "extract-comments": "^0.10.1",
-    "floating-point-regex": "^0.1.0",
-    "get-value": "^2.0.6",
-    "is-number": "^3.0.0",
-    "kind-of": "^3.1.0",
-    "markdown-toc": "^1.1.0",
-    "set-value": "^0.4.3",
-    "snapdragon": "^0.11.0",
-    "tokenize-comment": "^1.0.2"
-  },
-  "devDependencies": {
-    "cache-base": "^1.0.0",
-    "doctrine": "^2.0.0",
-    "gulp-format-md": "^0.1.11",
-    "mocha": "^3.2.0",
-    "object.pick": "^1.2.0",
-    "should": "^11.2.1"
-  },
   "verb": {
     "toc": false,
     "layout": "default",

@@ -2,12 +2,13 @@
 
 require('mocha');
 require('should');
+var assert = require('assert');
 var doctrine = require('doctrine');
 var Comments = require('..');
 var comments;
 
 /**
- * integration tests from doctrine (since we use doctrine for parsing tags)
+ * Some of these tests are based on tests from doctrine
  * https://github.com/eslint/doctrine/LICENSE.BSD
  * https://github.com/eslint/doctrine/LICENSE.closure-compiler
  * https://github.com/eslint/doctrine/LICENSE.esprima
@@ -3063,7 +3064,7 @@ describe('parse tag', function() {
 
   describe('@ mark contained descriptions', function() {
     it('comment description #10', function() {
-      comments.parseComment([
+      var res = comments.parseComment([
         '/**',
         ' * Prevents the default action. It is equivalent to',
         ' * {@code e.preventDefault()}, but can be used as the callback argument of',
@@ -3073,22 +3074,23 @@ describe('parse tag', function() {
       ].join('\n'), {
         unwrap: true,
         sloppy: true
-      }).should.eql({
-        'description': 'Prevents the default action. It is equivalent to\n{@code e.preventDefault()}, but can be used as the callback argument of\n{@link goog.events.listen} without declaring another function.',
-        'tags': [{
-          'title': 'param',
-          'description': 'An event.',
-          'type': {
-            'type': 'NonNullableType',
-            'expression': {
-              'type': 'NameExpression',
-              'name': 'goog.events.Event'
-            },
-            'prefix': true
-          },
-          'name': 'e'
-        }]
       });
+
+      assert.equal(res.description, 'Prevents the default action. It is equivalent to\n{@code e.preventDefault()}, but can be used as the callback argument of\n{@link goog.events.listen} without declaring another function.');
+
+      assert.deepEqual(res.tags, [{
+        'title': 'param',
+        'description': 'An event.',
+        'type': {
+          'type': 'NonNullableType',
+          'expression': {
+            'type': 'NameExpression',
+            'name': 'goog.events.Event'
+          },
+          'prefix': true
+        },
+        'name': 'e'
+      }]);
     });
 
     it('tag description', function() {
