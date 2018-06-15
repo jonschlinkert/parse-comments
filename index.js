@@ -2,14 +2,12 @@
 
 // require('time-require');
 const assign = Object.assign;
-const get = require('get-value');
-const set = require('set-value');
-const typeOf = require('kind-of');
 const Snapdragon = require('snapdragon');
 const Emitter = require('@sellside/emitter');
 const extract = require('extract-comments');
 const tokenize = require('tokenize-comment');
 const { expects, allows, format, validate, normalize, utils, parse } = require('./lib');
+const { typeOf, get, set } = utils;
 
 /**
  * Create an instance of `Comments` with the given `options`.
