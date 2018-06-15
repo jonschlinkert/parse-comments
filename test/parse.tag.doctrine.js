@@ -166,15 +166,12 @@ describe('parse tag', function() {
     });
 
     it('const triple', function() {
-      var res = comments.parseComment([
-        '/**',
-        ' * @const @const',
-        ' * @const @const',
-        ' * @const @const',
-        ' */'
-      ].join('\n'), {
-        unwrap: true
-      });
+      var res = comments.parseComment(
+        ['/**', ' * @const @const', ' * @const @const', ' * @const @const', ' */'].join('\n'),
+        {
+          unwrap: true
+        }
+      );
       res.tags.should.have.length(3);
       res.tags[0].should.have.property('title', 'const');
       res.tags[1].should.have.property('title', 'const');
@@ -286,7 +283,7 @@ describe('parse tag', function() {
         unwrap: true
       });
       res.tags.should.have.length(0);
-    // func does not accept type
+      // func does not accept type
     });
 
     it('function', function() {
@@ -311,7 +308,7 @@ describe('parse tag', function() {
         unwrap: true
       });
       res.tags.should.have.length(0);
-    // function does not accept type
+      // function does not accept type
     });
 
     it('member', function() {
@@ -367,7 +364,7 @@ describe('parse tag', function() {
         unwrap: true
       });
       res.tags.should.have.length(0);
-    // method does not accept type
+      // method does not accept type
     });
 
     it('mixes', function() {
@@ -537,11 +534,7 @@ describe('parse tag', function() {
     });
 
     it('param', function() {
-      var res = comments.parseComment([
-        '/**',
-        ' * @param {String} userName',
-        '*/'
-      ].join('\n'), {
+      var res = comments.parseComment(['/**', ' * @param {String} userName', '*/'].join('\n'), {
         unwrap: true
       });
       res.tags.should.have.length(1);
@@ -555,11 +548,7 @@ describe('parse tag', function() {
     });
 
     it('param with properties', function() {
-      var res = comments.parseComment([
-        '/**',
-        ' * @param {String} user.name',
-        '*/'
-      ].join('\n'), {
+      var res = comments.parseComment(['/**', ' * @param {String} user.name', '*/'].join('\n'), {
         unwrap: true
       });
       res.tags.should.have.length(1);
@@ -573,11 +562,7 @@ describe('parse tag', function() {
     });
 
     it('param with properties with description', function() {
-      var res = comments.parseComment([
-        '/**',
-        ' * @param {String} user.name - hi',
-        '*/'
-      ].join('\n'), {
+      var res = comments.parseComment(['/**', ' * @param {String} user.name - hi', '*/'].join('\n'), {
         unwrap: true
       });
       res.tags.should.have.length(1);
@@ -592,11 +577,7 @@ describe('parse tag', function() {
     });
 
     it('param with array properties with description', function() {
-      var res = comments.parseComment([
-        '/**',
-        ' * @param {string} employee[].name - hi',
-        ' */'
-      ].join('\n'), {
+      var res = comments.parseComment(['/**', ' * @param {string} employee[].name - hi', ' */'].join('\n'), {
         unwrap: true
       });
       res.tags.should.have.length(1);
@@ -611,11 +592,7 @@ describe('parse tag', function() {
     });
 
     it('param with array properties without description', function() {
-      var res = comments.parseComment([
-        '/**',
-        ' * @param {string} employee[].name',
-        ' */'
-      ].join('\n'), {
+      var res = comments.parseComment(['/**', ' * @param {string} employee[].name', ' */'].join('\n'), {
         unwrap: true
       });
       res.tags.should.have.length(1);
@@ -630,11 +607,7 @@ describe('parse tag', function() {
     });
 
     it('arg with properties', function() {
-      var res = comments.parseComment([
-        '/**',
-        ' * @arg {String} user.name',
-        '*/'
-      ].join('\n'), {
+      var res = comments.parseComment(['/**', ' * @arg {String} user.name', '*/'].join('\n'), {
         unwrap: true
       });
       res.tags.should.have.length(1);
@@ -648,11 +621,7 @@ describe('parse tag', function() {
     });
 
     it('argument with properties', function() {
-      var res = comments.parseComment([
-        '/**',
-        ' * @argument {String} user.name',
-        '*/'
-      ].join('\n'), {
+      var res = comments.parseComment(['/**', ' * @argument {String} user.name', '*/'].join('\n'), {
         unwrap: true
       });
       res.tags.should.have.length(1);
@@ -666,11 +635,7 @@ describe('parse tag', function() {
     });
 
     it('param typeless', function() {
-      var res = comments.parseComment([
-        '/**',
-        ' * @param something [bye] hi',
-        '*/'
-      ].join('\n'), {
+      var res = comments.parseComment(['/**', ' * @param something [bye] hi', '*/'].join('\n'), {
         unwrap: true,
         sloppy: true
       });
@@ -683,11 +648,7 @@ describe('parse tag', function() {
         description: '[bye] hi'
       });
 
-      res = comments.parseComment([
-        '/**',
-        ' * @param userName',
-        '*/'
-      ].join('\n'), {
+      res = comments.parseComment(['/**', ' * @param userName', '*/'].join('\n'), {
         unwrap: true
       });
       res.tags.should.have.length(1);
@@ -698,11 +659,7 @@ describe('parse tag', function() {
         description: null
       });
 
-      res = comments.parseComment([
-        '/**',
-        ' * @param userName Something descriptive',
-        '*/'
-      ].join('\n'), {
+      res = comments.parseComment(['/**', ' * @param userName Something descriptive', '*/'].join('\n'), {
         unwrap: true
       });
       res.tags.should.have.length(1);
@@ -713,11 +670,7 @@ describe('parse tag', function() {
         description: 'Something descriptive'
       });
 
-      res = comments.parseComment([
-        '/**',
-        ' * @param user.name Something descriptive',
-        '*/'
-      ].join('\n'), {
+      res = comments.parseComment(['/**', ' * @param user.name Something descriptive', '*/'].join('\n'), {
         unwrap: true
       });
       res.tags.should.have.length(1);
@@ -730,14 +683,12 @@ describe('parse tag', function() {
     });
 
     it('param broken', function() {
-      var res = comments.parseComment([
-        '/**',
-        ' * @param {String} userName',
-        ' * @param {String userName',
-        '*/'
-      ].join('\n'), {
-        unwrap: true
-      });
+      var res = comments.parseComment(
+        ['/**', ' * @param {String} userName', ' * @param {String userName', '*/'].join('\n'),
+        {
+          unwrap: true
+        }
+      );
       res.tags.should.have.length(1);
       res.tags[0].should.have.property('title', 'param');
       res.tags[0].should.have.property('name', 'userName');
@@ -749,11 +700,7 @@ describe('parse tag', function() {
     });
 
     it('param record', function() {
-      var res = comments.parseComment([
-        '/**',
-        ' * @param {{ok:String}} userName',
-        '*/'
-      ].join('\n'), {
+      var res = comments.parseComment(['/**', ' * @param {{ok:String}} userName', '*/'].join('\n'), {
         unwrap: true
       });
       res.tags.should.have.length(1);
@@ -762,60 +709,54 @@ describe('parse tag', function() {
       res.tags[0].should.have.property('type');
       res.tags[0].type.should.eql({
         type: 'RecordType',
-        fields: [{
-          type: 'FieldType',
-          key: 'ok',
-          value: {
-            type: 'NameExpression',
-            name: 'String'
+        fields: [
+          {
+            type: 'FieldType',
+            key: 'ok',
+            value: {
+              type: 'NameExpression',
+              name: 'String'
+            }
           }
-        }]
+        ]
       });
     });
 
     it('param record broken', function() {
-      var res = comments.parseComment([
-        '/**',
-        ' * @param {{ok:String} userName',
-        '*/'
-      ].join('\n'), {
+      var res = comments.parseComment(['/**', ' * @param {{ok:String} userName', '*/'].join('\n'), {
         unwrap: true
       });
       res.tags.should.be.empty;
     });
 
     it('param multiple lines', function() {
-      var res = comments.parseComment([
-        '/**',
-        ' * @param {string|',
-        ' *     number} userName',
-        ' * }}',
-        '*/'
-      ].join('\n'), {
-        unwrap: true
-      });
+      var res = comments.parseComment(
+        ['/**', ' * @param {string|', ' *     number} userName', ' * }}', '*/'].join('\n'),
+        {
+          unwrap: true
+        }
+      );
       res.tags.should.have.length(1);
       res.tags[0].should.have.property('title', 'param');
       res.tags[0].should.have.property('name', 'userName');
       res.tags[0].should.have.property('type');
       res.tags[0].type.should.eql({
         type: 'UnionType',
-        elements: [{
-          type: 'NameExpression',
-          name: 'string'
-        }, {
-          type: 'NameExpression',
-          name: 'number'
-        }]
+        elements: [
+          {
+            type: 'NameExpression',
+            name: 'string'
+          },
+          {
+            type: 'NameExpression',
+            name: 'number'
+          }
+        ]
       });
     });
 
     it('param without braces', function() {
-      var res = comments.parseComment([
-        '/**',
-        ' * @param string name description',
-        '*/'
-      ].join('\n'), {
+      var res = comments.parseComment(['/**', ' * @param string name description', '*/'].join('\n'), {
         unwrap: true
       });
       res.tags.should.have.length(1);
@@ -826,11 +767,7 @@ describe('parse tag', function() {
     });
 
     it('param w/ hyphen before description', function() {
-      var res = comments.parseComment([
-        '/**',
-        ' * @param {string} name - description',
-        '*/'
-      ].join('\n'), {
+      var res = comments.parseComment(['/**', ' * @param {string} name - description', '*/'].join('\n'), {
         unwrap: true
       });
       res.tags.should.have.length(1);
@@ -846,11 +783,7 @@ describe('parse tag', function() {
     });
 
     it('param w/ hyphen + leading space before description', function() {
-      var res = comments.parseComment([
-        '/**',
-        ' * @param {string} name -   description',
-        '*/'
-      ].join('\n'), {
+      var res = comments.parseComment(['/**', ' * @param {string} name -   description', '*/'].join('\n'), {
         unwrap: true
       });
       res.tags.should.have.length(1);
@@ -866,16 +799,12 @@ describe('parse tag', function() {
     });
 
     it('description and param separated by blank line', function() {
-      var res = comments.parseComment([
-        '/**',
-        ' * Description',
-        ' * blah blah blah',
-        ' *',
-        ' * @param {string} name description',
-        '*/'
-      ].join('\n'), {
-        unwrap: true
-      });
+      var res = comments.parseComment(
+        ['/**', ' * Description', ' * blah blah blah', ' *', ' * @param {string} name description', '*/'].join('\n'),
+        {
+          unwrap: true
+        }
+      );
 
       res.description.should.eql('Description\nblah blah blah');
       res.tags.should.have.length(1);
@@ -890,12 +819,7 @@ describe('parse tag', function() {
     });
 
     it('regular block comment instead of jsdoc-style block comment', function() {
-      var res = comments.parseComment([
-        '/*',
-        ' * Description',
-        ' * blah blah blah',
-        '*/'
-      ].join('\n'), {
+      var res = comments.parseComment(['/*', ' * Description', ' * blah blah blah', '*/'].join('\n'), {
         unwrap: true
       });
 
@@ -986,11 +910,7 @@ describe('parse tag', function() {
     });
 
     it('prop', function() {
-      var res = comments.parseComment([
-        '/**',
-        ' * @prop {string} thingName - does some stuff',
-        '*/'
-      ].join('\n'), {
+      var res = comments.parseComment(['/**', ' * @prop {string} thingName - does some stuff', '*/'].join('\n'), {
         unwrap: true
       });
       res.tags.should.have.length(1);
@@ -1001,22 +921,14 @@ describe('parse tag', function() {
     });
 
     it('prop without type', function() {
-      var res = comments.parseComment([
-        '/**',
-        ' * @prop thingName - does some stuff',
-        '*/'
-      ].join('\n'), {
+      var res = comments.parseComment(['/**', ' * @prop thingName - does some stuff', '*/'].join('\n'), {
         unwrap: true
       });
       res.tags.should.have.length(0);
     });
 
     it('property', function() {
-      var res = comments.parseComment([
-        '/**',
-        ' * @property {string} thingName - does some stuff',
-        '*/'
-      ].join('\n'), {
+      var res = comments.parseComment(['/**', ' * @property {string} thingName - does some stuff', '*/'].join('\n'), {
         unwrap: true
       });
       res.tags.should.have.length(1);
@@ -1027,11 +939,7 @@ describe('parse tag', function() {
     });
 
     it('property without type', function() {
-      var res = comments.parseComment([
-        '/**',
-        ' * @property thingName - does some stuff',
-        '*/'
-      ].join('\n'), {
+      var res = comments.parseComment(['/**', ' * @property thingName - does some stuff', '*/'].join('\n'), {
         unwrap: true
       });
 
@@ -1040,15 +948,14 @@ describe('parse tag', function() {
 
     it('property with optional type', function() {
       var res = comments.parseComment(
-        ['/**',
-          '* testtypedef',
-          '* @typedef {object} abc',
-          '* @property {String} [val] value description',
-          '*/'
-        ].join('\n'), {
+        ['/**', '* testtypedef', '* @typedef {object} abc', '* @property {String} [val] value description', '*/'].join(
+          '\n'
+        ),
+        {
           unwrap: true,
           sloppy: true
-        });
+        }
+      );
 
       res.tags[1].should.have.property('title', 'property');
       res.tags[1].should.have.property('type');
@@ -1056,13 +963,12 @@ describe('parse tag', function() {
     });
 
     it('property with nested name', function() {
-      var res = comments.parseComment([
-        '/**',
-        ' * @property {string} thingName.name - does some stuff',
-        '*/'
-      ].join('\n'), {
-        unwrap: true
-      });
+      var res = comments.parseComment(
+        ['/**', ' * @property {string} thingName.name - does some stuff', '*/'].join('\n'),
+        {
+          unwrap: true
+        }
+      );
       res.tags.should.have.length(1);
       res.tags[0].should.have.property('title', 'property');
       res.tags[0].should.have.property('description', 'does some stuff');
@@ -1071,11 +977,7 @@ describe('parse tag', function() {
     });
 
     it('throws', function() {
-      var res = comments.parseComment([
-        '/**',
-        ' * @throws {Error} if something goes wrong',
-        ' */'
-      ].join('\n'), {
+      var res = comments.parseComment(['/**', ' * @throws {Error} if something goes wrong', ' */'].join('\n'), {
         unwrap: true
       });
       res.tags.should.have.length(1);
@@ -1085,11 +987,7 @@ describe('parse tag', function() {
     });
 
     it('throws without type', function() {
-      var res = comments.parseComment([
-        '/**',
-        ' * @throws if something goes wrong',
-        ' */'
-      ].join('\n'), {
+      var res = comments.parseComment(['/**', ' * @throws if something goes wrong', ' */'].join('\n'), {
         unwrap: true
       });
       res.tags.should.have.length(1);
@@ -1114,7 +1012,7 @@ describe('parse tag', function() {
       res.tags.should.have.length(1);
       res.tags[0].should.have.property('errors');
       res.tags[0].errors.should.have.length(1);
-      res.tags[0].errors[0].should.equal('Invalid kind name \'ng\'');
+      res.tags[0].errors[0].should.equal("Invalid kind name 'ng'");
     });
 
     it('todo', function() {
@@ -1150,7 +1048,6 @@ describe('parse tag', function() {
     });
 
     it('variation', function() {
-      // japanese lang
       var res = comments.parseComment('/** @variation 42 */', {
         unwrap: true
       });
@@ -1160,7 +1057,6 @@ describe('parse tag', function() {
     });
 
     it('variation error', function() {
-      // japanese lang
       var res = comments.parseComment('/** @variation Animation */', {
         unwrap: true,
         recoverable: true
@@ -1168,7 +1064,7 @@ describe('parse tag', function() {
       res.tags.should.have.length(1);
       res.tags[0].should.have.property('errors');
       res.tags[0].errors.should.have.length(1);
-      res.tags[0].errors[0].should.equal('Invalid variation \'Animation\'');
+      res.tags[0].errors[0].should.equal("Invalid variation 'Animation'");
     });
 
     it('access', function() {
@@ -1188,7 +1084,7 @@ describe('parse tag', function() {
       res.tags.should.have.length(1);
       res.tags[0].should.have.property('errors');
       res.tags[0].errors.should.have.length(1);
-      res.tags[0].errors[0].should.equal('Invalid access name \'ng\'');
+      res.tags[0].errors[0].should.equal("Invalid access name 'ng'");
     });
 
     it('public', function() {
@@ -1276,7 +1172,7 @@ describe('parse tag', function() {
       res.tags.should.have.length(1);
       res.tags[0].should.have.property('errors');
       res.tags[0].errors.should.have.length(1);
-      res.tags[0].errors[0].should.equal('Unknown content \'ng\'');
+      res.tags[0].errors[0].should.equal("Unknown content 'ng'");
     });
 
     it('requires', function() {
@@ -1311,7 +1207,7 @@ describe('parse tag', function() {
       res.tags.should.have.length(1);
       res.tags[0].should.have.property('errors');
       res.tags[0].errors.should.have.length(1);
-      res.tags[0].errors[0].should.equal('Unknown content \'ng\'');
+      res.tags[0].errors[0].should.equal("Unknown content 'ng'");
     });
 
     it('inner', function() {
@@ -1330,7 +1226,7 @@ describe('parse tag', function() {
       res.tags.should.have.length(1);
       res.tags[0].should.have.property('errors');
       res.tags[0].errors.should.have.length(1);
-      res.tags[0].errors[0].should.equal('Unknown content \'ng\'');
+      res.tags[0].errors[0].should.equal("Unknown content 'ng'");
     });
 
     it('instance', function() {
@@ -1349,7 +1245,7 @@ describe('parse tag', function() {
       res.tags.should.have.length(1);
       res.tags[0].should.have.property('errors');
       res.tags[0].errors.should.have.length(1);
-      res.tags[0].errors[0].should.equal('Unknown content \'ng\'');
+      res.tags[0].errors[0].should.equal("Unknown content 'ng'");
     });
 
     it('since', function() {
@@ -1377,15 +1273,11 @@ describe('parse tag', function() {
       res.tags.should.have.length(1);
       res.tags[0].should.have.property('errors');
       res.tags[0].errors.should.have.length(1);
-      res.tags[0].errors[0].should.equal('Unknown content \'ng\'');
+      res.tags[0].errors[0].should.equal("Unknown content 'ng'");
     });
 
     it('this', function() {
-      var res = comments.parseComment([
-        '/**',
-        ' * @this thingName',
-        '*/'
-      ].join('\n'), {
+      var res = comments.parseComment(['/**', ' * @this thingName', '*/'].join('\n'), {
         unwrap: true
       });
       res.tags.should.have.length(1);
@@ -1394,11 +1286,7 @@ describe('parse tag', function() {
     });
 
     it('this with namepath', function() {
-      var res = comments.parseComment([
-        '/**',
-        ' * @this thingName.name',
-        '*/'
-      ].join('\n'), {
+      var res = comments.parseComment(['/**', ' * @this thingName.name', '*/'].join('\n'), {
         unwrap: true
       });
       res.tags.should.have.length(1);
@@ -1407,11 +1295,7 @@ describe('parse tag', function() {
     });
 
     it('this with name expression', function() {
-      var res = comments.parseComment([
-        '/**',
-        ' * @this {thingName.name}',
-        '*/'
-      ].join('\n'), {
+      var res = comments.parseComment(['/**', ' * @this {thingName.name}', '*/'].join('\n'), {
         unwrap: true
       });
       res.tags.should.have.length(1);
@@ -1420,11 +1304,7 @@ describe('parse tag', function() {
     });
 
     it('this error with type application', function() {
-      var res = comments.parseComment([
-        '/**',
-        ' * @this {Array<string>}',
-        '*/'
-      ].join('\n'), {
+      var res = comments.parseComment(['/**', ' * @this {Array<string>}', '*/'].join('\n'), {
         unwrap: true,
         recoverable: true
       });
@@ -1436,11 +1316,7 @@ describe('parse tag', function() {
     });
 
     it('this error', function() {
-      var res = comments.parseComment([
-        '/**',
-        ' * @this',
-        '*/'
-      ].join('\n'), {
+      var res = comments.parseComment(['/**', ' * @this', '*/'].join('\n'), {
         unwrap: true,
         recoverable: true
       });
@@ -1499,20 +1375,20 @@ describe('parse tag', function() {
       // name does not accept type
       res.tags.should.have.length(0);
       res.should.eql({
-        'description': '',
-        'tags': []
+        description: '',
+        tags: []
       });
     });
 
     it('string literal property', function() {
-      var res = comments.parseComment([
-        '/**',
-        ' * @typedef {Object} comment',
-        " * @property {('public'|'protected'|'private')} access",
-        '*/'
-      ].join('\n'), {
-        unwrap: true
-      });
+      var res = comments.parseComment(
+        ['/**', ' * @typedef {Object} comment', " * @property {('public'|'protected'|'private')} access", '*/'].join(
+          '\n'
+        ),
+        {
+          unwrap: true
+        }
+      );
 
       res.tags.should.have.length(2);
       res.tags[1].should.have.property('title', 'property');
@@ -1534,14 +1410,12 @@ describe('parse tag', function() {
     });
 
     it('numeric literal property', function() {
-      var res = comments.parseComment([
-        '/**',
-        ' * @typedef {Object} comment',
-        ' * @property {(-42|1.5|0)} access',
-        '*/'
-      ].join('\n'), {
-        unwrap: true
-      });
+      var res = comments.parseComment(
+        ['/**', ' * @typedef {Object} comment', ' * @property {(-42|1.5|0)} access', '*/'].join('\n'),
+        {
+          unwrap: true
+        }
+      );
 
       res.tags.should.have.length(2);
       res.tags[1].should.have.property('title', 'property');
@@ -1563,14 +1437,12 @@ describe('parse tag', function() {
     });
 
     it('boolean literal property', function() {
-      var res = comments.parseComment([
-        '/**',
-        ' * @typedef {Object} comment',
-        ' * @property {(true|false)} access',
-        '*/'
-      ].join('\n'), {
-        unwrap: true
-      });
+      var res = comments.parseComment(
+        ['/**', ' * @typedef {Object} comment', ' * @property {(true|false)} access', '*/'].join('\n'),
+        {
+          unwrap: true
+        }
+      );
 
       res.tags.should.have.length(2);
       res.tags[1].should.have.property('title', 'property');
@@ -1588,13 +1460,12 @@ describe('parse tag', function() {
     });
 
     it('complex union with literal types', function() {
-      var res = comments.parseComment([
-        '/**',
-        ' * @typedef {({ok: true, data: string} | {ok: false, error: Error})} Result',
-        '*/'
-      ].join('\n'), {
-        unwrap: true
-      });
+      var res = comments.parseComment(
+        ['/**', ' * @typedef {({ok: true, data: string} | {ok: false, error: Error})} Result', '*/'].join('\n'),
+        {
+          unwrap: true
+        }
+      );
 
       res.tags.should.have.length(1);
       res.tags[0].should.have.property('title', 'typedef');
@@ -1649,13 +1520,16 @@ describe('parse tag', function() {
       var type = comments.parseType('string|number');
       type.should.eql({
         type: 'UnionType',
-        elements: [{
-          type: 'NameExpression',
-          name: 'string'
-        }, {
-          type: 'NameExpression',
-          name: 'number'
-        }]
+        elements: [
+          {
+            type: 'NameExpression',
+            name: 'string'
+          },
+          {
+            type: 'NameExpression',
+            name: 'number'
+          }
+        ]
       });
     });
 
@@ -1671,10 +1545,12 @@ describe('parse tag', function() {
       var type = comments.parseType('[string,]');
       type.should.eql({
         type: 'ArrayType',
-        elements: [{
-          type: 'NameExpression',
-          name: 'string'
-        }]
+        elements: [
+          {
+            type: 'NameExpression',
+            name: 'string'
+          }
+        ]
       });
     });
 
@@ -1682,9 +1558,11 @@ describe('parse tag', function() {
       var type = comments.parseType('[*]');
       type.should.eql({
         type: 'ArrayType',
-        elements: [{
-          type: 'AllLiteral'
-        }]
+        elements: [
+          {
+            type: 'AllLiteral'
+          }
+        ]
       });
     });
 
@@ -1692,9 +1570,11 @@ describe('parse tag', function() {
       var type = comments.parseType('[?]');
       type.should.eql({
         type: 'ArrayType',
-        elements: [{
-          type: 'NullableLiteral'
-        }]
+        elements: [
+          {
+            type: 'NullableLiteral'
+          }
+        ]
       });
     });
 
@@ -1714,10 +1594,12 @@ describe('parse tag', function() {
           type: 'NameExpression',
           name: 'Array'
         },
-        applications: [{
-          type: 'NameExpression',
-          name: 'String'
-        }]
+        applications: [
+          {
+            type: 'NameExpression',
+            name: 'String'
+          }
+        ]
       });
     });
 
@@ -1729,9 +1611,11 @@ describe('parse tag', function() {
           type: 'NameExpression',
           name: 'Array'
         },
-        applications: [{
-          type: 'NullableLiteral'
-        }]
+        applications: [
+          {
+            type: 'NullableLiteral'
+          }
+        ]
       });
     });
 
@@ -1743,13 +1627,16 @@ describe('parse tag', function() {
           type: 'NameExpression',
           name: 'Array'
         },
-        applications: [{
-          type: 'NameExpression',
-          name: 'String'
-        }, {
-          type: 'NameExpression',
-          name: 'Number'
-        }]
+        applications: [
+          {
+            type: 'NameExpression',
+            name: 'String'
+          },
+          {
+            type: 'NameExpression',
+            name: 'Number'
+          }
+        ]
       });
     });
 
@@ -1761,10 +1648,12 @@ describe('parse tag', function() {
           type: 'NameExpression',
           name: 'Array'
         },
-        applications: [{
-          type: 'NameExpression',
-          name: 'String'
-        }]
+        applications: [
+          {
+            type: 'NameExpression',
+            name: 'String'
+          }
+        ]
       });
     });
 
@@ -1776,155 +1665,173 @@ describe('parse tag', function() {
           type: 'NameExpression',
           name: 'Array'
         },
-        applications: [{
-          type: 'NameExpression',
-          name: 'String'
-        }]
+        applications: [
+          {
+            type: 'NameExpression',
+            name: 'String'
+          }
+        ]
       });
     });
 
     it('function type simple', function() {
       var type = comments.parseType('function()');
       type.should.eql({
-        'type': 'FunctionType',
-        'params': [],
-        'result': null
+        type: 'FunctionType',
+        params: [],
+        result: null
       });
     });
 
     it('function type with name', function() {
       var type = comments.parseType('function(a)');
       type.should.eql({
-        'type': 'FunctionType',
-        'params': [{
-          'type': 'NameExpression',
-          'name': 'a'
-        }],
-        'result': null
+        type: 'FunctionType',
+        params: [
+          {
+            type: 'NameExpression',
+            name: 'a'
+          }
+        ],
+        result: null
       });
     });
 
     it('function type with name and type', function() {
       var type = comments.parseType('function(a:b)');
       type.should.eql({
-        'type': 'FunctionType',
-        'params': [{
-          'type': 'ParameterType',
-          'name': 'a',
-          'expression': {
-            'type': 'NameExpression',
-            'name': 'b'
+        type: 'FunctionType',
+        params: [
+          {
+            type: 'ParameterType',
+            name: 'a',
+            expression: {
+              type: 'NameExpression',
+              name: 'b'
+            }
           }
-        }],
-        'result': null
+        ],
+        result: null
       });
     });
 
     it('function type with optional param', function() {
       var type = comments.parseType('function(a=)');
       type.should.eql({
-        'type': 'FunctionType',
-        'params': [{
-          'type': 'OptionalType',
-          'expression': {
-            'type': 'NameExpression',
-            'name': 'a'
+        type: 'FunctionType',
+        params: [
+          {
+            type: 'OptionalType',
+            expression: {
+              type: 'NameExpression',
+              name: 'a'
+            }
           }
-        }],
-        'result': null
+        ],
+        result: null
       });
     });
 
     it('function type with optional param name and type', function() {
       var type = comments.parseType('function(a:b=)');
       type.should.eql({
-        'type': 'FunctionType',
-        'params': [{
-          'type': 'OptionalType',
-          'expression': {
-            'type': 'ParameterType',
-            'name': 'a',
-            'expression': {
-              'type': 'NameExpression',
-              'name': 'b'
+        type: 'FunctionType',
+        params: [
+          {
+            type: 'OptionalType',
+            expression: {
+              type: 'ParameterType',
+              name: 'a',
+              expression: {
+                type: 'NameExpression',
+                name: 'b'
+              }
             }
           }
-        }],
-        'result': null
+        ],
+        result: null
       });
     });
 
     it('function type with rest param', function() {
       var type = comments.parseType('function(...a)');
       type.should.eql({
-        'type': 'FunctionType',
-        'params': [{
-          'type': 'RestType',
-          'expression': {
-            'type': 'NameExpression',
-            'name': 'a'
+        type: 'FunctionType',
+        params: [
+          {
+            type: 'RestType',
+            expression: {
+              type: 'NameExpression',
+              name: 'a'
+            }
           }
-        }],
-        'result': null
+        ],
+        result: null
       });
     });
 
     it('function type with rest param name and type', function() {
       var type = comments.parseType('function(...a:b)');
       type.should.eql({
-        'type': 'FunctionType',
-        'params': [{
-          'type': 'RestType',
-          'expression': {
-            'type': 'ParameterType',
-            'name': 'a',
-            'expression': {
-              'type': 'NameExpression',
-              'name': 'b'
+        type: 'FunctionType',
+        params: [
+          {
+            type: 'RestType',
+            expression: {
+              type: 'ParameterType',
+              name: 'a',
+              expression: {
+                type: 'NameExpression',
+                name: 'b'
+              }
             }
           }
-        }],
-        'result': null
+        ],
+        result: null
       });
     });
 
     it('function type with optional rest param', function() {
       var type = comments.parseType('function(...a=)');
       type.should.eql({
-        'type': 'FunctionType',
-        'params': [{
-          'type': 'RestType',
-          'expression': {
-            'type': 'OptionalType',
-            'expression': {
-              'type': 'NameExpression',
-              'name': 'a'
+        type: 'FunctionType',
+        params: [
+          {
+            type: 'RestType',
+            expression: {
+              type: 'OptionalType',
+              expression: {
+                type: 'NameExpression',
+                name: 'a'
+              }
             }
           }
-        }],
-        'result': null
+        ],
+        result: null
       });
     });
 
     it('function type with optional rest param name and type', function() {
       var type = comments.parseType('function(...a:b=)');
       type.should.eql({
-        'type': 'FunctionType',
-        'params': [{
-          'type': 'RestType',
-          'expression': {
-            'type': 'OptionalType',
-            'expression': {
-              'type': 'ParameterType',
-              'name': 'a',
-              'expression': {
-                'type': 'NameExpression',
-                'name': 'b'
+        type: 'FunctionType',
+        params: [
+          {
+            type: 'RestType',
+            expression: {
+              type: 'OptionalType',
+              expression: {
+                type: 'ParameterType',
+                name: 'a',
+                expression: {
+                  type: 'NameExpression',
+                  name: 'b'
+                }
               }
             }
           }
-        }],
-        'result': null
+        ],
+        result: null
       });
     });
 
@@ -1933,31 +1840,35 @@ describe('parse tag', function() {
 
       type = comments.parseType("{'ok':String}");
       type.should.eql({
-        'fields': [{
-          'key': 'ok',
-          'type': 'FieldType',
-          'value': {
-            'name': 'String',
-            'type': 'NameExpression'
+        fields: [
+          {
+            key: 'ok',
+            type: 'FieldType',
+            value: {
+              name: 'String',
+              type: 'NameExpression'
+            }
           }
-        }],
-        'type': 'RecordType'
+        ],
+        type: 'RecordType'
       });
 
       type = comments.parseType('{"\\r\\n\\t\\u2028\\x20\\u20\\b\\f\\v\\\r\n\\\n\\0\\07\\012\\o":String}');
       type.should.eql({
-        'fields': [{
-          'key': '\r\n\t\u2028\x20u20\b\f\v\0\u0007\u000ao',
-          'type': 'FieldType',
-          'value': {
-            'name': 'String',
-            'type': 'NameExpression'
+        fields: [
+          {
+            key: '\r\n\t\u2028\x20u20\b\f\v\0\u0007\u000ao',
+            type: 'FieldType',
+            value: {
+              name: 'String',
+              type: 'NameExpression'
+            }
           }
-        }],
-        'type': 'RecordType'
+        ],
+        type: 'RecordType'
       });
 
-      comments.parseType.bind(comments, "{'ok\":String}").should.throw('unexpected quote');
+      comments.parseType.bind(comments, '{\'ok":String}').should.throw('unexpected quote');
       comments.parseType.bind(comments, "{'o\n':String}").should.throw('unexpected quote');
     });
 
@@ -1966,76 +1877,87 @@ describe('parse tag', function() {
 
       type = comments.parseType('{20:String}');
       type.should.eql({
-        'fields': [{
-          'key': '20',
-          'type': 'FieldType',
-          'value': {
-            'name': 'String',
-            'type': 'NameExpression'
+        fields: [
+          {
+            key: '20',
+            type: 'FieldType',
+            value: {
+              name: 'String',
+              type: 'NameExpression'
+            }
           }
-        }],
-        'type': 'RecordType'
+        ],
+        type: 'RecordType'
       });
 
       type = comments.parseType('{.2:String, 30:Number, 0x20:String}');
       type.should.eql({
-        'fields': [{
-          'key': '0.2',
-          'type': 'FieldType',
-          'value': {
-            'name': 'String',
-            'type': 'NameExpression'
+        fields: [
+          {
+            key: '0.2',
+            type: 'FieldType',
+            value: {
+              name: 'String',
+              type: 'NameExpression'
+            }
+          },
+          {
+            key: '30',
+            type: 'FieldType',
+            value: {
+              name: 'Number',
+              type: 'NameExpression'
+            }
+          },
+          {
+            key: '32',
+            type: 'FieldType',
+            value: {
+              name: 'String',
+              type: 'NameExpression'
+            }
           }
-        }, {
-          'key': '30',
-          'type': 'FieldType',
-          'value': {
-            'name': 'Number',
-            'type': 'NameExpression'
-          }
-        }, {
-          'key': '32',
-          'type': 'FieldType',
-          'value': {
-            'name': 'String',
-            'type': 'NameExpression'
-          }
-        }],
-        'type': 'RecordType'
+        ],
+        type: 'RecordType'
       });
 
       type = comments.parseType('{0X2:String, 0:Number, 100e200:String, 10e-20:Number}');
       type.should.eql({
-        'fields': [{
-          'key': '2',
-          'type': 'FieldType',
-          'value': {
-            'name': 'String',
-            'type': 'NameExpression'
+        fields: [
+          {
+            key: '2',
+            type: 'FieldType',
+            value: {
+              name: 'String',
+              type: 'NameExpression'
+            }
+          },
+          {
+            key: '0',
+            type: 'FieldType',
+            value: {
+              name: 'Number',
+              type: 'NameExpression'
+            }
+          },
+          {
+            key: '1e+202',
+            type: 'FieldType',
+            value: {
+              name: 'String',
+              type: 'NameExpression'
+            }
+          },
+          {
+            key: '1e-19',
+            type: 'FieldType',
+            value: {
+              name: 'Number',
+              type: 'NameExpression'
+            }
           }
-        }, {
-          'key': '0',
-          'type': 'FieldType',
-          'value': {
-            'name': 'Number',
-            'type': 'NameExpression'
-          }
-        }, {
-          'key': '1e+202',
-          'type': 'FieldType',
-          'value': {
-            'name': 'String',
-            'type': 'NameExpression'
-          }
-        }, {
-          'key': '1e-19',
-          'type': 'FieldType',
-          'value': {
-            'name': 'Number',
-            'type': 'NameExpression'
-          }
-        }],
-        'type': 'RecordType'
+        ],
+        type: 'RecordType'
       });
 
       comments.parseType.bind(comments, '{0x:String}').should.throw('unexpected token');
@@ -2059,8 +1981,8 @@ describe('parse tag', function() {
       var type;
       type = comments.parseType('Cocoa.Cappuccino');
       type.should.eql({
-        'name': 'Cocoa.Cappuccino',
-        'type': 'NameExpression'
+        name: 'Cocoa.Cappuccino',
+        type: 'NameExpression'
       });
     });
 
@@ -2068,17 +1990,20 @@ describe('parse tag', function() {
       var type;
       type = comments.parseType('[string,...string]');
       type.should.eql({
-        'elements': [{
-          'name': 'string',
-          'type': 'NameExpression'
-        }, {
-          'expression': {
-            'name': 'string',
-            'type': 'NameExpression'
+        elements: [
+          {
+            name: 'string',
+            type: 'NameExpression'
           },
-          'type': 'RestType'
-        }],
-        'type': 'ArrayType'
+          {
+            expression: {
+              name: 'string',
+              type: 'NameExpression'
+            },
+            type: 'RestType'
+          }
+        ],
+        type: 'ArrayType'
       });
     });
 
@@ -2086,12 +2011,12 @@ describe('parse tag', function() {
       var type;
       type = comments.parseType('string?');
       type.should.eql({
-        'expression': {
-          'name': 'string',
-          'type': 'NameExpression'
+        expression: {
+          name: 'string',
+          type: 'NameExpression'
         },
-        'prefix': false,
-        'type': 'NullableType'
+        prefix: false,
+        type: 'NullableType'
       });
     });
 
@@ -2099,12 +2024,12 @@ describe('parse tag', function() {
       var type;
       type = comments.parseType('string!');
       type.should.eql({
-        'expression': {
-          'name': 'string',
-          'type': 'NameExpression'
+        expression: {
+          name: 'string',
+          type: 'NameExpression'
         },
-        'prefix': false,
-        'type': 'NonNullableType'
+        prefix: false,
+        type: 'NonNullableType'
       });
     });
 
@@ -2112,17 +2037,21 @@ describe('parse tag', function() {
       var type;
       type = comments.parseType('string|number|Test');
       type.should.eql({
-        'elements': [{
-          'name': 'string',
-          'type': 'NameExpression'
-        }, {
-          'name': 'number',
-          'type': 'NameExpression'
-        }, {
-          'name': 'Test',
-          'type': 'NameExpression'
-        }],
-        'type': 'UnionType'
+        elements: [
+          {
+            name: 'string',
+            type: 'NameExpression'
+          },
+          {
+            name: 'number',
+            type: 'NameExpression'
+          },
+          {
+            name: 'Test',
+            type: 'NameExpression'
+          }
+        ],
+        type: 'UnionType'
       });
     });
 
@@ -2193,12 +2122,15 @@ describe('parse tag', function() {
       var type = comments.parseParamType('function(?, number)');
       type.should.eql({
         type: 'FunctionType',
-        params: [{
-          type: 'NullableLiteral'
-        }, {
-          type: 'NameExpression',
-          name: 'number'
-        }],
+        params: [
+          {
+            type: 'NullableLiteral'
+          },
+          {
+            type: 'NameExpression',
+            name: 'number'
+          }
+        ],
         result: null
       });
     });
@@ -2207,12 +2139,15 @@ describe('parse tag', function() {
       var type = comments.parseParamType('function(number, ?)');
       type.should.eql({
         type: 'FunctionType',
-        params: [{
-          type: 'NameExpression',
-          name: 'number'
-        }, {
-          type: 'NullableLiteral'
-        }],
+        params: [
+          {
+            type: 'NameExpression',
+            name: 'number'
+          },
+          {
+            type: 'NullableLiteral'
+          }
+        ],
         result: null
       });
     });
@@ -2221,16 +2156,19 @@ describe('parse tag', function() {
       var type = comments.parseParamType('function(): ?|number');
       type.should.eql({
         type: 'UnionType',
-        elements: [{
-          type: 'FunctionType',
-          params: [],
-          result: {
-            type: 'NullableLiteral'
+        elements: [
+          {
+            type: 'FunctionType',
+            params: [],
+            result: {
+              type: 'NullableLiteral'
+            }
+          },
+          {
+            type: 'NameExpression',
+            name: 'number'
           }
-        }, {
-          type: 'NameExpression',
-          name: 'number'
-        }]
+        ]
       });
     });
   });
@@ -2257,12 +2195,7 @@ describe('parse tag', function() {
 
   describe('tags option', function() {
     it('only param', function() {
-      var res = comments.parseComment([
-        '/**',
-        ' * @const @const',
-        ' * @param {String} y',
-        ' */'
-      ].join('\n'), {
+      var res = comments.parseComment(['/**', ' * @const @const', ' * @param {String} y', ' */'].join('\n'), {
         tags: ['param'],
         unwrap: true
       });
@@ -2272,16 +2205,13 @@ describe('parse tag', function() {
     });
 
     it('param and type', function() {
-      var res = comments.parseComment([
-        '/**',
-        ' * @const x',
-        ' * @param {String} y',
-        ' * @type {String} ',
-        ' */'
-      ].join('\n'), {
-        tags: ['param', 'type'],
-        unwrap: true
-      });
+      var res = comments.parseComment(
+        ['/**', ' * @const x', ' * @param {String} y', ' * @type {String} ', ' */'].join('\n'),
+        {
+          tags: ['param', 'type'],
+          unwrap: true
+        }
+      );
       res.tags.should.have.length(2);
       res.tags[0].should.have.property('title', 'param');
       res.tags[0].should.have.property('name', 'y');
@@ -2293,289 +2223,324 @@ describe('parse tag', function() {
 
   describe('invalid tags', function() {
     it('bad tag 1', function() {
-      comments.parse.bind(comments, [
-        '/**',
-        ' * @param {String} hucairz',
-        ' */'
-      ].join('\n'), {
-        tags: 1,
-        unwrap: true
-      }).should.throw();
+      comments.parse
+        .bind(comments, ['/**', ' * @param {String} hucairz', ' */'].join('\n'), {
+          tags: 1,
+          unwrap: true
+        })
+        .should.throw();
     });
 
     it('bad tag 2', function() {
-      comments.parse.bind(comments, [
-        '/**',
-        ' * @param {String} hucairz',
-        ' */'
-      ].join('\n'), {
-        tags: ['a', 1],
-        unwrap: true
-      }).should.throw();
+      comments.parse
+        .bind(comments, ['/**', ' * @param {String} hucairz', ' */'].join('\n'), {
+          tags: ['a', 1],
+          unwrap: true
+        })
+        .should.throw();
     });
   });
 
   describe('optional params', function() {
     // should fail since sloppy option not set
     it('failure 0', function() {
-      comments.parseComment(['/**', ' * @param {String} [val]', ' */'].join('\n'), {
-        unwrap: true
-      }).should.eql({
-        'description': '',
-        'tags': []
-      });
+      comments
+        .parseComment(['/**', ' * @param {String} [val]', ' */'].join('\n'), {
+          unwrap: true
+        })
+        .should.eql({
+          description: '',
+          tags: []
+        });
     });
 
     it('failure 1', function() {
-      comments.parseComment(['/**', ' * @param [val', ' */'].join('\n'), {
-        unwrap: true,
-        sloppy: true
-      }).should.eql({
-        'description': '',
-        'tags': []
-      });
+      comments
+        .parseComment(['/**', ' * @param [val', ' */'].join('\n'), {
+          unwrap: true,
+          sloppy: true
+        })
+        .should.eql({
+          description: '',
+          tags: []
+        });
     });
 
     it('success 1', function() {
-      comments.parseComment(['/**', ' * @param {String} [val]', ' */'].join('\n'), {
-        unwrap: true,
-        sloppy: true
-      }).should.eql({
-        'description': '',
-        'tags': [{
-          'title': 'param',
-          'description': null,
-          'type': {
-            'type': 'OptionalType',
-            'expression': {
-              'type': 'NameExpression',
-              'name': 'String'
+      comments
+        .parseComment(['/**', ' * @param {String} [val]', ' */'].join('\n'), {
+          unwrap: true,
+          sloppy: true
+        })
+        .should.eql({
+          description: '',
+          tags: [
+            {
+              title: 'param',
+              description: null,
+              type: {
+                type: 'OptionalType',
+                expression: {
+                  type: 'NameExpression',
+                  name: 'String'
+                }
+              },
+              name: 'val'
             }
-          },
-          'name': 'val'
-        }]
-      });
+          ]
+        });
     });
 
     it('success 2', function() {
-      comments.parseComment(['/**', ' * @param {String=} val', ' */'].join('\n'), {
-        unwrap: true,
-        sloppy: true
-      }).should.eql({
-        'description': '',
-        'tags': [{
-          'title': 'param',
-          'description': null,
-          'type': {
-            'type': 'OptionalType',
-            'expression': {
-              'type': 'NameExpression',
-              'name': 'String'
+      comments
+        .parseComment(['/**', ' * @param {String=} val', ' */'].join('\n'), {
+          unwrap: true,
+          sloppy: true
+        })
+        .should.eql({
+          description: '',
+          tags: [
+            {
+              title: 'param',
+              description: null,
+              type: {
+                type: 'OptionalType',
+                expression: {
+                  type: 'NameExpression',
+                  name: 'String'
+                }
+              },
+              name: 'val'
             }
-          },
-          'name': 'val'
-        }]
-      });
+          ]
+        });
     });
 
     it('success 3', function() {
-      comments.parseComment(['/**', ' * @param {String=} [val=abc] some description', ' */'].join('\n'), {
-        unwrap: true,
-        sloppy: true
-      }
-      ).should.eql({
-        'description': '',
-        'tags': [{
-          'title': 'param',
-          'description': 'some description',
-          'type': {
-            'type': 'OptionalType',
-            'expression': {
-              'type': 'NameExpression',
-              'name': 'String'
+      comments
+        .parseComment(['/**', ' * @param {String=} [val=abc] some description', ' */'].join('\n'), {
+          unwrap: true,
+          sloppy: true
+        })
+        .should.eql({
+          description: '',
+          tags: [
+            {
+              title: 'param',
+              description: 'some description',
+              type: {
+                type: 'OptionalType',
+                expression: {
+                  type: 'NameExpression',
+                  name: 'String'
+                }
+              },
+              name: 'val',
+              default: 'abc'
             }
-          },
-          'name': 'val',
-          'default': 'abc'
-        }]
-      });
+          ]
+        });
     });
 
     it('success 4', function() {
-      comments.parseComment(['/**', ' * @param {String=} [val = abc] some description', ' */'].join('\n'), {
-        unwrap: true,
-        sloppy: true
-      }
-      ).should.eql({
-        'description': '',
-        'tags': [{
-          'title': 'param',
-          'description': 'some description',
-          'type': {
-            'type': 'OptionalType',
-            'expression': {
-              'type': 'NameExpression',
-              'name': 'String'
+      comments
+        .parseComment(['/**', ' * @param {String=} [val = abc] some description', ' */'].join('\n'), {
+          unwrap: true,
+          sloppy: true
+        })
+        .should.eql({
+          description: '',
+          tags: [
+            {
+              title: 'param',
+              description: 'some description',
+              type: {
+                type: 'OptionalType',
+                expression: {
+                  type: 'NameExpression',
+                  name: 'String'
+                }
+              },
+              name: 'val',
+              default: 'abc'
             }
-          },
-          'name': 'val',
-          'default': 'abc'
-        }]
-      });
+          ]
+        });
     });
 
     it('default string', function() {
-      comments.parseComment(['/**', ' * @param {String} [val="foo"] some description', ' */'].join('\n'), {
-        unwrap: true,
-        sloppy: true
-      }
-      ).should.eql({
-        'description': '',
-        'tags': [{
-          'title': 'param',
-          'description': 'some description',
-          'type': {
-            'type': 'OptionalType',
-            'expression': {
-              'type': 'NameExpression',
-              'name': 'String'
+      comments
+        .parseComment(['/**', ' * @param {String} [val="foo"] some description', ' */'].join('\n'), {
+          unwrap: true,
+          sloppy: true
+        })
+        .should.eql({
+          description: '',
+          tags: [
+            {
+              title: 'param',
+              description: 'some description',
+              type: {
+                type: 'OptionalType',
+                expression: {
+                  type: 'NameExpression',
+                  name: 'String'
+                }
+              },
+              name: 'val',
+              default: '"foo"'
             }
-          },
-          'name': 'val',
-          'default': '"foo"'
-        }]
-      });
+          ]
+        });
     });
 
     it('default string surrounded by whitespace', function() {
-      comments.parseComment(['/**', " * @param {String} [val=   'foo'  ] some description", ' */'].join('\n'), {
-        unwrap: true,
-        sloppy: true
-      }
-      ).should.eql({
-        'description': '',
-        'tags': [{
-          'title': 'param',
-          'description': 'some description',
-          'type': {
-            'type': 'OptionalType',
-            'expression': {
-              'type': 'NameExpression',
-              'name': 'String'
+      comments
+        .parseComment(['/**', " * @param {String} [val=   'foo'  ] some description", ' */'].join('\n'), {
+          unwrap: true,
+          sloppy: true
+        })
+        .should.eql({
+          description: '',
+          tags: [
+            {
+              title: 'param',
+              description: 'some description',
+              type: {
+                type: 'OptionalType',
+                expression: {
+                  type: 'NameExpression',
+                  name: 'String'
+                }
+              },
+              name: 'val',
+              default: "'foo'"
             }
-          },
-          'name': 'val',
-          'default': "'foo'"
-        }]
-      });
+          ]
+        });
     });
 
     it('should preserve whitespace in default string', function() {
-      comments.parseComment(['/**', ' * @param {String} [val=   "   foo"  ] some description', ' */'].join('\n'), {
-        unwrap: true,
-        sloppy: true
-      }
-      ).should.eql({
-        'description': '',
-        'tags': [{
-          'title': 'param',
-          'description': 'some description',
-          'type': {
-            'type': 'OptionalType',
-            'expression': {
-              'type': 'NameExpression',
-              'name': 'String'
+      comments
+        .parseComment(['/**', ' * @param {String} [val=   "   foo"  ] some description', ' */'].join('\n'), {
+          unwrap: true,
+          sloppy: true
+        })
+        .should.eql({
+          description: '',
+          tags: [
+            {
+              title: 'param',
+              description: 'some description',
+              type: {
+                type: 'OptionalType',
+                expression: {
+                  type: 'NameExpression',
+                  name: 'String'
+                }
+              },
+              name: 'val',
+              default: '"   foo"'
             }
-          },
-          'name': 'val',
-          'default': '"   foo"'
-        }]
-      });
+          ]
+        });
     });
 
     it('default array', function() {
-      comments.parseComment(['/**', " * @param {String} [val=['foo']] some description", ' */'].join('\n'), {
-        unwrap: true,
-        sloppy: true
-      }
-      ).should.eql({
-        'description': '',
-        'tags': [{
-          'title': 'param',
-          'description': 'some description',
-          'type': {
-            'type': 'OptionalType',
-            'expression': {
-              'type': 'NameExpression',
-              'name': 'String'
+      comments
+        .parseComment(['/**', " * @param {String} [val=['foo']] some description", ' */'].join('\n'), {
+          unwrap: true,
+          sloppy: true
+        })
+        .should.eql({
+          description: '',
+          tags: [
+            {
+              title: 'param',
+              description: 'some description',
+              type: {
+                type: 'OptionalType',
+                expression: {
+                  type: 'NameExpression',
+                  name: 'String'
+                }
+              },
+              name: 'val',
+              default: "['foo']"
             }
-          },
-          'name': 'val',
-          'default': "['foo']"
-        }]
-      });
+          ]
+        });
     });
 
     it('default array', function() {
-      comments.parseComment(['/**', " * @param {String} [val=['foo']] some description", ' */'].join('\n'), {
-        unwrap: true,
-        sloppy: true
-      }
-      ).should.eql({
-        'description': '',
-        'tags': [{
-          'title': 'param',
-          'description': 'some description',
-          'type': {
-            'type': 'OptionalType',
-            'expression': {
-              'type': 'NameExpression',
-              'name': 'String'
+      comments
+        .parseComment(['/**', " * @param {String} [val=['foo']] some description", ' */'].join('\n'), {
+          unwrap: true,
+          sloppy: true
+        })
+        .should.eql({
+          description: '',
+          tags: [
+            {
+              title: 'param',
+              description: 'some description',
+              type: {
+                type: 'OptionalType',
+                expression: {
+                  type: 'NameExpression',
+                  name: 'String'
+                }
+              },
+              name: 'val',
+              default: "['foo']"
             }
-          },
-          'name': 'val',
-          'default': "['foo']"
-        }]
-      });
+          ]
+        });
     });
 
     it('default array within white spaces', function() {
-      comments.parseComment(['/**', " * @param {String} [val = [ 'foo' ]] some description", ' */'].join('\n'), {
-        unwrap: true,
-        sloppy: true
-      }
-      ).should.eql({
-        'description': '',
-        'tags': [{
-          'title': 'param',
-          'description': 'some description',
-          'type': {
-            'type': 'OptionalType',
-            'expression': {
-              'type': 'NameExpression',
-              'name': 'String'
+      comments
+        .parseComment(['/**', " * @param {String} [val = [ 'foo' ]] some description", ' */'].join('\n'), {
+          unwrap: true,
+          sloppy: true
+        })
+        .should.eql({
+          description: '',
+          tags: [
+            {
+              title: 'param',
+              description: 'some description',
+              type: {
+                type: 'OptionalType',
+                expression: {
+                  type: 'NameExpression',
+                  name: 'String'
+                }
+              },
+              name: 'val',
+              default: "['foo']"
             }
-          },
-          'name': 'val',
-          'default': "['foo']"
-        }]
-      });
+          ]
+        });
     });
 
     it('line numbers', function() {
-      var res = comments.parseComment([
-        '/**',
-        ' * @constructor',
-        ' * @param {string} foo',
-        ' * @returns {string}',
-        ' *',
-        ' * @example',
-        " * f('blah'); // => undefined",
-        ' */'
-      ].join('\n'), {
-        unwrap: true,
-        lineNumbers: true
-      });
+      var res = comments.parseComment(
+        [
+          '/**',
+          ' * @constructor',
+          ' * @param {string} foo',
+          ' * @returns {string}',
+          ' *',
+          ' * @example',
+          " * f('blah'); // => undefined",
+          ' */'
+        ].join('\n'),
+        {
+          unwrap: true,
+          lineNumbers: true
+        }
+      );
 
       res.tags[0].should.have.property('lineNumber', 1);
       res.tags[1].should.have.property('lineNumber', 2);
@@ -2584,15 +2549,12 @@ describe('parse tag', function() {
     });
 
     it('example caption', function() {
-      var res = comments.parseComment([
-        '/**',
-        ' * @example <caption>hi</caption>',
-        " * f('blah'); // => undefined",
-        ' */'
-      ].join('\n'), {
-        unwrap: true,
-        lineNumbers: true
-      }
+      var res = comments.parseComment(
+        ['/**', ' * @example <caption>hi</caption>', " * f('blah'); // => undefined", ' */'].join('\n'),
+        {
+          unwrap: true,
+          lineNumbers: true
+        }
       );
 
       res.tags[0].description.should.eql("f('blah'); // => undefined");
@@ -2600,18 +2562,20 @@ describe('parse tag', function() {
     });
 
     it('should handle \\r\\n line endings correctly', function() {
-      var res = comments.parseComment([
-        '/**',
-        ' * @param {string} foo',
-        ' * @returns {string}',
-        ' *',
-        ' * @example',
-        " * f('blah'); // => undefined",
-        ' */'
-      ].join('\r\n'), {
-        unwrap: true,
-        lineNumbers: true
-      }
+      var res = comments.parseComment(
+        [
+          '/**',
+          ' * @param {string} foo',
+          ' * @returns {string}',
+          ' *',
+          ' * @example',
+          " * f('blah'); // => undefined",
+          ' */'
+        ].join('\r\n'),
+        {
+          unwrap: true,
+          lineNumbers: true
+        }
       );
 
       res.tags[0].should.have.property('lineNumber', 1);
@@ -2621,240 +2585,266 @@ describe('parse tag', function() {
   });
 
   describe('optional properties', function() {
-
     // should fail since sloppy option not set
     it('failure 0', function() {
-      comments.parseComment(['/**',
-          ' * @property {String} [val] some description',
-          ' */'
-        ].join('\n'), {
+      comments
+        .parseComment(['/**', ' * @property {String} [val] some description', ' */'].join('\n'), {
           unwrap: true
-        }).should.eql({
-          'description': '',
-          'tags': []
+        })
+        .should.eql({
+          description: '',
+          tags: []
         });
     });
 
     it('failure 1', function() {
-      comments.parseComment(['/**', ' * @property [val', ' */'].join('\n'), {
-        unwrap: true,
-        sloppy: true
-      }).should.eql({
-        'description': '',
-        'tags': []
-      });
+      comments
+        .parseComment(['/**', ' * @property [val', ' */'].join('\n'), {
+          unwrap: true,
+          sloppy: true
+        })
+        .should.eql({
+          description: '',
+          tags: []
+        });
     });
 
     it('success 1', function() {
-      comments.parseComment(['/**', ' * @property {String} [val]', ' */'].join('\n'), {
-        unwrap: true,
-        sloppy: true
-      }).should.eql({
-        'description': '',
-        'tags': [{
-          'title': 'property',
-          'description': null,
-          'type': {
-            'type': 'OptionalType',
-            'expression': {
-              'type': 'NameExpression',
-              'name': 'String'
+      comments
+        .parseComment(['/**', ' * @property {String} [val]', ' */'].join('\n'), {
+          unwrap: true,
+          sloppy: true
+        })
+        .should.eql({
+          description: '',
+          tags: [
+            {
+              title: 'property',
+              description: null,
+              type: {
+                type: 'OptionalType',
+                expression: {
+                  type: 'NameExpression',
+                  name: 'String'
+                }
+              },
+              name: 'val'
             }
-          },
-          'name': 'val'
-        }]
-      });
+          ]
+        });
     });
 
     it('success 2', function() {
-      comments.parseComment(['/**', ' * @property {String=} val', ' */'].join('\n'), {
-        unwrap: true,
-        sloppy: true
-      }).should.eql({
-        'description': '',
-        'tags': [{
-          'title': 'property',
-          'description': null,
-          'type': {
-            'type': 'OptionalType',
-            'expression': {
-              'type': 'NameExpression',
-              'name': 'String'
+      comments
+        .parseComment(['/**', ' * @property {String=} val', ' */'].join('\n'), {
+          unwrap: true,
+          sloppy: true
+        })
+        .should.eql({
+          description: '',
+          tags: [
+            {
+              title: 'property',
+              description: null,
+              type: {
+                type: 'OptionalType',
+                expression: {
+                  type: 'NameExpression',
+                  name: 'String'
+                }
+              },
+              name: 'val'
             }
-          },
-          'name': 'val'
-        }]
-      });
+          ]
+        });
     });
 
     it('success 3', function() {
-      comments.parseComment(['/**', ' * @property {String=} [val=abc] some description', ' */'].join('\n'), {
-        unwrap: true,
-        sloppy: true
-      }
-      ).should.eql({
-        'description': '',
-        'tags': [{
-          'title': 'property',
-          'description': 'some description',
-          'type': {
-            'type': 'OptionalType',
-            'expression': {
-              'type': 'NameExpression',
-              'name': 'String'
+      comments
+        .parseComment(['/**', ' * @property {String=} [val=abc] some description', ' */'].join('\n'), {
+          unwrap: true,
+          sloppy: true
+        })
+        .should.eql({
+          description: '',
+          tags: [
+            {
+              title: 'property',
+              description: 'some description',
+              type: {
+                type: 'OptionalType',
+                expression: {
+                  type: 'NameExpression',
+                  name: 'String'
+                }
+              },
+              name: 'val',
+              default: 'abc'
             }
-          },
-          'name': 'val',
-          'default': 'abc'
-        }]
-      });
+          ]
+        });
     });
 
     it('success 4', function() {
-      comments.parseComment(['/**', ' * @property {String=} [val = abc] some description', ' */'].join('\n'), {
-        unwrap: true,
-        sloppy: true
-      }
-      ).should.eql({
-        'description': '',
-        'tags': [{
-          'title': 'property',
-          'description': 'some description',
-          'type': {
-            'type': 'OptionalType',
-            'expression': {
-              'type': 'NameExpression',
-              'name': 'String'
+      comments
+        .parseComment(['/**', ' * @property {String=} [val = abc] some description', ' */'].join('\n'), {
+          unwrap: true,
+          sloppy: true
+        })
+        .should.eql({
+          description: '',
+          tags: [
+            {
+              title: 'property',
+              description: 'some description',
+              type: {
+                type: 'OptionalType',
+                expression: {
+                  type: 'NameExpression',
+                  name: 'String'
+                }
+              },
+              name: 'val',
+              default: 'abc'
             }
-          },
-          'name': 'val',
-          'default': 'abc'
-        }]
-      });
+          ]
+        });
     });
 
     it('default string', function() {
-      comments.parseComment(['/**', ' * @property {String} [val="foo"] some description', ' */'].join('\n'), {
-        unwrap: true,
-        sloppy: true
-      }
-      ).should.eql({
-        'description': '',
-        'tags': [{
-          'title': 'property',
-          'description': 'some description',
-          'type': {
-            'type': 'OptionalType',
-            'expression': {
-              'type': 'NameExpression',
-              'name': 'String'
+      comments
+        .parseComment(['/**', ' * @property {String} [val="foo"] some description', ' */'].join('\n'), {
+          unwrap: true,
+          sloppy: true
+        })
+        .should.eql({
+          description: '',
+          tags: [
+            {
+              title: 'property',
+              description: 'some description',
+              type: {
+                type: 'OptionalType',
+                expression: {
+                  type: 'NameExpression',
+                  name: 'String'
+                }
+              },
+              name: 'val',
+              default: '"foo"'
             }
-          },
-          'name': 'val',
-          'default': '"foo"'
-        }]
-      });
+          ]
+        });
     });
 
     it('default string surrounded by whitespace', function() {
-      comments.parseComment(['/**', " * @property {String} [val=   'foo'  ] some description", ' */'].join('\n'), {
-        unwrap: true,
-        sloppy: true
-      }
-      ).should.eql({
-        'description': '',
-        'tags': [{
-          'title': 'property',
-          'description': 'some description',
-          'type': {
-            'type': 'OptionalType',
-            'expression': {
-              'type': 'NameExpression',
-              'name': 'String'
+      comments
+        .parseComment(['/**', " * @property {String} [val=   'foo'  ] some description", ' */'].join('\n'), {
+          unwrap: true,
+          sloppy: true
+        })
+        .should.eql({
+          description: '',
+          tags: [
+            {
+              title: 'property',
+              description: 'some description',
+              type: {
+                type: 'OptionalType',
+                expression: {
+                  type: 'NameExpression',
+                  name: 'String'
+                }
+              },
+              name: 'val',
+              default: "'foo'"
             }
-          },
-          'name': 'val',
-          'default': "'foo'"
-        }]
-      });
+          ]
+        });
     });
 
     it('should preserve whitespace in default string', function() {
-      comments.parseComment(['/**', ' * @property {String} [val=   "   foo"  ] some description', ' */'].join('\n'), {
-        unwrap: true,
-        sloppy: true
-      }
-      ).should.eql({
-        'description': '',
-        'tags': [{
-          'title': 'property',
-          'description': 'some description',
-          'type': {
-            'type': 'OptionalType',
-            'expression': {
-              'type': 'NameExpression',
-              'name': 'String'
+      comments
+        .parseComment(['/**', ' * @property {String} [val=   "   foo"  ] some description', ' */'].join('\n'), {
+          unwrap: true,
+          sloppy: true
+        })
+        .should.eql({
+          description: '',
+          tags: [
+            {
+              title: 'property',
+              description: 'some description',
+              type: {
+                type: 'OptionalType',
+                expression: {
+                  type: 'NameExpression',
+                  name: 'String'
+                }
+              },
+              name: 'val',
+              default: '"   foo"'
             }
-          },
-          'name': 'val',
-          'default': '"   foo"'
-        }]
-      });
+          ]
+        });
     });
 
     it('default array', function() {
-      comments.parseComment(['/**', " * @property {String} [val=['foo']] some description", ' */'].join('\n'), {
-        unwrap: true,
-        sloppy: true
-      }
-      ).should.eql({
-        'description': '',
-        'tags': [{
-          'title': 'property',
-          'description': 'some description',
-          'type': {
-            'type': 'OptionalType',
-            'expression': {
-              'type': 'NameExpression',
-              'name': 'String'
+      comments
+        .parseComment(['/**', " * @property {String} [val=['foo']] some description", ' */'].join('\n'), {
+          unwrap: true,
+          sloppy: true
+        })
+        .should.eql({
+          description: '',
+          tags: [
+            {
+              title: 'property',
+              description: 'some description',
+              type: {
+                type: 'OptionalType',
+                expression: {
+                  type: 'NameExpression',
+                  name: 'String'
+                }
+              },
+              name: 'val',
+              default: "['foo']"
             }
-          },
-          'name': 'val',
-          'default': "['foo']"
-        }]
-      });
+          ]
+        });
     });
 
     it('default array within white spaces', function() {
-      comments.parseComment(['/**', " * @property {String} [val = [ 'foo' ]] some description", ' */'].join('\n'), {
-        unwrap: true,
-        sloppy: true
-      }
-      ).should.eql({
-        'description': '',
-        'tags': [{
-          'title': 'property',
-          'description': 'some description',
-          'type': {
-            'type': 'OptionalType',
-            'expression': {
-              'type': 'NameExpression',
-              'name': 'String'
+      comments
+        .parseComment(['/**', " * @property {String} [val = [ 'foo' ]] some description", ' */'].join('\n'), {
+          unwrap: true,
+          sloppy: true
+        })
+        .should.eql({
+          description: '',
+          tags: [
+            {
+              title: 'property',
+              description: 'some description',
+              type: {
+                type: 'OptionalType',
+                expression: {
+                  type: 'NameExpression',
+                  name: 'String'
+                }
+              },
+              name: 'val',
+              default: "['foo']"
             }
-          },
-          'name': 'val',
-          'default': "['foo']"
-        }]
-      });
+          ]
+        });
     });
   });
 
   describe('recovery tests', function() {
     it('params 2', function() {
-      var res = comments.parseComment([
-        '@param f',
-        '@param {string} f2'
-      ].join('\n'), {
+      var res = comments.parseComment(['@param f', '@param {string} f2'].join('\n'), {
         recoverable: true
       });
 
@@ -2872,10 +2862,7 @@ describe('parse tag', function() {
     });
 
     it('params 2', function() {
-      var res = comments.parseComment([
-        '@param string f',
-        '@param {string} f2'
-      ].join('\n'), {
+      var res = comments.parseComment(['@param string f', '@param {string} f2'].join('\n'), {
         recoverable: true
       });
 
@@ -2894,9 +2881,7 @@ describe('parse tag', function() {
     });
 
     it('return 1', function() {
-      var res = comments.parseComment([
-        '@returns'
-      ].join('\n'), {
+      var res = comments.parseComment(['@returns'].join('\n'), {
         recoverable: true
       });
 
@@ -2906,10 +2891,7 @@ describe('parse tag', function() {
       res.tags[0].should.have.property('type', null);
     });
     it('return 2', function() {
-      var res = comments.parseComment([
-        '@returns',
-        '@param {string} f2'
-      ].join('\n'), {
+      var res = comments.parseComment(['@returns', '@param {string} f2'].join('\n'), {
         recoverable: true
       });
 
@@ -2926,9 +2908,7 @@ describe('parse tag', function() {
     });
 
     it('return no type', function() {
-      var res = comments.parseComment([
-        '@return a value'
-      ].join('\n'));
+      var res = comments.parseComment(['@return a value'].join('\n'));
 
       // return tag should exist
       res.tags.should.have.length(1);
@@ -2938,11 +2918,7 @@ describe('parse tag', function() {
     });
 
     it('extra @ 1', function() {
-      var res = comments.parseComment([
-        '@',
-        '@returns',
-        '@param {string} f2'
-      ].join('\n'), {
+      var res = comments.parseComment(['@', '@returns', '@param {string} f2'].join('\n'), {
         recoverable: true
       });
 
@@ -2962,10 +2938,7 @@ describe('parse tag', function() {
     });
 
     it('extra @ 2', function() {
-      var res = comments.parseComment([
-        '@ invalid name',
-        '@param {string} f2'
-      ].join('\n'), {
+      var res = comments.parseComment(['@ invalid name', '@param {string} f2'].join('\n'), {
         recoverable: true
       });
 
@@ -2984,10 +2957,7 @@ describe('parse tag', function() {
     });
 
     it('invalid tag 1', function() {
-      var res = comments.parseComment([
-        '@111 invalid name',
-        '@param {string} f2'
-      ].join('\n'), {
+      var res = comments.parseComment(['@111 invalid name', '@param {string} f2'].join('\n'), {
         recoverable: true
       });
 
@@ -3006,10 +2976,7 @@ describe('parse tag', function() {
     });
 
     it('invalid tag 1', function() {
-      var res = comments.parseComment([
-        '@111',
-        '@param {string} f2'
-      ].join('\n'), {
+      var res = comments.parseComment(['@111', '@param {string} f2'].join('\n'), {
         recoverable: true
       });
 
@@ -3033,14 +3000,11 @@ describe('parse tag', function() {
       });
       res.tags.should.have.length(1);
       res.tags[0].should.eql({
-        'description': null,
-        'errors': [
-          'not reach to EOF',
-          'Missing or invalid tag name'
-        ],
-        'name': null,
-        'title': 'param',
-        'type': null
+        description: null,
+        errors: ['not reach to EOF', 'Missing or invalid tag name'],
+        name: null,
+        title: 'param',
+        type: null
       });
     });
 
@@ -3051,75 +3015,89 @@ describe('parse tag', function() {
       });
       res.tags.should.have.length(1);
       res.tags[0].should.eql({
-        'description': null,
-        'errors': [
-          'expected an array-style type declaration (int[])'
-        ],
-        'name': 'x',
-        'title': 'param',
-        'type': null
+        description: null,
+        errors: ['expected an array-style type declaration (int[])'],
+        name: 'x',
+        title: 'param',
+        type: null
       });
     });
   });
 
   describe('@ mark contained descriptions', function() {
     it('comment description #10', function() {
-      var res = comments.parseComment([
-        '/**',
-        ' * Prevents the default action. It is equivalent to',
-        ' * {@code e.preventDefault()}, but can be used as the callback argument of',
-        ' * {@link goog.events.listen} without declaring another function.',
-        ' * @param {!goog.events.Event} e An event.',
-        ' */'
-      ].join('\n'), {
-        unwrap: true,
-        sloppy: true
-      });
+      var res = comments.parseComment(
+        [
+          '/**',
+          ' * Prevents the default action. It is equivalent to',
+          ' * {@code e.preventDefault()}, but can be used as the callback argument of',
+          ' * {@link goog.events.listen} without declaring another function.',
+          ' * @param {!goog.events.Event} e An event.',
+          ' */'
+        ].join('\n'),
+        {
+          unwrap: true,
+          sloppy: true
+        }
+      );
 
-      assert.equal(res.description, 'Prevents the default action. It is equivalent to\n{@code e.preventDefault()}, but can be used as the callback argument of\n{@link goog.events.listen} without declaring another function.');
+      assert.equal(
+        res.description,
+        'Prevents the default action. It is equivalent to\n{@code e.preventDefault()}, but can be used as the callback argument of\n{@link goog.events.listen} without declaring another function.'
+      );
 
-      assert.deepEqual(res.tags, [{
-        'title': 'param',
-        'description': 'An event.',
-        'type': {
-          'type': 'NonNullableType',
-          'expression': {
-            'type': 'NameExpression',
-            'name': 'goog.events.Event'
+      assert.deepEqual(res.tags, [
+        {
+          title: 'param',
+          description: 'An event.',
+          type: {
+            type: 'NonNullableType',
+            expression: {
+              type: 'NameExpression',
+              name: 'goog.events.Event'
+            },
+            prefix: true
           },
-          'prefix': true
-        },
-        'name': 'e'
-      }]);
+          name: 'e'
+        }
+      ]);
     });
 
     it('tag description', function() {
-      comments.parseComment([
-        '/**',
-        ' * Prevents the default action. It is equivalent to',
-        ' * @param {!goog.events.Event} e An event.',
-        ' * {@code e.preventDefault()}, but can be used as the callback argument of',
-        ' * {@link goog.events.listen} without declaring another function.',
-        ' */'
-      ].join('\n'), {
-        unwrap: true,
-        sloppy: true
-      }).should.eql({
-        'description': 'Prevents the default action. It is equivalent to',
-        'tags': [{
-          'title': 'param',
-          'description': 'An event.\n{@code e.preventDefault()}, but can be used as the callback argument of\n{@link goog.events.listen} without declaring another function.',
-          'type': {
-            'type': 'NonNullableType',
-            'expression': {
-              'type': 'NameExpression',
-              'name': 'goog.events.Event'
-            },
-            'prefix': true
-          },
-          'name': 'e'
-        }]
-      });
+      comments
+        .parseComment(
+          [
+            '/**',
+            ' * Prevents the default action. It is equivalent to',
+            ' * @param {!goog.events.Event} e An event.',
+            ' * {@code e.preventDefault()}, but can be used as the callback argument of',
+            ' * {@link goog.events.listen} without declaring another function.',
+            ' */'
+          ].join('\n'),
+          {
+            unwrap: true,
+            sloppy: true
+          }
+        )
+        .should.eql({
+          description: 'Prevents the default action. It is equivalent to',
+          tags: [
+            {
+              title: 'param',
+              description:
+                'An event.\n{@code e.preventDefault()}, but can be used as the callback argument of\n{@link goog.events.listen} without declaring another function.',
+              type: {
+                type: 'NonNullableType',
+                expression: {
+                  type: 'NameExpression',
+                  name: 'goog.events.Event'
+                },
+                prefix: true
+              },
+              name: 'e'
+            }
+          ]
+        });
     });
   });
 
@@ -3130,8 +3108,8 @@ describe('parse tag', function() {
       res.tags[0].should.have.property('title', 'param');
       res.tags[0].should.have.property('type');
       res.tags[0].type.should.eql({
-        'name': 'function',
-        'type': 'NameExpression'
+        name: 'function',
+        type: 'NameExpression'
       });
       res.tags[0].should.have.property('name', 'foo');
       res.tags[0].should.have.property('description', 'description');
@@ -3140,9 +3118,7 @@ describe('parse tag', function() {
 
   describe('tagged namepaths', function() {
     it('recognize module:', function() {
-      var res = comments.parseComment([
-        '@alias module:Foo.bar'
-      ].join('\n'), {});
+      var res = comments.parseComment(['@alias module:Foo.bar'].join('\n'), {});
       res.tags.should.have.length(1);
       res.tags[0].should.have.property('title', 'alias');
       res.tags[0].should.have.property('name', 'module:Foo.bar');
@@ -3150,23 +3126,19 @@ describe('parse tag', function() {
     });
 
     it('recognize external:', function() {
-      var res = comments.parseComment([
-        '@param {external:Foo.bar} baz description'
-      ].join('\n'), {});
+      var res = comments.parseComment(['@param {external:Foo.bar} baz description'].join('\n'), {});
       res.tags.should.have.length(1);
       res.tags[0].should.have.property('title', 'param');
       res.tags[0].type.should.eql({
-        'name': 'external:Foo.bar',
-        'type': 'NameExpression'
+        name: 'external:Foo.bar',
+        type: 'NameExpression'
       });
       res.tags[0].should.have.property('name', 'baz');
       res.tags[0].should.have.property('description', 'description');
     });
 
     it('recognize event:', function() {
-      var res = comments.parseComment([
-        '@function event:Foo.bar'
-      ].join('\n'), {});
+      var res = comments.parseComment(['@function event:Foo.bar'].join('\n'), {});
       res.tags.should.have.length(1);
       res.tags[0].should.have.property('title', 'function');
       res.tags[0].should.have.property('name', 'event:Foo.bar');
@@ -3174,9 +3146,7 @@ describe('parse tag', function() {
     });
 
     it('invalid bogus:', function() {
-      var res = comments.parseComment([
-        '@method bogus:Foo.bar'
-      ].join('\n'), {});
+      var res = comments.parseComment(['@method bogus:Foo.bar'].join('\n'), {});
       res.tags.should.have.length(0);
     });
   });

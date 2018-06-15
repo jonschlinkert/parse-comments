@@ -4,7 +4,7 @@ require('mocha');
 require('should');
 var assert = require('assert');
 var doctrine = require('doctrine');
-var parseName = require('../lib/parse/name');
+var parseName = require('../lib/parsers/name');
 
 describe('parse name', function() {
   it('should parse a name passed as a string', function() {

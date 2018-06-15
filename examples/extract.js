@@ -1,11 +1,11 @@
 'use strict';
 
-var fs = require('fs');
-var Comments = require('..');
-var comments = new Comments();
+const fs = require('fs');
+const Comments = require('..');
+const comments = new Comments();
 
-var CacheBase = require('cache-base');
-var fp = require.resolve('cache-base');
+const CacheBase = require('cache-base');
+const fp = require.resolve('cache-base');
 
-var nodes = comments.extract(fs.readFileSync(fp, 'utf8'));
+const nodes = comments.extract(fs.readFileSync(fp, 'utf8'));
 console.log(nodes)

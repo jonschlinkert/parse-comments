@@ -4,8 +4,7 @@ require('mocha');
 require('should');
 var assert = require('assert');
 var Comments = require('..');
-var tag = require('../lib/parse/tag');
-var type = require('../lib/parse/type');
+const { tag, type } = require('../lib/parsers');
 
 /**
  * some of these integration tests are based on tests from doctrine

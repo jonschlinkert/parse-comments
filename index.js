@@ -4,25 +4,18 @@
 const assign = Object.assign;
 const get = require('get-value');
 const set = require('set-value');
+const typeOf = require('kind-of');
 const Snapdragon = require('snapdragon');
 const Emitter = require('@sellside/emitter');
-const define = require('define-property');
 const extract = require('extract-comments');
 const tokenize = require('tokenize-comment');
-const parseInline = require('./lib/parse/inline');
-const parseType = require('./lib/parse/type');
-const parseTag = require('./lib/parse/tag');
-const normalize = require('./lib/normalize');
-const validate = require('./lib/validate');
-const format = require('./lib/format');
-const allows = require('./lib/allows');
-const expects = require('./lib/expects');
-const utils = require('./lib/utils');
+const { expects, allows, format, validate, normalize, utils, parse } = require('./lib');
 
 /**
- * Create an instance of `{@foo module/foo}` with the given `options`.
+ * Create an instance of `Comments` with the given `options`.
  *
- * @param {Object|String} `options` Pass options if you need to instantiate Comments, or a string to convert HTML to markdown.
+ * @extends Emitter
+ * @param {object|string} options Pass options if you need to instantiate Comments, or a string to convert HTML to markdown.
  * @api public
  */
 
@@ -51,7 +44,7 @@ class Comments extends Emitter {
   /**
    * Register a parser function of the given `type`
    *
-   * @param {String} `type`
+   * @param {string|object} `type`
    * @param {Function} `fn`
    * @return {Object}
    * @api public
@@ -262,7 +255,7 @@ class Comments extends Emitter {
    */
 
   parse(str, options) {
-    this.ast = this.extract(str, options, comment => {
+    this.ast = this.extract(str.toString(), options, comment => {
       return this.parseComment(comment, options);
     });
     return this.ast;
@@ -352,8 +345,8 @@ class Comments extends Emitter {
       var raw = comment.tags[i];
       var tag = this.parseTag(raw, opts);
       if (tag) {
-        define(tag, 'rawType', tag.rawType);
-        define(tag, 'raw', raw);
+        utils.define(tag, 'rawType', tag.rawType);
+        utils.define(tag, 'raw', raw);
         tags.push(tag);
       }
     }
@@ -371,16 +364,15 @@ class Comments extends Emitter {
    * @param {String} name
    * @param {String} name The name to use for foo
    * ```
-   *
-   * @param {Object} tok Takes a token from
+   * @param {Object} tok
    * @return {Object}
    * @api public
    */
 
   parseTag(tok, options) {
-    var opts = assign({}, this.options, options);
-    var parsers = assign({}, this.plugins.middleware, opts.parse);
-    var tag;
+    const opts = assign({}, this.options, options);
+    const parsers = assign({}, this.plugins.middleware, opts.parse);
+    let tag;
 
     if (typeof tok === 'string') {
       tok = { raw: tok, val: tok };
@@ -391,13 +383,10 @@ class Comments extends Emitter {
     }
 
     try {
-      tag = parseTag(tok);
+      tag = parse.tag(tok);
     } catch (err) {
-      if (opts.strict) {
-        throw err;
-      } else {
-        return null;
-      }
+      if (opts.strict) throw err;
+      return null;
     }
 
     if (!tag || tag.rawType && !allows.type(tok)) {
@@ -437,9 +426,8 @@ class Comments extends Emitter {
   }
 
   /**
-   * Parses the types from a single tag. Supports any type from
-   * jsdoc, falling back on types from Google's Closure Compiler when
-   * not defined by jsdoc.
+   * Parses the types from a single tag. Supports any type from jsdoc, falling
+   * back on types from Google's Closure Compiler when not defined by jsdoc.
    *
    * ```js
    * @param {String}
@@ -452,25 +440,24 @@ class Comments extends Emitter {
    * @param {String[]}
    * @param {Array<String|Function|Array>=}
    * ```
-   *
    * @param {String} val The
    * @return {Object}
    * @api public
    */
 
-  parseInlineTags(val, options) {
-    if (typeof val !== 'string') {
+  parseInlineTags(str, options) {
+    if (typeof str !== 'string') {
       throw new TypeError('expected a string');
     }
 
-    var opts = assign({}, this.options, options);
-    var parsers = assign({}, this.plugins.middleware, opts.parse);
+    const opts = assign({}, this.options, options);
+    const parsers = assign({}, this.plugins.middleware, opts.parse);
 
     if (typeof parsers.inlineTag === 'function') {
-      return parsers.inlineTag.call(this, val, opts);
+      return parsers.inlineTag.call(this, str, opts);
     }
 
-    return parseInline(val, opts);
+    return parse.inline(str, opts);
   }
 
   /**
@@ -482,25 +469,24 @@ class Comments extends Emitter {
    * @param {(String|Array)}
    * @param {{foo: bar}}
    * ```
-   *
-   * @param {String} val The
-   * @return {Object}
+   * @param {string} str The string to parse
+   * @return {object}
    * @api public
    */
 
-  parseType(val, tag, options) {
-    if (typeof val !== 'string') {
+  parseType(str, tag, options) {
+    if (typeof str !== 'string') {
       throw new TypeError('expected a string');
     }
 
-    var opts = assign({}, this.options, options);
-    var parsers = assign({}, this.plugins.middleware, opts.parse);
+    const opts = assign({}, this.options, options);
+    const parsers = assign({}, this.plugins.middleware, opts.parse);
 
     if (typeof parsers.type === 'function') {
-      return parsers.type.call(this, val, tag, opts);
+      return parsers.type.call(this, str, tag, opts);
     }
 
-    return parseType(val, tag, opts);
+    return parse.type(str, tag, opts);
   };
 
   parseParamType(str, options) {
@@ -508,22 +494,22 @@ class Comments extends Emitter {
       throw new TypeError('expected a string');
     }
 
-    var opts = assign({}, this.options, options);
-    var parsers = assign({}, this.plugins.middleware, opts.parse);
+    const opts = assign({}, this.options, options);
+    const parsers = assign({}, this.plugins.middleware, opts.parse);
 
     if (typeof parsers.paramType === 'function') {
       return parsers.paramType.call(this, str, opts);
     }
 
     return str;
-  };
+  }
 
   decorate(name, obj) {
-    var fn = this.decorators[name];
+    const fn = this.decorators[name];
     if (typeof fn === 'function') {
       fn.call(this, obj);
     }
-  };
+  }
 
   extract(str, options, fn) {
     if (typeof options === 'function') {
@@ -557,7 +543,7 @@ class Comments extends Emitter {
     }
 
     return res;
-  };
+  }
 
   preprocess(comment, options) {
     var opts = assign({}, this.options, options);
@@ -611,13 +597,18 @@ class Comments extends Emitter {
    */
 
   set snapdragon(val) {
-    define(this, '_snapdragon', val);
+    utils.define(this, '_snapdragon', val);
   }
   get snapdragon() {
     if (!this._snapdragon) {
       this._snapdragon = new Snapdragon(this.options);
     }
     return this._snapdragon;
+  }
+
+  static parse(str, options) {
+    const comments = new Comments(options);
+    return comments.parse(str);
   }
 }
 

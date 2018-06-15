@@ -1,118 +1,197 @@
-# parse-comments [![NPM version](https://badge.fury.io/js/parse-comments.svg)](http://badge.fury.io/js/parse-comments)  [![Build Status](https://travis-ci.org/jonschlinkert/parse-comments.svg)](https://travis-ci.org/jonschlinkert/parse-comments) 
+# parse-comments [![NPM version](https://img.shields.io/npm/v/parse-comments.svg?style=flat)](https://www.npmjs.com/package/parse-comments) [![NPM monthly downloads](https://img.shields.io/npm/dm/parse-comments.svg?style=flat)](https://npmjs.org/package/parse-comments) [![NPM total downloads](https://img.shields.io/npm/dt/parse-comments.svg?style=flat)](https://npmjs.org/package/parse-comments) [![Linux Build Status](https://img.shields.io/travis/jonschlinkert/parse-comments.svg?style=flat&label=Travis)](https://travis-ci.org/jonschlinkert/parse-comments)
 
 > Parse code comments from JavaScript or any language that uses the same format.
 
-## Install with [npm](npmjs.org)
+Please consider following this project's author, [Jon Schlinkert](https://github.com/jonschlinkert), and consider starring the project to show your :heart: and support.
 
-```bash
-npm i parse-comments --save
+## Install
+
+Install with [npm](https://www.npmjs.com/):
+
+```sh
+$ npm install --save parse-comments
 ```
 
 ## Usage
 
 ```js
-var comments = require('parse-comments');
-comments(str);
+const comments = require('parse-comments');
+const ast = comments.parse(str);
+console.log(ast);
 ```
 
 Parses a comment like this:
 
 ```js
 /**
- * Read in source files from file paths or glob patterns. 
+ * Register a handler function to be called on a node of the given `type`.
+ * Override a built-in handler `type`, or register a new type.
  *
  * ```js
- * verb.src('src/*.hbs', {layout: 'default'});
- * ```
- *
- * **Example usage**
- *
- * ```js
- * verb.task('site', function() {
- *   verb.src('src/*.hbs', {layout: 'default'})
- *     verb.dest('dist');
+ * comments.set('param', function(node) {
+ *   // do stuff to node
  * });
  * ```
- *
- * @param {String|Array} `glob` Glob patterns or file paths to source files.
- * @param {Object} `options` Options or locals to merge into the context and/or pass to `src` plugins
+ * @param {String} `type` The `node.type` to call the handler on. You can override built-in middleware by registering a handler of the same name, or register a handler for rendering a new type.
+ * @param {Function} `fn` The handler function
+ * @return {Object} Returns the instance for chaining.
  * @api public
  */
+
+set(type, fn) {
+  // do stuff
+}
 ```
 
 Into an array of comment objects, like this:
 
 ```js
-[ { subheads: [ 'Example usage' ],
-    description: '\n\n```js\nverb.src(\'src/*.hbs\', {layout: \'default\'});\n```\n\n**Example usage**\n\n```js\nverb.task(\'site\', function() {\n  verb.src(\'src/*.hbs\', {layout: \'default\'})\n    verb.dest(\'dist\');\n});\n```',
-    param: 
-     [ '{String|Array} `glob` Glob patterns or file paths to source files.',
-       '{Object} `options` Options or locals to merge into the context and/or pass to `src` plugins' ],
-    api: 'public',
-    params: 
-     [ { type: 'String|Array',
-         name: 'glob',
-         description: 'Glob patterns or file paths to source files.' },
-       { type: 'Object',
-         name: 'options',
-         description: 'Options or locals to merge into the context and/or pass to `src` plugins' } ],
-    comment: 
-     { begin: 2,
-       end: 21,
-       code: 'Verb.prototype.src = function(glob, opts) {',
-       content: 'Read in source files from file paths or glob patterns.\n\n```js\nverb.src(\'src/*.hbs\', {layout: \'default\'});\n```\n\n**Example usage**\n\n```js\nverb.task(\'site\', function() {\n  verb.src(\'src/*.hbs\', {layout: \'default\'})\n    verb.dest(\'dist\');\n});\n```\n\n@param {String|Array} `glob` Glob patterns or file paths to source files.\n@param {Object} `options` Options or locals to merge into the context and/or pass to `src` plugins\n@api public\n',
-       codeStart: 23 },
-    context: 
-     { begin: 23,
-       type: 'prototype method',
-       class: 'Verb',
-       name: 'src',
-       params: [ 'glob', 'opts' ],
-       string: 'Verb.prototype.src()',
-       original: 'Verb.prototype.src = function(glob, opts) {' },
-    heading: { level: 2, text: 'src', prefix: '.' },
-    lead: 'Read in source files from file paths or glob patterns.',
-    name: 'src',
-    examples: 
-     [ { lang: 'js',
-         code: 'verb.src(\'src/*.hbs\', {layout: \'default\'});',
-         block: '```js\nverb.src(\'src/*.hbs\', {layout: \'default\'});\n```' },
-       { lang: 'js',
-         code: 'verb.task(\'site\', function() {\n  verb.src(\'src/*.hbs\', {layout: \'default\'})\n    verb.dest(\'dist\');\n});',
-         block: '```js\nverb.task(\'site\', function() {\n  verb.src(\'src/*.hbs\', {layout: \'default\'})\n    verb.dest(\'dist\');\n});\n```' } ] } ]
+[
+  {
+    type: 'BlockComment',
+    val:
+      '\nRegister a handler function to be called on a node of the given `type`.\nOverride a built-in handler `type`, or register a new type.\n\n```js\ncomments.set("param", function(node) {\n  // do stuff to node\n});\n```\n@param {String} `type` The `node.type` to call the handler on. You can override built-in middleware by registering a handler of the same name, or register a handler for rendering a new type.\n@param {Function} `fn` The handler function\n@return {Object} Returns the instance for chaining.\n@api public',
+    range: [0, 549],
+    loc: {
+      start: {
+        line: 1,
+        column: 0
+      },
+      end: {
+        line: 14,
+        column: 3
+      }
+    },
+    codeStart: 551,
+    raw:
+      '*\n * Register a handler function to be called on a node of the given `type`.\n * Override a built-in handler `type`, or register a new type.\n *\n * ```js\n * comments.set("param", function(node) {\n *   // do stuff to node\n * });\n * ```\n * @param {String} `type` The `node.type` to call the handler on. You can override built-in middleware by registering a handler of the same name, or register a handler for rendering a new type.\n * @param {Function} `fn` The handler function\n * @return {Object} Returns the instance for chaining.\n * @api public\n ',
+    code: {
+      context: {
+        type: 'method',
+        ctor: undefined,
+        name: 'undefinedset',
+        params: ['type', 'fn'],
+        string: 'undefinedset()'
+      },
+      val: 'set(type, fn) {',
+      range: [551, 566],
+      loc: {
+        start: {
+          line: 16,
+          column: 0
+        },
+        end: {
+          line: 16,
+          column: 15
+        }
+      }
+    },
+    description:
+      'Register a handler function to be called on a node of the given `type`.\nOverride a built-in handler `type`, or register a new type.',
+    footer: '',
+    examples: [
+      {
+        type: 'gfm',
+        raw: '```js\ncomments.set("param", function(node) {\n  // do stuff to node\n});\n```',
+        description: '',
+        language: 'js',
+        val: '\ncomments.set("param", function(node) {\n  // do stuff to node\n});\n'
+      }
+    ],
+    tags: [
+      {
+        title: 'param',
+        name: 'type',
+        description:
+          'The `node.type` to call the handler on. You can override built-in middleware by registering a handler of the same name, or register a handler for rendering a new type.',
+        type: {
+          type: 'NameExpression',
+          name: 'String'
+        }
+      },
+      {
+        title: 'param',
+        name: 'fn',
+        description: 'The handler function',
+        type: {
+          type: 'NameExpression',
+          name: 'Function'
+        }
+      },
+      {
+        title: 'return',
+        name: '',
+        description: 'Returns the instance for chaining.',
+        type: {
+          type: 'NameExpression',
+          name: 'Object'
+        }
+      },
+      {
+        title: 'api',
+        name: 'public',
+        description: ''
+      }
+    ]
+  }
+]
 ```
 
-## Related projects
- * [js-comments](https://github.com/jonschlinkert/js-comments): Parse JavaScript code comments and generate API documentation.
- * [parse-code-context](https://github.com/jonschlinkert/parse-code-context): Parse code context in a single line of javascript, for functions, variable declarations, methods, prototype properties, prototype methods etc.
- * [code-context](https://github.com/jonschlinkert/code-context): Parse a string of javascript to determine the context for functions, variables and comments based on the code that follows.
- * [gfm-code-blocks](https://github.com/jonschlinkert/gfm-code-blocks): Extract gfm (GitHub Flavored Markdown) fenced code blocks from a string.
- * [extract-comments](https://github.com/jonschlinkert/extract-comments): Extract code comments from string or from a glob of files.
- * [esprima-extract-comments](https://github.com/jonschlinkert/esprima-extract-comments): Extract code comments from string or from a glob of files using esprima.  
+## About
 
-## Running tests
-Install dev dependencies:
+<details>
+<summary><strong>Contributing</strong></summary>
 
-```bash
-npm i -d && npm test
+Pull requests and stars are always welcome. For bugs and feature requests, [please create an issue](../../issues/new).
+
+Please read the [contributing guide](.github/contributing.md) for advice on opening issues, pull requests, and coding standards.
+
+</details>
+
+<details>
+<summary><strong>Running Tests</strong></summary>
+
+Running and reviewing unit tests is a great way to get familiarized with a library and its API. You can install dependencies and run tests with the following command:
+
+```sh
+$ npm install && npm test
 ```
 
-## Contributing
-Pull requests and stars are always welcome. For bugs and feature requests, [please create an issue](https://github.com/jonschlinkert/parse-comments/issues)
+</details>
 
-## Author
+<details>
+<summary><strong>Building docs</strong></summary>
+
+_(This project's readme.md is generated by [verb](https://github.com/verbose/verb-generate-readme), please don't edit the readme directly. Any changes to the readme must be made in the [.verb.md](.verb.md) readme template.)_
+
+To generate the readme, run the following command:
+
+```sh
+$ npm install -g verbose/verb#dev verb-generate-readme && verb
+```
+
+</details>
+
+### Contributors
+
+| **Commits** | **Contributor** | 
+| --- | --- |
+| 35 | [jonschlinkert](https://github.com/jonschlinkert) |
+| 4 | [doowb](https://github.com/doowb) |
+
+### Author
 
 **Jon Schlinkert**
 
-+ [github/jonschlinkert](https://github.com/jonschlinkert)
-+ [twitter/jonschlinkert](http://twitter.com/jonschlinkert) 
+* [LinkedIn Profile](https://linkedin.com/in/jonschlinkert)
+* [GitHub Profile](https://github.com/jonschlinkert)
+* [Twitter Profile](https://twitter.com/jonschlinkert)
 
-## License
-Copyright (c) 2015 Jon Schlinkert  
-Released under the MIT license
+### License
+
+Copyright © 2018, [Jon Schlinkert](https://github.com/jonschlinkert).
+Released under the [MIT License](LICENSE).
 
 ***
 
-_This file was generated by [verb-cli](https://github.com/assemble/verb-cli) on April 17, 2015._
-
-<!-- deps:mocha -->
+_This file was generated by [verb-generate-readme](https://github.com/verbose/verb-generate-readme), v0.6.0, on March 25, 2018._
