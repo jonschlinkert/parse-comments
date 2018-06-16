@@ -2,10 +2,9 @@
 
 require('mocha');
 require('should');
-var assert = require('assert');
-var doctrine = require('doctrine');
-var Comments = require('..');
-var comments;
+const assert = require('assert');
+const Comments = require('..');
+let comments;
 
 /**
  * Some of these tests are based on tests from doctrine
@@ -21,14 +20,12 @@ describe('parse tag', function() {
 
   describe('parseTag', function() {
     it('alias', function() {
-      var res = comments.parse('/** @alias */', {
-        unwrap: true
-      });
+      const res = comments.parse('/** @alias */', { unwrap: true });
       assert.equal(res[0].tags.length, 1);
     });
 
     it('alias (strict)', function() {
-      var res = comments.parse('/** @alias */', {
+      const res = comments.parse('/** @alias */', {
         unwrap: true,
         strict: true
       });
@@ -36,7 +33,7 @@ describe('parse tag', function() {
     });
 
     it('alias with name', function() {
-      var res = comments.parse('/** @alias aliasName */', {
+      const res = comments.parse('/** @alias aliasName */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -45,7 +42,7 @@ describe('parse tag', function() {
     });
 
     it('alias with namepath', function() {
-      var res = comments.parse('/** @alias aliasName.OK */', {
+      const res = comments.parse('/** @alias aliasName.OK */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -54,7 +51,7 @@ describe('parse tag', function() {
     });
 
     it('alias with namepath with slash', function() {
-      var res = comments.parse('/** @alias module:mymodule/mymodule.init */', {
+      const res = comments.parse('/** @alias module:mymodule/mymodule.init */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -63,7 +60,7 @@ describe('parse tag', function() {
     });
 
     it('alias with namepath with hyphen in it', function() {
-      var res = comments.parse('/** @alias module:mymodule/my-module */', {
+      const res = comments.parse('/** @alias module:mymodule/my-module */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -72,7 +69,7 @@ describe('parse tag', function() {
     });
 
     it('const', function() {
-      var res = comments.parse('/** @const */', {
+      const res = comments.parse('/** @const */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -80,7 +77,7 @@ describe('parse tag', function() {
     });
 
     it('const with name', function() {
-      var res = comments.parse('/** @const constname */', {
+      const res = comments.parse('/** @const constname */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -89,7 +86,7 @@ describe('parse tag', function() {
     });
 
     it('constant with name', function() {
-      var res = comments.parse('/** @constant constname */', {
+      const res = comments.parse('/** @constant constname */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -98,7 +95,7 @@ describe('parse tag', function() {
     });
 
     it('const with type and name', function() {
-      var res = comments.parse('/** @const {String} constname */', {
+      const res = comments.parse('/** @const {String} constname */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -112,7 +109,7 @@ describe('parse tag', function() {
     });
 
     it('Const with type and name', function() {
-      var res = comments.parse('/** @Const {String} constname */', {
+      const res = comments.parse('/** @Const {String} constname */', {
         unwrap: true
       });
 
@@ -127,7 +124,7 @@ describe('parse tag', function() {
     });
 
     it('constant with type and name', function() {
-      var res = comments.parse('/** @constant {String} constname */', {
+      const res = comments.parse('/** @constant {String} constname */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -141,7 +138,7 @@ describe('parse tag', function() {
     });
 
     it('const multiple', function() {
-      var res = comments.parse('/**@const\n @const*/', {
+      const res = comments.parse('/**@const\n @const*/', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 2);
@@ -150,7 +147,7 @@ describe('parse tag', function() {
     });
 
     it('const double', function() {
-      var res = comments.parse('/**@const\n @const*/', {
+      const res = comments.parse('/**@const\n @const*/', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 2);
@@ -159,7 +156,7 @@ describe('parse tag', function() {
     });
 
     it('const triple', function() {
-      var res = comments.parse([
+      const res = comments.parse([
         '/**',
         ' * @const @const',
         ' * @const @const',
@@ -175,7 +172,7 @@ describe('parse tag', function() {
     });
 
     it('constructor', function() {
-      var res = comments.parse('/** @constructor */', {
+      const res = comments.parse('/** @constructor */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -183,7 +180,7 @@ describe('parse tag', function() {
     });
 
     it('constructor with type', function() {
-      var res = comments.parse('/** @constructor {Object} */', {
+      const res = comments.parse('/** @constructor {Object} */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -195,7 +192,7 @@ describe('parse tag', function() {
     });
 
     it('constructor with type and name', function() {
-      var res = comments.parse('/** @constructor {Object} objName */', {
+      const res = comments.parse('/** @constructor {Object} objName */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -208,7 +205,7 @@ describe('parse tag', function() {
     });
 
     it('class', function() {
-      var res = comments.parse('/** @class */', {
+      const res = comments.parse('/** @class */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -216,7 +213,7 @@ describe('parse tag', function() {
     });
 
     it('class with type', function() {
-      var res = comments.parse('/** @class {Object} */', {
+      const res = comments.parse('/** @class {Object} */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -228,7 +225,7 @@ describe('parse tag', function() {
     });
 
     it('class with type and name', function() {
-      var res = comments.parse('/** @class {Object} objName */', {
+      const res = comments.parse('/** @class {Object} objName */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -241,9 +238,10 @@ describe('parse tag', function() {
     });
 
     it('deprecated', function() {
-      var res = comments.parse('/** @deprecated */', {
+      let res = comments.parse('/** @deprecated */', {
         unwrap: true
       });
+
       assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'deprecated');
 
@@ -256,7 +254,7 @@ describe('parse tag', function() {
     });
 
     it('func', function() {
-      var res = comments.parse('/** @func */', {
+      const res = comments.parse('/** @func */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -264,7 +262,7 @@ describe('parse tag', function() {
     });
 
     it('func with name', function() {
-      var res = comments.parse('/** @func thingName.func */', {
+      const res = comments.parse('/** @func thingName.func */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -273,7 +271,7 @@ describe('parse tag', function() {
     });
 
     it('func with type', function() {
-      var res = comments.parse('/** @func {Object} thingName.func */', {
+      const res = comments.parse('/** @func {Object} thingName.func */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 0);
@@ -281,7 +279,7 @@ describe('parse tag', function() {
     });
 
     it('function', function() {
-      var res = comments.parse('/** @function */', {
+      const res = comments.parse('/** @function */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -289,7 +287,7 @@ describe('parse tag', function() {
     });
 
     it('function with name', function() {
-      var res = comments.parse('/** @function thingName.function */', {
+      const res = comments.parse('/** @function thingName.function */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -299,14 +297,14 @@ describe('parse tag', function() {
 
     it('function with type', function() {
       // function does not accept type
-      var res = comments.parse('/** @function {Object} thingName.function */', {
+      const res = comments.parse('/** @function {Object} thingName.function */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 0);
     });
 
     it('recognize "function" type', function() {
-      var res = comments.parse('/** @param {function} foo description */', {});
+      const res = comments.parse('/** @param {function} foo description */', {});
       assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'param');
       res[0].tags[0].should.have.property('type');
@@ -319,7 +317,7 @@ describe('parse tag', function() {
     });
 
     it('member', function() {
-      var res = comments.parse('/** @member */', {
+      const res = comments.parse('/** @member */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -327,7 +325,7 @@ describe('parse tag', function() {
     });
 
     it('member with name', function() {
-      var res = comments.parse('/** @member thingName.name */', {
+      const res = comments.parse('/** @member thingName.name */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -336,7 +334,7 @@ describe('parse tag', function() {
     });
 
     it('member with type', function() {
-      var res = comments.parse('/** @member {Object} thingName.name */', {
+      const res = comments.parse('/** @member {Object} thingName.name */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -350,7 +348,7 @@ describe('parse tag', function() {
     });
 
     it('method', function() {
-      var res = comments.parse('/** @method */', {
+      const res = comments.parse('/** @method */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -358,7 +356,7 @@ describe('parse tag', function() {
     });
 
     it('method with name', function() {
-      var res = comments.parse('/** @method thingName.function */', {
+      const res = comments.parse('/** @method thingName.function */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -367,7 +365,7 @@ describe('parse tag', function() {
     });
 
     it('method with type', function() {
-      var res = comments.parse('/** @method {Object} thingName.function */', {
+      const res = comments.parse('/** @method {Object} thingName.function */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 0);
@@ -375,14 +373,14 @@ describe('parse tag', function() {
     });
 
     it('mixes', function() {
-      var res = comments.parse('/** @mixes */', {
+      const res = comments.parse('/** @mixes */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
     });
 
     it('mixes (strict)', function() {
-      var res = comments.parse('/** @mixes */', {
+      const res = comments.parse('/** @mixes */', {
         unwrap: true,
         strict: true
       });
@@ -390,7 +388,7 @@ describe('parse tag', function() {
     });
 
     it('mixes with name', function() {
-      var res = comments.parse('/** @mixes thingName */', {
+      const res = comments.parse('/** @mixes thingName */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -399,7 +397,7 @@ describe('parse tag', function() {
     });
 
     it('mixes with namepath', function() {
-      var res = comments.parse('/** @mixes thingName.name */', {
+      const res = comments.parse('/** @mixes thingName.name */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -408,7 +406,7 @@ describe('parse tag', function() {
     });
 
     it('mixin', function() {
-      var res = comments.parse('/** @mixin */', {
+      const res = comments.parse('/** @mixin */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -416,7 +414,7 @@ describe('parse tag', function() {
     });
 
     it('mixin with name', function() {
-      var res = comments.parse('/** @mixin thingName */', {
+      const res = comments.parse('/** @mixin thingName */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -425,7 +423,7 @@ describe('parse tag', function() {
     });
 
     it('mixin with namepath', function() {
-      var res = comments.parse('/** @mixin thingName.name */', {
+      const res = comments.parse('/** @mixin thingName.name */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -434,7 +432,7 @@ describe('parse tag', function() {
     });
 
     it('module', function() {
-      var res = comments.parse('/** @module */', {
+      const res = comments.parse('/** @module */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -442,7 +440,7 @@ describe('parse tag', function() {
     });
 
     it('module with name', function() {
-      var res = comments.parse('/** @module thingName.name */', {
+      const res = comments.parse('/** @module thingName.name */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -451,7 +449,7 @@ describe('parse tag', function() {
     });
 
     it('module with name that has a hyphen in it', function() {
-      var res = comments.parse('/** @module thingName-name */', {
+      const res = comments.parse('/** @module thingName-name */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -460,7 +458,7 @@ describe('parse tag', function() {
     });
 
     it('module with type', function() {
-      var res = comments.parse('/** @module {Object} thingName.name */', {
+      const res = comments.parse('/** @module {Object} thingName.name */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -474,7 +472,7 @@ describe('parse tag', function() {
     });
 
     it('module with path', function() {
-      var res = comments.parse('/** @module path/to/thingName.name */', {
+      const res = comments.parse('/** @module path/to/thingName.name */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -483,7 +481,7 @@ describe('parse tag', function() {
     });
 
     it('name', function() {
-      var res = comments.parse('/** @name thingName.name */', {
+      const res = comments.parse('/** @name thingName.name */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -492,7 +490,7 @@ describe('parse tag', function() {
     });
 
     it('name', function() {
-      var res = comments.parse('/** @name thingName#name */', {
+      const res = comments.parse('/** @name thingName#name */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -501,7 +499,7 @@ describe('parse tag', function() {
     });
 
     it('name', function() {
-      var res = comments.parse('/** @name thingName~name */', {
+      const res = comments.parse('/** @name thingName~name */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -510,7 +508,7 @@ describe('parse tag', function() {
     });
 
     it('name', function() {
-      var res = comments.parse('/** @name {thing} thingName.name */', {
+      const res = comments.parse('/** @name {thing} thingName.name */', {
         unwrap: true
       });
       // name does not accept type
@@ -518,7 +516,7 @@ describe('parse tag', function() {
     });
 
     it('namespace', function() {
-      var res = comments.parse('/** @namespace */', {
+      const res = comments.parse('/** @namespace */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -526,7 +524,7 @@ describe('parse tag', function() {
     });
 
     it('namespace with name', function() {
-      var res = comments.parse('/** @namespace thingName.name */', {
+      const res = comments.parse('/** @namespace thingName.name */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -535,7 +533,7 @@ describe('parse tag', function() {
     });
 
     it('namespace with type', function() {
-      var res = comments.parse('/** @namespace {Object} thingName.name */', {
+      const res = comments.parse('/** @namespace {Object} thingName.name */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -549,7 +547,7 @@ describe('parse tag', function() {
     });
 
     it('param', function() {
-      var res = comments.parse([
+      const res = comments.parse([
         '/**',
         ' * @param {String} userName',
         '*/'
@@ -568,7 +566,7 @@ describe('parse tag', function() {
     });
 
     it('param with properties', function() {
-      var res = comments.parse([
+      const res = comments.parse([
         '/**',
         ' * @param {String} user.name',
         '*/'
@@ -586,7 +584,7 @@ describe('parse tag', function() {
     });
 
     it('param with properties with description', function() {
-      var res = comments.parse([
+      const res = comments.parse([
         '/**',
         ' * @param {String} user.name - hi',
         '*/'
@@ -605,7 +603,7 @@ describe('parse tag', function() {
     });
 
     it('param with array properties with description', function() {
-      var res = comments.parse([
+      const res = comments.parse([
         '/**',
         ' * @param {string} employee[].name - hi',
         ' */'
@@ -624,7 +622,7 @@ describe('parse tag', function() {
     });
 
     it('param with array properties without description', function() {
-      var res = comments.parse([
+      const res = comments.parse([
         '/**',
         ' * @param {string} employee[].name',
         ' */'
@@ -643,7 +641,7 @@ describe('parse tag', function() {
     });
 
     it('arg with properties', function() {
-      var res = comments.parse([
+      const res = comments.parse([
         '/**',
         ' * @arg {String} user.name',
         '*/'
@@ -661,7 +659,7 @@ describe('parse tag', function() {
     });
 
     it('argument with properties', function() {
-      var res = comments.parse([
+      const res = comments.parse([
         '/**',
         ' * @argument {String} user.name',
         '*/'
@@ -679,7 +677,7 @@ describe('parse tag', function() {
     });
 
     it('param typeless', function() {
-      var res = comments.parse([
+      let res = comments.parse([
         '/**',
         ' * @param something [bye] hi',
         '*/'
@@ -743,7 +741,7 @@ describe('parse tag', function() {
     });
 
     it('param broken', function() {
-      var res = comments.parse([
+      const res = comments.parse([
         '/**',
         ' * @param {String} userName',
         ' * @param {String userName',
@@ -763,7 +761,7 @@ describe('parse tag', function() {
     });
 
     it('param record', function() {
-      var res = comments.parse([
+      const res = comments.parse([
         '/**',
         ' * @param {{ok:String}} userName',
         '*/'
@@ -788,7 +786,7 @@ describe('parse tag', function() {
     });
 
     it('param record broken', function() {
-      var res = comments.parse([
+      const res = comments.parse([
         '/**',
         ' * @param {{ok:String} userName',
         '*/'
@@ -799,7 +797,7 @@ describe('parse tag', function() {
     });
 
     it('param multiple', function() {
-      var res = comments.parse([
+      const res = comments.parse([
         '/**',
         ' * @param {string|array|function} foo',
         '*/'
@@ -823,7 +821,7 @@ describe('parse tag', function() {
     });
 
     it('param multiple lines', function() {
-      var res = comments.parse([
+      const res = comments.parse([
         '/**',
         ' * @param {string|',
         ' *     number} userName',
@@ -849,7 +847,7 @@ describe('parse tag', function() {
     });
 
     it('param without braces', function() {
-      var res = comments.parse([
+      const res = comments.parse([
         '/**',
         ' * @param string name description',
         '*/'
@@ -864,7 +862,7 @@ describe('parse tag', function() {
     });
 
     it('param w/ hyphen before description', function() {
-      var res = comments.parse([
+      const res = comments.parse([
         '/**',
         ' * @param {string} name - description',
         '*/'
@@ -884,7 +882,7 @@ describe('parse tag', function() {
     });
 
     it('param w/ hyphen + leading space before description', function() {
-      var res = comments.parse([
+      const res = comments.parse([
         '/**',
         ' * @param {string} name -   description',
         '*/'
@@ -904,7 +902,7 @@ describe('parse tag', function() {
     });
 
     it('description and param separated by blank line', function() {
-      var res = comments.parse([
+      const res = comments.parse([
         '/**',
         ' * Description',
         ' * blah blah blah',
@@ -928,7 +926,7 @@ describe('parse tag', function() {
     });
 
     it('regular block comment instead of jsdoc-style block comment', function() {
-      var res = comments.parse([
+      const res = comments.parse([
         '/*',
         ' * Description',
         ' * blah blah blah',
@@ -942,14 +940,14 @@ describe('parse tag', function() {
     });
 
     it('augments', function() {
-      var res = comments.parse('/** @augments */', {
+      const res = comments.parse('/** @augments */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
     });
 
     it('augments with name', function() {
-      var res = comments.parse('/** @augments ClassName */', {
+      const res = comments.parse('/** @augments ClassName */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -958,7 +956,7 @@ describe('parse tag', function() {
     });
 
     it('augments with type', function() {
-      var res = comments.parse('/** @augments {ClassName} */', {
+      const res = comments.parse('/** @augments {ClassName} */', {
         unwrap: true
       });
 
@@ -971,7 +969,7 @@ describe('parse tag', function() {
     });
 
     it('augments with dot-notation name', function() {
-      var res = comments.parse('/** @augments ClassName.OK */', {
+      const res = comments.parse('/** @augments ClassName.OK */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -980,14 +978,14 @@ describe('parse tag', function() {
     });
 
     it('extends', function() {
-      var res = comments.parse('/** @extends */', {
+      const res = comments.parse('/** @extends */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
     });
 
     it('extends with name', function() {
-      var res = comments.parse('/** @extends ClassName */', {
+      const res = comments.parse('/** @extends ClassName */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -996,7 +994,7 @@ describe('parse tag', function() {
     });
 
     it('extends with type', function() {
-      var res = comments.parse('/** @extends {ClassName} */', {
+      const res = comments.parse('/** @extends {ClassName} */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -1008,7 +1006,7 @@ describe('parse tag', function() {
     });
 
     it('extends with namepath', function() {
-      var res = comments.parse('/** @extends ClassName.OK */', {
+      const res = comments.parse('/** @extends ClassName.OK */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -1017,7 +1015,7 @@ describe('parse tag', function() {
     });
 
     it('extends with namepath', function() {
-      var res = comments.parse('/** @extends module:path/ClassName~OK */', {
+      const res = comments.parse('/** @extends module:path/ClassName~OK */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -1026,7 +1024,7 @@ describe('parse tag', function() {
     });
 
     it('prop', function() {
-      var res = comments.parse([
+      const res = comments.parse([
         '/**',
         ' * @prop {string} thingName - does some stuff',
         '*/'
@@ -1041,7 +1039,7 @@ describe('parse tag', function() {
     });
 
     it('prop without type', function() {
-      var res = comments.parse([
+      let res = comments.parse([
         '/**',
         ' * @prop thingName - does some stuff',
         '*/'
@@ -1064,7 +1062,7 @@ describe('parse tag', function() {
     });
 
     it('property', function() {
-      var res = comments.parse([
+      const res = comments.parse([
         '/**',
         ' * @property {string} thingName - does some stuff',
         '*/'
@@ -1079,7 +1077,7 @@ describe('parse tag', function() {
     });
 
     it('property without type', function() {
-      var res = comments.parse([
+      const res = comments.parse([
         '/**',
         ' * @property thingName - does some stuff',
         '*/'
@@ -1092,7 +1090,7 @@ describe('parse tag', function() {
     });
 
     it('property with optional type', function() {
-      var res = comments.parse(['/**',
+      let res = comments.parse(['/**',
         '* testtypedef',
         '* @typedef {object} abc',
         '* @property {String} [val] value description',
@@ -1101,6 +1099,7 @@ describe('parse tag', function() {
         unwrap: true,
         strict: false
       });
+
       res[0].tags[1].should.have.property('title', 'property');
       res[0].tags[1].should.have.property('type');
       assert.deepEqual(res[0].tags[1].type, {
@@ -1130,7 +1129,7 @@ describe('parse tag', function() {
     });
 
     it('property with nested name', function() {
-      var res = comments.parse([
+      const res = comments.parse([
         '/**',
         ' * @property {string} thingName.name - does some stuff',
         '*/'
@@ -1145,7 +1144,7 @@ describe('parse tag', function() {
     });
 
     it('throws', function() {
-      var res = comments.parse([
+      const res = comments.parse([
         '/**',
         ' * @throws {Error} if something goes wrong',
         ' */'
@@ -1159,7 +1158,7 @@ describe('parse tag', function() {
     });
 
     it('throws without type', function() {
-      var res = comments.parse([
+      const res = comments.parse([
         '/**',
         ' * @throws if something goes wrong',
         ' */'
@@ -1172,7 +1171,7 @@ describe('parse tag', function() {
     });
 
     it('kind', function() {
-      var res = comments.parse('/** @kind class */', {
+      const res = comments.parse('/** @kind class */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -1181,7 +1180,7 @@ describe('parse tag', function() {
     });
 
     it('kind error', function() {
-      var res = comments.parse('/** @kind ng */', {
+      const res = comments.parse('/** @kind ng */', {
         unwrap: true,
         recoverable: true
       });
@@ -1192,7 +1191,7 @@ describe('parse tag', function() {
     });
 
     it('todo', function() {
-      var res = comments.parse('/** @todo Write the documentation */', {
+      const res = comments.parse('/** @todo Write the documentation */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -1201,7 +1200,7 @@ describe('parse tag', function() {
     });
 
     it('typedef', function() {
-      var res = comments.parse('/** @typedef {Object} NumberLike */', {
+      const res = comments.parse('/** @typedef {Object} NumberLike */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -1215,7 +1214,7 @@ describe('parse tag', function() {
 
     it('summary', function() {
       // japanese lang
-      var res = comments.parse('/** @summary ゆるゆり3期おめでとー */', {
+      const res = comments.parse('/** @summary ゆるゆり3期おめでとー */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -1225,7 +1224,7 @@ describe('parse tag', function() {
 
     it('variation', function() {
       // japanese lang
-      var res = comments.parse('/** @variation 42 */', {
+      const res = comments.parse('/** @variation 42 */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -1235,7 +1234,7 @@ describe('parse tag', function() {
 
     it('variation error', function() {
       // japanese lang
-      var res = comments.parse('/** @variation Animation */', {
+      const res = comments.parse('/** @variation Animation */', {
         unwrap: true,
         recoverable: true
       });
@@ -1246,7 +1245,7 @@ describe('parse tag', function() {
     });
 
     it('access', function() {
-      var res = comments.parse('/** @access public */', {
+      const res = comments.parse('/** @access public */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -1255,7 +1254,7 @@ describe('parse tag', function() {
     });
 
     it('access error', function() {
-      var res = comments.parse('/** @access ng */', {
+      const res = comments.parse('/** @access ng */', {
         unwrap: true,
         recoverable: true
       });
@@ -1266,7 +1265,7 @@ describe('parse tag', function() {
     });
 
     it('public', function() {
-      var res = comments.parse('/** @public */', {
+      const res = comments.parse('/** @public */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -1274,7 +1273,7 @@ describe('parse tag', function() {
     });
 
     it('public type and description', function() {
-      var res = comments.parse('/** @public {number} ok */', {
+      const res = comments.parse('/** @public {number} ok */', {
         unwrap: true,
         recoverable: true
       });
@@ -1289,7 +1288,7 @@ describe('parse tag', function() {
     });
 
     it('protected', function() {
-      var res = comments.parse('/** @protected */', {
+      const res = comments.parse('/** @protected */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -1297,7 +1296,7 @@ describe('parse tag', function() {
     });
 
     it('protected type and description', function() {
-      var res = comments.parse('/** @protected {number} ok */', {
+      const res = comments.parse('/** @protected {number} ok */', {
         unwrap: true,
         recoverable: true
       });
@@ -1312,7 +1311,7 @@ describe('parse tag', function() {
     });
 
     it('private', function() {
-      var res = comments.parse('/** @private */', {
+      const res = comments.parse('/** @private */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -1320,7 +1319,7 @@ describe('parse tag', function() {
     });
 
     it('private type and description', function() {
-      var res = comments.parse('/** @private {number} ok */', {
+      const res = comments.parse('/** @private {number} ok */', {
         unwrap: true,
         recoverable: true
       });
@@ -1335,7 +1334,7 @@ describe('parse tag', function() {
     });
 
     it('readonly', function() {
-      var res = comments.parse('/** @readonly */', {
+      const res = comments.parse('/** @readonly */', {
         unwrap: true
       });
 
@@ -1344,13 +1343,13 @@ describe('parse tag', function() {
     });
 
     it('readonly description (non-strict)', function() {
-      var res = comments.parse('/** @readonly ng */', {unwrap: true});
+      const res = comments.parse('/** @readonly ng */', {unwrap: true});
       assert.equal(res[0].tags.length, 1);
       res[0].tags[0].description.should.equal('ng');
     });
 
     it('readonly error', function() {
-      var res = comments.parse('/** @readonly ng */', {
+      const res = comments.parse('/** @readonly ng */', {
         unwrap: true,
         strict: true
       });
@@ -1361,14 +1360,14 @@ describe('parse tag', function() {
     });
 
     it('requires', function() {
-      var res = comments.parse('/** @requires */', {
+      const res = comments.parse('/** @requires */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
     });
 
     it('requires (strict)', function() {
-      var res = comments.parse('/** @requires */', {
+      const res = comments.parse('/** @requires */', {
         unwrap: true,
         strict: true
       });
@@ -1376,7 +1375,7 @@ describe('parse tag', function() {
     });
 
     it('requires with module name', function() {
-      var res = comments.parse('/** @requires name.path */', {
+      const res = comments.parse('/** @requires name.path */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -1385,7 +1384,7 @@ describe('parse tag', function() {
     });
 
     it('global', function() {
-      var res = comments.parse('/** @global */', {
+      const res = comments.parse('/** @global */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -1393,7 +1392,7 @@ describe('parse tag', function() {
     });
 
     it('global description', function() {
-      var res = comments.parse('/** @global ng */', {
+      const res = comments.parse('/** @global ng */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -1401,10 +1400,11 @@ describe('parse tag', function() {
     });
 
     it('global error (strict)', function() {
-      var res = comments.parse('/** @global ng */', {
+      const res = comments.parse('/** @global ng */', {
         unwrap: true,
         strict: true
       });
+
       assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('errors');
       assert.equal(res[0].tags[0].errors.length, 1);
@@ -1412,7 +1412,7 @@ describe('parse tag', function() {
     });
 
     it('inner', function() {
-      var res = comments.parse('/** @inner */', {
+      const res = comments.parse('/** @inner */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -1420,7 +1420,7 @@ describe('parse tag', function() {
     });
 
     it('inner description', function() {
-      var res = comments.parse('/** @inner ng */', {
+      const res = comments.parse('/** @inner ng */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -1429,7 +1429,7 @@ describe('parse tag', function() {
     });
 
     it('inner error (strict)', function() {
-      var res = comments.parse('/** @inner ng */', {
+      const res = comments.parse('/** @inner ng */', {
         unwrap: true,
         strict: true
       });
@@ -1440,7 +1440,7 @@ describe('parse tag', function() {
     });
 
     it('instance', function() {
-      var res = comments.parse('/** @instance */', {
+      const res = comments.parse('/** @instance */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -1448,13 +1448,13 @@ describe('parse tag', function() {
     });
 
     it('instance description', function() {
-      var res = comments.parse('/** @instance ng */', {unwrap: true});
+      const res = comments.parse('/** @instance ng */', {unwrap: true});
       assert.equal(res[0].tags.length, 1);
       res[0].tags[0].description.should.equal('ng');
     });
 
     it('instance error (strict)', function() {
-      var res = comments.parse('/** @instance ng */', {
+      const res = comments.parse('/** @instance ng */', {
         unwrap: true,
         strict: true
       });
@@ -1465,7 +1465,7 @@ describe('parse tag', function() {
     });
 
     it('since', function() {
-      var res = comments.parse('/** @since 1.2.1 */', {
+      const res = comments.parse('/** @since 1.2.1 */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -1474,7 +1474,7 @@ describe('parse tag', function() {
     });
 
     it('static', function() {
-      var res = comments.parse('/** @static */', {
+      const res = comments.parse('/** @static */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -1482,13 +1482,13 @@ describe('parse tag', function() {
     });
 
     it('static description', function() {
-      var res = comments.parse('/** @static ng */', {unwrap: true});
+      const res = comments.parse('/** @static ng */', {unwrap: true});
       assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('description', 'ng');
     });
 
     it('static error', function() {
-      var res = comments.parse('/** @static ng */', {
+      const res = comments.parse('/** @static ng */', {
         unwrap: true,
         strict: true
       });
@@ -1499,7 +1499,7 @@ describe('parse tag', function() {
     });
 
     it('this', function() {
-      var res = comments.parse([
+      const res = comments.parse([
         '/**',
         ' * @this thingName',
         '*/'
@@ -1512,7 +1512,7 @@ describe('parse tag', function() {
     });
 
     it('this with namepath', function() {
-      var res = comments.parse([
+      const res = comments.parse([
         '/**',
         ' * @this thingName.name',
         '*/'
@@ -1525,7 +1525,7 @@ describe('parse tag', function() {
     });
 
     it('this with name expression', function() {
-      var res = comments.parse([
+      const res = comments.parse([
         '/**',
         ' * @this {thingName.name}',
         '*/'
@@ -1539,7 +1539,7 @@ describe('parse tag', function() {
     });
 
     it('this with multiple application types', function() {
-      var res = comments.parse([
+      const res = comments.parse([
         '/**',
         ' * @this {Array<string, object>} foo',
         '*/'
@@ -1570,7 +1570,7 @@ describe('parse tag', function() {
     });
 
     it('this error with type application', function() {
-      var res = comments.parse([
+      const res = comments.parse([
         '/**',
         ' * @this {Array<string>}',
         '*/'
@@ -1587,7 +1587,7 @@ describe('parse tag', function() {
     });
 
     it('this error', function() {
-      var res = comments.parse([
+      const res = comments.parse([
         '/**',
         ' * @this',
         '*/'
@@ -1603,7 +1603,7 @@ describe('parse tag', function() {
     });
 
     it('var', function() {
-      var res = comments.parse('/** @var */', {
+      const res = comments.parse('/** @var */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -1611,7 +1611,7 @@ describe('parse tag', function() {
     });
 
     it('var with name', function() {
-      var res = comments.parse('/** @var thingName.name */', {
+      const res = comments.parse('/** @var thingName.name */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -1620,7 +1620,7 @@ describe('parse tag', function() {
     });
 
     it('var with type', function() {
-      var res = comments.parse('/** @var {Object} thingName.name */', {
+      const res = comments.parse('/** @var {Object} thingName.name */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -1634,7 +1634,7 @@ describe('parse tag', function() {
     });
 
     it('version', function() {
-      var res = comments.parse('/** @version 1.2.1 */', {
+      const res = comments.parse('/** @version 1.2.1 */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
@@ -1643,7 +1643,7 @@ describe('parse tag', function() {
     });
 
     it('invalid name', function() {
-      var res = comments.parse('/** @name thingName#%name */', {
+      const res = comments.parse('/** @name thingName#%name */', {
         unwrap: true,
         strict: true
       });
@@ -1654,7 +1654,7 @@ describe('parse tag', function() {
     });
 
     it('string literal property', function() {
-      var res = comments.parse([
+      const res = comments.parse([
         '/**',
         ' * @typedef {Object} comment',
         " * @property {('public'|'protected'|'private')} access",
@@ -1683,7 +1683,7 @@ describe('parse tag', function() {
     });
 
     it('numeric literal property', function() {
-      var res = comments.parse([
+      const res = comments.parse([
         '/**',
         ' * @typedef {Object} comment',
         ' * @property {(-42|1.5|0)} access',
@@ -1712,7 +1712,7 @@ describe('parse tag', function() {
     });
 
     it('boolean literal property', function() {
-      var res = comments.parse([
+      const res = comments.parse([
         '/**',
         ' * @typedef {Object} comment',
         ' * @property {(true|false)} access',
@@ -1737,7 +1737,7 @@ describe('parse tag', function() {
     });
 
     it('complex union with literal types', function() {
-      var res = comments.parse([
+      const res = comments.parse([
         '/**',
         ' * @typedef {({ok: true, data: string} | {ok: false, error: Error})} Result',
         '*/'
@@ -1749,7 +1749,7 @@ describe('parse tag', function() {
       res[0].tags[0].type.should.have.property('type', 'UnionType');
       assert.equal(res[0].tags[0].type.elements.length, 2);
 
-      var e0 = res[0].tags[0].type.elements[0];
+      let e0 = res[0].tags[0].type.elements[0];
       e0.should.have.property('type', 'RecordType');
       assert.equal(e0.fields.length, 2);
       assert.deepEqual(e0.fields[0], {

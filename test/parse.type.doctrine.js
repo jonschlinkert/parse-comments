@@ -14,21 +14,24 @@ var doctrine = require('doctrine');
 describe('parse type (doctrine)', function() {
   describe('parseType', function() {
     it('union type closure-compiler extended', function() {
-      var type = doctrine.parseType('string|number');
+      let type = doctrine.parseType('string|number');
       type.should.eql({
         type: 'UnionType',
-        elements: [{
-          type: 'NameExpression',
-          name: 'string'
-        }, {
-          type: 'NameExpression',
-          name: 'number'
-        }]
+        elements: [
+          {
+            type: 'NameExpression',
+            name: 'string'
+          },
+          {
+            type: 'NameExpression',
+            name: 'number'
+          }
+        ]
       });
     });
 
     it('empty union type', function() {
-      var type = doctrine.parseType('()');
+      let type = doctrine.parseType('()');
       type.should.eql({
         type: 'UnionType',
         elements: []
@@ -36,38 +39,44 @@ describe('parse type (doctrine)', function() {
     });
 
     it('comma last array type', function() {
-      var type = doctrine.parseType('[string,]');
+      let type = doctrine.parseType('[string,]');
       type.should.eql({
         type: 'ArrayType',
-        elements: [{
-          type: 'NameExpression',
-          name: 'string'
-        }]
+        elements: [
+          {
+            type: 'NameExpression',
+            name: 'string'
+          }
+        ]
       });
     });
 
     it('array type of all literal', function() {
-      var type = doctrine.parseType('[*]');
+      let type = doctrine.parseType('[*]');
       type.should.eql({
         type: 'ArrayType',
-        elements: [{
-          type: 'AllLiteral'
-        }]
+        elements: [
+          {
+            type: 'AllLiteral'
+          }
+        ]
       });
     });
 
     it('array type of nullable literal', function() {
-      var type = doctrine.parseType('[?]');
+      let type = doctrine.parseType('[?]');
       type.should.eql({
         type: 'ArrayType',
-        elements: [{
-          type: 'NullableLiteral'
-        }]
+        elements: [
+          {
+            type: 'NullableLiteral'
+          }
+        ]
       });
     });
 
     it('comma last record type', function() {
-      var type = doctrine.parseType('{,}');
+      let type = doctrine.parseType('{,}');
       type.should.eql({
         type: 'RecordType',
         fields: []
@@ -75,359 +84,369 @@ describe('parse type (doctrine)', function() {
     });
 
     it('type application', function() {
-      var type = doctrine.parseType('Array.<String>');
+      let type = doctrine.parseType('Array.<String>');
       type.should.eql({
         type: 'TypeApplication',
         expression: {
           type: 'NameExpression',
           name: 'Array'
         },
-        applications: [{
-          type: 'NameExpression',
-          name: 'String'
-        }]
+        applications: [
+          {
+            type: 'NameExpression',
+            name: 'String'
+          }
+        ]
       });
     });
 
     it('type application with NullableLiteral', function() {
-      var type = doctrine.parseType('Array<?>');
+      let type = doctrine.parseType('Array<?>');
       type.should.eql({
         type: 'TypeApplication',
         expression: {
           type: 'NameExpression',
           name: 'Array'
         },
-        applications: [{
-          type: 'NullableLiteral'
-        }]
+        applications: [
+          {
+            type: 'NullableLiteral'
+          }
+        ]
       });
     });
 
     it('type application with multiple patterns', function() {
-      var type = doctrine.parseType('Array.<String, Number>');
+      let type = doctrine.parseType('Array.<String, Number>');
       type.should.eql({
         type: 'TypeApplication',
         expression: {
           type: 'NameExpression',
           name: 'Array'
         },
-        applications: [{
-          type: 'NameExpression',
-          name: 'String'
-        }, {
-          type: 'NameExpression',
-          name: 'Number'
-        }]
+        applications: [
+          {
+            type: 'NameExpression',
+            name: 'String'
+          },
+          {
+            type: 'NameExpression',
+            name: 'Number'
+          }
+        ]
       });
     });
 
     it('type application without dot', function() {
-      var type = doctrine.parseType('Array<String>');
+      let type = doctrine.parseType('Array<String>');
       type.should.eql({
         type: 'TypeApplication',
         expression: {
           type: 'NameExpression',
           name: 'Array'
         },
-        applications: [{
-          type: 'NameExpression',
-          name: 'String'
-        }]
+        applications: [
+          {
+            type: 'NameExpression',
+            name: 'String'
+          }
+        ]
       });
     });
 
     it('array-style type application', function() {
-      var type = doctrine.parseType('String[]');
+      let type = doctrine.parseType('String[]');
       type.should.eql({
         type: 'TypeApplication',
         expression: {
           type: 'NameExpression',
           name: 'Array'
         },
-        applications: [{
-          type: 'NameExpression',
-          name: 'String'
-        }]
+        applications: [
+          {
+            type: 'NameExpression',
+            name: 'String'
+          }
+        ]
       });
     });
 
     it('function type simple', function() {
-      var type = doctrine.parseType('function()');
+      let type = doctrine.parseType('function()');
       type.should.eql({
-        'type': 'FunctionType',
-        'params': [],
-        'result': null
+        type: 'FunctionType',
+        params: [],
+        result: null
       });
     });
 
     it('function type with name', function() {
-      var type = doctrine.parseType('function(a)');
+      let type = doctrine.parseType('function(a)');
       type.should.eql({
-        'type': 'FunctionType',
-        'params': [
+        type: 'FunctionType',
+        params: [
           {
-            'type': 'NameExpression',
-            'name': 'a'
+            type: 'NameExpression',
+            name: 'a'
           }
         ],
-        'result': null
+        result: null
       });
     });
     it('function type with name and type', function() {
-      var type = doctrine.parseType('function(a:b)');
+      let type = doctrine.parseType('function(a:b)');
       type.should.eql({
-        'type': 'FunctionType',
-        'params': [
+        type: 'FunctionType',
+        params: [
           {
-            'type': 'ParameterType',
-            'name': 'a',
-            'expression': {
-              'type': 'NameExpression',
-              'name': 'b'
+            type: 'ParameterType',
+            name: 'a',
+            expression: {
+              type: 'NameExpression',
+              name: 'b'
             }
           }
         ],
-        'result': null
+        result: null
       });
     });
     it('function type with optional param', function() {
-      var type = doctrine.parseType('function(a=)');
+      let type = doctrine.parseType('function(a=)');
       type.should.eql({
-        'type': 'FunctionType',
-        'params': [
+        type: 'FunctionType',
+        params: [
           {
-            'type': 'OptionalType',
-            'expression': {
-              'type': 'NameExpression',
-              'name': 'a'
+            type: 'OptionalType',
+            expression: {
+              type: 'NameExpression',
+              name: 'a'
             }
           }
         ],
-        'result': null
+        result: null
       });
     });
     it('function type with optional param name and type', function() {
-      var type = doctrine.parseType('function(a:b=)');
+      let type = doctrine.parseType('function(a:b=)');
       type.should.eql({
-        'type': 'FunctionType',
-        'params': [
+        type: 'FunctionType',
+        params: [
           {
-            'type': 'OptionalType',
-            'expression': {
-              'type': 'ParameterType',
-              'name': 'a',
-              'expression': {
-                'type': 'NameExpression',
-                'name': 'b'
+            type: 'OptionalType',
+            expression: {
+              type: 'ParameterType',
+              name: 'a',
+              expression: {
+                type: 'NameExpression',
+                name: 'b'
               }
             }
           }
         ],
-        'result': null
+        result: null
       });
     });
     it('function type with rest param', function() {
-      var type = doctrine.parseType('function(...a)');
+      let type = doctrine.parseType('function(...a)');
       type.should.eql({
-        'type': 'FunctionType',
-        'params': [
+        type: 'FunctionType',
+        params: [
           {
-            'type': 'RestType',
-            'expression': {
-              'type': 'NameExpression',
-              'name': 'a'
+            type: 'RestType',
+            expression: {
+              type: 'NameExpression',
+              name: 'a'
             }
           }
         ],
-        'result': null
+        result: null
       });
     });
     it('function type with rest param name and type', function() {
-      var type = doctrine.parseType('function(...a:b)');
+      let type = doctrine.parseType('function(...a:b)');
       type.should.eql({
-        'type': 'FunctionType',
-        'params': [
+        type: 'FunctionType',
+        params: [
           {
-            'type': 'RestType',
-            'expression': {
-              'type': 'ParameterType',
-              'name': 'a',
-              'expression': {
-                'type': 'NameExpression',
-                'name': 'b'
+            type: 'RestType',
+            expression: {
+              type: 'ParameterType',
+              name: 'a',
+              expression: {
+                type: 'NameExpression',
+                name: 'b'
               }
             }
           }
         ],
-        'result': null
+        result: null
       });
     });
 
     it('function type with optional rest param', function() {
-      var type = doctrine.parseType('function(...a=)');
+      let type = doctrine.parseType('function(...a=)');
       type.should.eql({
-        'type': 'FunctionType',
-        'params': [
+        type: 'FunctionType',
+        params: [
           {
-            'type': 'RestType',
-            'expression': {
-              'type': 'OptionalType',
-              'expression': {
-                'type': 'NameExpression',
-                'name': 'a'
+            type: 'RestType',
+            expression: {
+              type: 'OptionalType',
+              expression: {
+                type: 'NameExpression',
+                name: 'a'
               }
             }
           }
         ],
-        'result': null
+        result: null
       });
     });
     it('function type with optional rest param name and type', function() {
-      var type = doctrine.parseType('function(...a:b=)');
+      let type = doctrine.parseType('function(...a:b=)');
       type.should.eql({
-        'type': 'FunctionType',
-        'params': [
+        type: 'FunctionType',
+        params: [
           {
-            'type': 'RestType',
-            'expression': {
-              'type': 'OptionalType',
-              'expression': {
-                'type': 'ParameterType',
-                'name': 'a',
-                'expression': {
-                  'type': 'NameExpression',
-                  'name': 'b'
+            type: 'RestType',
+            expression: {
+              type: 'OptionalType',
+              expression: {
+                type: 'ParameterType',
+                name: 'a',
+                expression: {
+                  type: 'NameExpression',
+                  name: 'b'
                 }
               }
             }
-          }],
-        'result': null
+          }
+        ],
+        result: null
       });
     });
 
     it('string value in type', function() {
-      var type;
+      let type;
 
       type = doctrine.parseType("{'ok':String}");
       type.should.eql({
-        'fields': [
+        fields: [
           {
-            'key': 'ok',
-            'type': 'FieldType',
-            'value': {
-              'name': 'String',
-              'type': 'NameExpression'
+            key: 'ok',
+            type: 'FieldType',
+            value: {
+              name: 'String',
+              type: 'NameExpression'
             }
           }
         ],
-        'type': 'RecordType'
+        type: 'RecordType'
       });
 
       type = doctrine.parseType('{"\\r\\n\\t\\u2028\\x20\\u20\\b\\f\\v\\\r\n\\\n\\0\\07\\012\\o":String}');
       type.should.eql({
-        'fields': [
+        fields: [
           {
-            'key': '\r\n\t\u2028\x20u20\b\f\v\0\u0007\u000ao',
-            'type': 'FieldType',
-            'value': {
-              'name': 'String',
-              'type': 'NameExpression'
+            key: '\r\n\t\u2028\x20u20\b\f\v\0\u0007\u000ao',
+            type: 'FieldType',
+            value: {
+              name: 'String',
+              type: 'NameExpression'
             }
           }
         ],
-        'type': 'RecordType'
+        type: 'RecordType'
       });
 
-      doctrine.parseType.bind(doctrine, "{'ok\":String}").should.throw('unexpected quote');
+      doctrine.parseType.bind(doctrine, '{\'ok":String}').should.throw('unexpected quote');
       doctrine.parseType.bind(doctrine, "{'o\n':String}").should.throw('unexpected quote');
     });
 
     it('number value in type', function() {
-      var type;
-
-      type = doctrine.parseType('{20:String}');
+      let type = doctrine.parseType('{20:String}');
       type.should.eql({
-        'fields': [
+        fields: [
           {
-            'key': '20',
-            'type': 'FieldType',
-            'value': {
-              'name': 'String',
-              'type': 'NameExpression'
+            key: '20',
+            type: 'FieldType',
+            value: {
+              name: 'String',
+              type: 'NameExpression'
             }
           }
         ],
-        'type': 'RecordType'
+        type: 'RecordType'
       });
 
       type = doctrine.parseType('{.2:String, 30:Number, 0x20:String}');
       type.should.eql({
-        'fields': [
+        fields: [
           {
-            'key': '0.2',
-            'type': 'FieldType',
-            'value': {
-              'name': 'String',
-              'type': 'NameExpression'
+            key: '0.2',
+            type: 'FieldType',
+            value: {
+              name: 'String',
+              type: 'NameExpression'
             }
           },
           {
-            'key': '30',
-            'type': 'FieldType',
-            'value': {
-              'name': 'Number',
-              'type': 'NameExpression'
+            key: '30',
+            type: 'FieldType',
+            value: {
+              name: 'Number',
+              type: 'NameExpression'
             }
           },
           {
-            'key': '32',
-            'type': 'FieldType',
-            'value': {
-              'name': 'String',
-              'type': 'NameExpression'
+            key: '32',
+            type: 'FieldType',
+            value: {
+              name: 'String',
+              type: 'NameExpression'
             }
           }
         ],
-        'type': 'RecordType'
+        type: 'RecordType'
       });
 
       type = doctrine.parseType('{0X2:String, 0:Number, 100e200:String, 10e-20:Number}');
       type.should.eql({
-        'fields': [
+        fields: [
           {
-            'key': '2',
-            'type': 'FieldType',
-            'value': {
-              'name': 'String',
-              'type': 'NameExpression'
+            key: '2',
+            type: 'FieldType',
+            value: {
+              name: 'String',
+              type: 'NameExpression'
             }
           },
           {
-            'key': '0',
-            'type': 'FieldType',
-            'value': {
-              'name': 'Number',
-              'type': 'NameExpression'
+            key: '0',
+            type: 'FieldType',
+            value: {
+              name: 'Number',
+              type: 'NameExpression'
             }
           },
           {
-            'key': '1e+202',
-            'type': 'FieldType',
-            'value': {
-              'name': 'String',
-              'type': 'NameExpression'
+            key: '1e+202',
+            type: 'FieldType',
+            value: {
+              name: 'String',
+              type: 'NameExpression'
             }
           },
           {
-            'key': '1e-19',
-            'type': 'FieldType',
-            'value': {
-              'name': 'Number',
-              'type': 'NameExpression'
+            key: '1e-19',
+            type: 'FieldType',
+            value: {
+              name: 'Number',
+              type: 'NameExpression'
             }
           }
         ],
-        'type': 'RecordType'
+        type: 'RecordType'
       });
 
       doctrine.parseType.bind(doctrine, '{0x:String}').should.throw('unexpected token');
@@ -448,86 +467,80 @@ describe('parse type (doctrine)', function() {
     });
 
     it('dotted type', function() {
-      var type;
-      type = doctrine.parseType('Cocoa.Cappuccino');
+      let type = doctrine.parseType('Cocoa.Cappuccino');
       type.should.eql({
-        'name': 'Cocoa.Cappuccino',
-        'type': 'NameExpression'
+        name: 'Cocoa.Cappuccino',
+        type: 'NameExpression'
       });
     });
 
     it('rest array type', function() {
-      var type;
-      type = doctrine.parseType('[string,...string]');
+      let type = doctrine.parseType('[string,...string]');
       type.should.eql({
-        'elements': [
+        elements: [
           {
-            'name': 'string',
-            'type': 'NameExpression'
+            name: 'string',
+            type: 'NameExpression'
           },
           {
-            'expression': {
-              'name': 'string',
-              'type': 'NameExpression'
+            expression: {
+              name: 'string',
+              type: 'NameExpression'
             },
-            'type': 'RestType'
+            type: 'RestType'
           }
         ],
-        'type': 'ArrayType'
+        type: 'ArrayType'
       });
     });
 
     it('nullable type', function() {
-      var type;
-      type = doctrine.parseType('string?');
+      let type = doctrine.parseType('string?');
       type.should.eql({
-        'expression': {
-          'name': 'string',
-          'type': 'NameExpression'
+        expression: {
+          name: 'string',
+          type: 'NameExpression'
         },
-        'prefix': false,
-        'type': 'NullableType'
+        prefix: false,
+        type: 'NullableType'
       });
     });
 
     it('non-nullable type', function() {
-      var type;
-      type = doctrine.parseType('string!');
+      let type = doctrine.parseType('string!');
       type.should.eql({
-        'expression': {
-          'name': 'string',
-          'type': 'NameExpression'
+        expression: {
+          name: 'string',
+          type: 'NameExpression'
         },
-        'prefix': false,
-        'type': 'NonNullableType'
+        prefix: false,
+        type: 'NonNullableType'
       });
     });
 
     it('toplevel multiple pipe type', function() {
-      var type;
-      type = doctrine.parseType('string|number|Test');
+      let type = doctrine.parseType('string|number|Test');
       type.should.eql({
-        'elements': [
+        elements: [
           {
-            'name': 'string',
-            'type': 'NameExpression'
+            name: 'string',
+            type: 'NameExpression'
           },
           {
-            'name': 'number',
-            'type': 'NameExpression'
+            name: 'number',
+            type: 'NameExpression'
           },
           {
-            'name': 'Test',
-            'type': 'NameExpression'
+            name: 'Test',
+            type: 'NameExpression'
           }
         ],
-        'type': 'UnionType'
+        type: 'UnionType'
       });
     });
 
     it('string literal type', function() {
-      var type;
-      type = doctrine.parseType('"Hello, World"');
+      let type = doctrine.parseType('"Hello, World"');
       type.should.eql({
         type: 'StringLiteralType',
         value: 'Hello, World'
@@ -535,8 +548,7 @@ describe('parse type (doctrine)', function() {
     });
 
     it('numeric literal type', function() {
-      var type;
-      type = doctrine.parseType('32');
+      let type = doctrine.parseType('32');
       type.should.eql({
         type: 'NumericLiteralType',
         value: 32
@@ -549,8 +561,7 @@ describe('parse type (doctrine)', function() {
     });
 
     it('boolean literal type', function() {
-      var type;
-      type = doctrine.parseType('true');
+      let type = doctrine.parseType('true');
       type.should.eql({
         type: 'BooleanLiteralType',
         value: true
@@ -572,14 +583,14 @@ describe('parse type (doctrine)', function() {
 
   describe('parseParamType', function() {
     it('question', function() {
-      var type = doctrine.parseParamType('?');
+      let type = doctrine.parseParamType('?');
       type.should.eql({
         type: 'NullableLiteral'
       });
     });
 
     it('question option', function() {
-      var type = doctrine.parseParamType('?=');
+      let type = doctrine.parseParamType('?=');
       type.should.eql({
         type: 'OptionalType',
         expression: {
@@ -589,47 +600,56 @@ describe('parse type (doctrine)', function() {
     });
 
     it('function option parameters former', function() {
-      var type = doctrine.parseParamType('function(?, number)');
+      let type = doctrine.parseParamType('function(?, number)');
       type.should.eql({
         type: 'FunctionType',
-        params: [{
-          type: 'NullableLiteral'
-        }, {
-          type: 'NameExpression',
-          name: 'number'
-        }],
+        params: [
+          {
+            type: 'NullableLiteral'
+          },
+          {
+            type: 'NameExpression',
+            name: 'number'
+          }
+        ],
         result: null
       });
     });
 
     it('function option parameters latter', function() {
-      var type = doctrine.parseParamType('function(number, ?)');
+      let type = doctrine.parseParamType('function(number, ?)');
       type.should.eql({
         type: 'FunctionType',
-        params: [{
-          type: 'NameExpression',
-          name: 'number'
-        }, {
-          type: 'NullableLiteral'
-        }],
+        params: [
+          {
+            type: 'NameExpression',
+            name: 'number'
+          },
+          {
+            type: 'NullableLiteral'
+          }
+        ],
         result: null
       });
     });
 
     it('function type union', function() {
-      var type = doctrine.parseParamType('function(): ?|number');
+      let type = doctrine.parseParamType('function(): ?|number');
       type.should.eql({
         type: 'UnionType',
-        elements: [{
-          type: 'FunctionType',
-          params: [],
-          result: {
-            type: 'NullableLiteral'
+        elements: [
+          {
+            type: 'FunctionType',
+            params: [],
+            result: {
+              type: 'NullableLiteral'
+            }
+          },
+          {
+            type: 'NameExpression',
+            name: 'number'
           }
-        }, {
-          type: 'NameExpression',
-          name: 'number'
-        }]
+        ]
       });
     });
   });

@@ -50,11 +50,11 @@ describe('parse inline tags', function() {
       assert.deepEqual(res[0].inlineTags, [{
         raw: '{@code e.preventDefault()}',
         name: 'code',
-        val: 'e.preventDefault()'
+        value: 'e.preventDefault()'
       }, {
         raw: '{@link goog.events.listen}',
         name: 'link',
-        val: 'goog.events.listen'
+        value: 'goog.events.listen'
       }]);
     });
 
@@ -69,7 +69,7 @@ describe('parse inline tags', function() {
       ].join('\n'), {
         unwrap: true,
         replaceInlineTag: function(tag) {
-          return '{{' + tag.name + ' "' + tag.val + '"}}';
+          return '{{' + tag.name + ' "' + tag.value + '"}}';
         }
       });
 
@@ -91,11 +91,11 @@ describe('parse inline tags', function() {
       assert.deepEqual(res[0].inlineTags, [{
         raw: '{@code e.preventDefault()}',
         name: 'code',
-        val: 'e.preventDefault()'
+        value: 'e.preventDefault()'
       }, {
         raw: '{@link goog.events.listen}',
         name: 'link',
-        val: 'goog.events.listen'
+        value: 'goog.events.listen'
       }]);
     });
 
@@ -113,28 +113,30 @@ describe('parse inline tags', function() {
       });
 
       assert.equal(res[0].description, 'Prevents the default action. It is equivalent to\n{{code "e.preventDefault()"}}, but can be used as the callback argument of\n{{link "goog.events.listen"}} without declaring another function.');
-      assert.deepEqual(res[0].tags, [{
-        'title': 'param',
-        'description': 'An event.',
-        'type': {
-          'type': 'NonNullableType',
-          'expression': {
-            'type': 'NameExpression',
-            'name': 'goog.events.Event'
+      assert.deepEqual(res[0].tags, [
+        {
+          title: 'param',
+          description: 'An event.',
+          type: {
+            type: 'NonNullableType',
+            expression: {
+              type: 'NameExpression',
+              name: 'goog.events.Event'
+            },
+            prefix: true
           },
-          'prefix': true
-        },
-        'name': 'e'
-      }]);
+          name: 'e'
+        }
+      ]);
 
       assert.deepEqual(res[0].inlineTags, [{
         raw: '{@code e.preventDefault()}',
         name: 'code',
-        val: 'e.preventDefault()'
+        value: 'e.preventDefault()'
       }, {
         raw: '{@link goog.events.listen}',
         name: 'link',
-        val: 'goog.events.listen'
+        value: 'goog.events.listen'
       }]);
     });
   });
@@ -153,28 +155,33 @@ describe('parse inline tags', function() {
       });
 
       assert.equal(res[0].description, 'Prevents the default action. It is equivalent to');
-      assert.deepEqual(res[0].tags, [{
-        'title': 'param',
-        'description': 'An event.\n{@code e.preventDefault()}, but can be used as the callback argument of\n{@link goog.events.listen} without declaring another function.',
-        'inlineTags': [{
-          'name': 'code',
-          'raw': '{@code e.preventDefault()}',
-          'val': 'e.preventDefault()'
-        }, {
-          'name': 'link',
-          'raw': '{@link goog.events.listen}',
-          'val': 'goog.events.listen'
-        }],
-        'type': {
-          'type': 'NonNullableType',
-          'expression': {
-            'type': 'NameExpression',
-            'name': 'goog.events.Event'
+      assert.deepEqual(res[0].tags, [
+        {
+          title: 'param',
+          description: 'An event.\n{@code e.preventDefault()}, but can be used as the callback argument of\n{@link goog.events.listen} without declaring another function.',
+          inlineTags: [
+            {
+              name: 'code',
+              raw: '{@code e.preventDefault()}',
+              value: 'e.preventDefault()'
+            },
+            {
+              name: 'link',
+              raw: '{@link goog.events.listen}',
+              value: 'goog.events.listen'
+            }
+          ],
+          type: {
+            type: 'NonNullableType',
+            expression: {
+              type: 'NameExpression',
+              name: 'goog.events.Event'
+            },
+            prefix: true
           },
-          'prefix': true
-        },
-        'name': 'e'
-      }]);
+          name: 'e'
+        }
+      ]);
     });
 
     it('should use specified replacer function to update tag description', function() {
@@ -191,32 +198,37 @@ describe('parse inline tags', function() {
       });
 
       assert.equal(res[0].description, 'Prevents the default action. It is equivalent to');
-      assert.deepEqual(res[0].tags, [{
-        'title': 'param',
-        'description': 'An event.\n{{code \"e.preventDefault()\"}}, but can be used as the callback argument of\n{{link \"goog.events.listen\"}} without declaring another function.',
-        'inlineTags': [{
-          'name': 'code',
-          'raw': '{@code e.preventDefault()}',
-          'val': 'e.preventDefault()'
-        }, {
-          'name': 'link',
-          'raw': '{@link goog.events.listen}',
-          'val': 'goog.events.listen'
-        }],
-        'type': {
-          'type': 'NonNullableType',
-          'expression': {
-            'type': 'NameExpression',
-            'name': 'goog.events.Event'
+      assert.deepEqual(res[0].tags, [
+        {
+          title: 'param',
+          description: 'An event.\n{{code "e.preventDefault()"}}, but can be used as the callback argument of\n{{link "goog.events.listen"}} without declaring another function.',
+          inlineTags: [
+            {
+              name: 'code',
+              raw: '{@code e.preventDefault()}',
+              value: 'e.preventDefault()'
+            },
+            {
+              name: 'link',
+              raw: '{@link goog.events.listen}',
+              value: 'goog.events.listen'
+            }
+          ],
+          type: {
+            type: 'NonNullableType',
+            expression: {
+              type: 'NameExpression',
+              name: 'goog.events.Event'
+            },
+            prefix: true
           },
-          'prefix': true
-        },
-        'name': 'e'
-      }]);
+          name: 'e'
+        }
+      ]);
     });
 
     it('should use custom replacer function to update tag description', function() {
-      var res = comments.parse([
+      const res = comments.parse([
         '/**',
         ' * Prevents the default action. It is equivalent to',
         ' * @param {!goog.events.Event} e An event.',
@@ -226,33 +238,38 @@ describe('parse inline tags', function() {
       ].join('\n'), {
         unwrap: true,
         replaceInlineTag: function(tag) {
-          return '{{' + tag.name + ' "' + tag.val + '"}}';
+          return `{{${tag.name} "${tag.value}"}}`;
         }
       });
 
       assert.equal(res[0].description, 'Prevents the default action. It is equivalent to');
-      assert.deepEqual(res[0].tags, [{
-        'title': 'param',
-        'description': 'An event.\n{{code \"e.preventDefault()\"}}, but can be used as the callback argument of\n{{link \"goog.events.listen\"}} without declaring another function.',
-        'inlineTags': [{
-          'name': 'code',
-          'raw': '{@code e.preventDefault()}',
-          'val': 'e.preventDefault()'
-        }, {
-          'name': 'link',
-          'raw': '{@link goog.events.listen}',
-          'val': 'goog.events.listen'
-        }],
-        'type': {
-          'type': 'NonNullableType',
-          'expression': {
-            'type': 'NameExpression',
-            'name': 'goog.events.Event'
+      assert.deepEqual(res[0].tags, [
+        {
+          title: 'param',
+          description: 'An event.\n{{code "e.preventDefault()"}}, but can be used as the callback argument of\n{{link "goog.events.listen"}} without declaring another function.',
+          inlineTags: [
+            {
+              name: 'code',
+              raw: '{@code e.preventDefault()}',
+              value: 'e.preventDefault()'
+            },
+            {
+              name: 'link',
+              raw: '{@link goog.events.listen}',
+              value: 'goog.events.listen'
+            }
+          ],
+          type: {
+            type: 'NonNullableType',
+            expression: {
+              type: 'NameExpression',
+              name: 'goog.events.Event'
+            },
+            prefix: true
           },
-          'prefix': true
-        },
-        'name': 'e'
-      }]);
+          name: 'e'
+        }
+      ]);
     });
   });
 });

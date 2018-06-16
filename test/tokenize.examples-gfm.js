@@ -36,7 +36,7 @@ describe('gfm', function() {
           language: 'js',
           description: '',
           raw: '```js\nvar foo = "bar";\n```',
-          val: '\nvar foo = "bar";\n'
+          value: '\nvar foo = "bar";\n'
         }
       ],
       tags: [
@@ -44,13 +44,13 @@ describe('gfm', function() {
           type: 'tag',
           raw: '@param {string} something',
           key: 'param',
-          val: '{string} something'
+          value: '{string} something'
         },
         {
           type: 'tag',
           raw: '@param {string} else',
           key: 'param',
-          val: '{string} else'
+          value: '{string} else'
         }
       ]
     });
@@ -80,7 +80,7 @@ describe('gfm', function() {
           language: 'js',
           description: '',
           raw: '```js\n   var foo = "bar";\n   var baz = "qux";\n```',
-          val: '\n   var foo = "bar";\n   var baz = "qux";\n'
+          value: '\n   var foo = "bar";\n   var baz = "qux";\n'
         }
       ],
       tags: [
@@ -88,13 +88,13 @@ describe('gfm', function() {
           type: 'tag',
           raw: '@param {string} something',
           key: 'param',
-          val: '{string} something'
+          value: '{string} something'
         },
         {
           type: 'tag',
           raw: '@param {string} else',
           key: 'param',
-          val: '{string} else'
+          value: '{string} else'
         }
       ]
     });
@@ -125,7 +125,7 @@ describe('gfm', function() {
           language: 'js',
           description: 'This is a description for an example.',
           raw: '```js\nvar foo = "bar";\nvar baz = "qux";\n```',
-          val: '\nvar foo = "bar";\nvar baz = "qux";\n'
+          value: '\nvar foo = "bar";\nvar baz = "qux";\n'
         }
       ],
       tags: [
@@ -133,13 +133,13 @@ describe('gfm', function() {
           type: 'tag',
           raw: '@param {string} something',
           key: 'param',
-          val: '{string} something'
+          value: '{string} something'
         },
         {
           type: 'tag',
           raw: '@param {string} else',
           key: 'param',
-          val: '{string} else'
+          value: '{string} else'
         }
       ]
     });
@@ -171,7 +171,7 @@ describe('gfm', function() {
           language: 'js',
           description: 'This is a description for an example.',
           raw: '```js\nvar foo = "bar";\nvar baz = "qux";\n```',
-          val: '\nvar foo = "bar";\nvar baz = "qux";\n'
+          value: '\nvar foo = "bar";\nvar baz = "qux";\n'
         }
       ],
       tags: [
@@ -179,13 +179,13 @@ describe('gfm', function() {
           type: 'tag',
           raw: '@param {string} something',
           key: 'param',
-          val: '{string} something'
+          value: '{string} something'
         },
         {
           type: 'tag',
           raw: '@param {string} else',
           key: 'param',
-          val: '{string} else'
+          value: '{string} else'
         }
       ]
     });
@@ -215,7 +215,7 @@ describe('gfm', function() {
           language: 'js',
           description: 'This is a description for an example.',
           raw: '```js\nvar foo = "bar";\nvar baz = "qux";\n```',
-          val: '\nvar foo = "bar";\nvar baz = "qux";\n'
+          value: '\nvar foo = "bar";\nvar baz = "qux";\n'
         }
       ],
       tags: [
@@ -223,13 +223,13 @@ describe('gfm', function() {
           type: 'tag',
           raw: '@param {string} something',
           key: 'param',
-          val: '{string} something'
+          value: '{string} something'
         },
         {
           type: 'tag',
           raw: '@param {string} else',
           key: 'param',
-          val: '{string} else'
+          value: '{string} else'
         }
       ]
     });
@@ -246,48 +246,48 @@ describe('gfm', function() {
         language: 'js',
         description: 'Unlike ES262\'s\n [Array.prototype.forEach](http://www.ecma-international.org/ecma-262/5.1/#sec-15.4.4.18),\n Providing \'undefined\' or \'null\' values for `obj` will not throw a TypeError, but rather just\n return the value provided.',
         raw: '   ```js\n     var values = {name: \'misko\', gender: \'male\'};\n     var log = [];\n     angular.forEach(values, function(value, key) {\n       this.push(key + \': \' + value);\n     }, log);\n     expect(log).toEqual([\'name: misko\', \'gender: male\']);\n   ```',
-        val: '\n  var values = {name: \'misko\', gender: \'male\'};\n  var log = [];\n  angular.forEach(values, function(value, key) {\n    this.push(key + \': \' + value);\n  }, log);\n  expect(log).toEqual([\'name: misko\', \'gender: male\']);\n'
+        value: '\n  var values = {name: \'misko\', gender: \'male\'};\n  var log = [];\n  angular.forEach(values, function(value, key) {\n    this.push(key + \': \' + value);\n  }, log);\n  expect(log).toEqual([\'name: misko\', \'gender: male\']);\n'
       }],
       tags: [{
         type: 'tag',
         raw: '@ngdoc function',
         key: 'ngdoc',
-        val: 'function'
+        value: 'function'
       }, {
         type: 'tag',
         raw: '@name angular.forEach',
         key: 'name',
-        val: 'angular.forEach'
+        value: 'angular.forEach'
       }, {
         type: 'tag',
         raw: '@module ng',
         key: 'module',
-        val: 'ng'
+        value: 'ng'
       }, {
         type: 'tag',
         raw: '@kind function',
         key: 'kind',
-        val: 'function'
+        value: 'function'
       }, {
         type: 'tag',
         raw: '@param {Object|Array} obj Object to iterate over.',
         key: 'param',
-        val: '{Object|Array} obj Object to iterate over.'
+        value: '{Object|Array} obj Object to iterate over.'
       }, {
         type: 'tag',
         raw: '@param {Function} iterator Iterator function.',
         key: 'param',
-        val: '{Function} iterator Iterator function.'
+        value: '{Function} iterator Iterator function.'
       }, {
         type: 'tag',
         raw: '@param {Object=} context Object to become context (`this`) for the iterator function.',
         key: 'param',
-        val: '{Object=} context Object to become context (`this`) for the iterator function.'
+        value: '{Object=} context Object to become context (`this`) for the iterator function.'
       }, {
         type: 'tag',
         raw: '@returns {Object|Array} Reference to `obj`.',
         key: 'returns',
-        val: '{Object|Array} Reference to `obj`.'
+        value: '{Object|Array} Reference to `obj`.'
       }]
     });
   });

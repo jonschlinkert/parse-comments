@@ -25,42 +25,42 @@ describe('examples', function() {
           language: 'js',
           description: 'An example',
           raw: '```js\nvar foo = bar;\nvar foo = bar;\nvar foo = bar;\n```',
-          val: '\nvar foo = bar;\nvar foo = bar;\nvar foo = bar;\n'
+          value: '\nvar foo = bar;\nvar foo = bar;\nvar foo = bar;\n'
         },
         {
           type: 'indented',
           language: '',
           description: 'Another example',
           raw: '    var baz = fez;\n    var baz = fez;\n    var baz = fez;\n',
-          val: 'var baz = fez;\nvar baz = fez;\nvar baz = fez;\n'
+          value: 'var baz = fez;\nvar baz = fez;\nvar baz = fez;\n'
         },
         {
           type: 'indented',
           language: '',
           description: 'Another example',
           raw: '    var baz = fez;\n    var baz = fez;\n',
-          val: 'var baz = fez;\nvar baz = fez;\n'
+          value: 'var baz = fez;\nvar baz = fez;\n'
         },
         {
           type: 'gfm',
           language: 'js',
           description: 'And another example',
           raw: '```js\nvar foo = bar;\nvar foo = bar;\n```',
-          val: '\nvar foo = bar;\nvar foo = bar;\n'
+          value: '\nvar foo = bar;\nvar foo = bar;\n'
         },
         {
           type: 'javadoc',
           language: '',
           description: 'Another example',
           raw: '@example\nvar baz = fez;\n',
-          val: '\nvar baz = fez;\n'
+          value: '\nvar baz = fez;\n'
         },
         {
           type: 'javadoc',
           language: '',
           description: '',
           raw: '@example\n// this is a comment\nvar alalla = zzzz;\n',
-          val: '\n// this is a comment\nvar alalla = zzzz;\n'
+          value: '\n// this is a comment\nvar alalla = zzzz;\n'
         }
       ],
       tags: [
@@ -68,19 +68,19 @@ describe('examples', function() {
           type: 'tag',
           raw: '@param {String} foo bar',
           key: 'param',
-          val: '{String} foo bar'
+          value: '{String} foo bar'
         },
         {
           type: 'tag',
           raw: '@returns {Object} Instance of Foo',
           key: 'returns',
-          val: '{Object} Instance of Foo'
+          value: '{Object} Instance of Foo'
         },
         {
           type: 'tag',
           raw: '@api public',
           key: 'api',
-          val: 'public'
+          value: 'public'
         }
       ]
     });
@@ -97,53 +97,53 @@ describe('examples', function() {
         language: 'js',
         description: '',
         raw: '```js\n// foo.parser(name, replacements)\nfoo.parser("foo", function(a, b, c) {\n    // body...\n})\n```',
-        val: '\n// foo.parser(name, replacements)\nfoo.parser("foo", function(a, b, c) {\n    // body...\n})\n'
+        value: '\n// foo.parser(name, replacements)\nfoo.parser("foo", function(a, b, c) {\n    // body...\n})\n'
       }],
       tags: [{
         type: 'tag',
         raw: '@param {String} `alpha`',
         key: 'param',
-        val: '{String} `alpha`'
+        value: '{String} `alpha`'
       }, {
         type: 'tag',
         raw: '@param {Object|Array} `arr` Object or array of replacement patterns to associate.',
         key: 'param',
-        val: '{Object|Array} `arr` Object or array of replacement patterns to associate.'
+        value: '{Object|Array} `arr` Object or array of replacement patterns to associate.'
       }, {
         type: 'tag',
         raw: '@property {String|RegExp} [arr] `pattern`',
         key: 'property',
-        val: '{String|RegExp} [arr] `pattern`'
+        value: '{String|RegExp} [arr] `pattern`'
       }, {
         type: 'tag',
         raw: '@property {String|Function} [arr] `replacement`',
         key: 'property',
-        val: '{String|Function} [arr] `replacement`'
+        value: '{String|Function} [arr] `replacement`'
       }, {
         type: 'tag',
         raw: '@param {String} `beta`',
         key: 'param',
-        val: '{String} `beta`'
+        value: '{String} `beta`'
       }, {
         type: 'tag',
         raw: '@property {Array} [beta] `foo` This is foo option.',
         key: 'property',
-        val: '{Array} [beta] `foo` This is foo option.'
+        value: '{Array} [beta] `foo` This is foo option.'
       }, {
         type: 'tag',
         raw: '@property {Array} [beta] `bar` This is bar option',
         key: 'property',
-        val: '{Array} [beta] `bar` This is bar option'
+        value: '{Array} [beta] `bar` This is bar option'
       }, {
         type: 'tag',
         raw: '@return {Strings} to allow chaining',
         key: 'return',
-        val: '{Strings} to allow chaining'
+        value: '{Strings} to allow chaining'
       }, {
         type: 'tag',
         raw: '@api public',
         key: 'api',
-        val: 'public'
+        value: 'public'
       }]
     });
   });

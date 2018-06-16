@@ -1,20 +1,19 @@
 'use strict';
 
-var fs = require('fs');
-var path = require('path');
-var Schema = require('map-schema');
-var Comments = require('..');
-var comments = new Comments();
-
-var fp = path.join(__dirname, 'fixtures/cache.js');
+const fs = require('fs');
+const path = require('path');
+const Schema = require('map-schema');
+const Comments = require('..');
+const comments = new Comments();
+const fp = path.join(__dirname, 'fixtures/cache.js');
 
 function normalizeType(type, tag, comment) {
   tag.types = tag.types || [];
   if (!type) return;
 
-  var schema = new Schema()
+  const schema = new Schema()
     .field('name', 'string', {
-      normalize: function(val) {
+      normalize(val) {
         if (typeof val === 'string') {
           if (val === '*') val = 'any';
           if (tag.types.indexOf(val) === -1) {
@@ -25,9 +24,9 @@ function normalizeType(type, tag, comment) {
       }
     })
     .field('nodes', 'array', {
-      normalize: function(val) {
+      normalize(val) {
         if (Array.isArray(val)) {
-          for (var i = 0; i < val.length; i++) {
+          for (let i = 0; i < val.length; i++) {
             schema.normalize(val[i]);
           }
         }
@@ -42,7 +41,7 @@ function normalizeTag(tag, comment) {
   var schema = new Schema()
   .field('description', 'string')
   .field('title', 'string', {
-    normalize: function(val) {
+    normalize(val) {
       switch (val) {
         case 'ctor':
         case 'constructor':
@@ -61,7 +60,7 @@ function normalizeTag(tag, comment) {
   })
   .field('name', 'string')
   .field('type', 'object', {
-    normalize: function(val, key, tag) {
+    normalize(val, key, tag) {
       return normalizeType(val, tag, comment);
     }
   })
@@ -69,36 +68,37 @@ function normalizeTag(tag, comment) {
 }
 
 function normalizeCode(code, comment) {
-  var schema = new Schema()
-  .field('val', 'string', function(val) {
-    return val;
-  })
-  .field('context', 'object', function(val) {
-    if (val.name && typeof comment.name === 'undefined') {
-      comment.name = val.name;
-    }
-    return val;
-  })
+  const schema = new Schema()
+    .field('val', 'string', function(val) {
+      return val;
+    })
+    .field('context', 'object', function(val) {
+      if (val.name && typeof comment.name === 'undefined') {
+        comment.name = val.name;
+      }
+      return val;
+    });
+
   return schema.normalize(code);
 }
 
 function normalizeComment(comment, cache) {
   comment.is = comment.is || {};
 
-  var schema = new Schema()
+  const schema = new Schema()
     .field('tags', function(tags) {
-      for (var i = 0; i < tags.length; i++) {
+      for (let i = 0; i < tags.length; i++) {
         normalizeTag(tags[i], comment);
       }
       return tags;
     })
     .field('code', 'object', {
-      normalize: function(val) {
+      normalize(val) {
         return normalizeCode(val, comment);
       }
     })
     .field('name', 'string', {
-      normalize: function(val) {
+      normalize(val) {
         if (!comment.public) return;
         if (comment.is.ctor) {
           cache.ctor = val;
@@ -106,7 +106,6 @@ function normalizeComment(comment, cache) {
         } else if (val && cache.ctor) {
           val = cache.ctor + '#' + val;
         } else if (val) {
-
           console.log(comment)
         } else {
 
@@ -122,12 +121,12 @@ function normalizeComment(comment, cache) {
 module.exports = normalizeComment;
 
 // function parse(str, options) {
-//   var arr = comments.parse(str, options);
-//   var cache = {};
-//   var res = [];
+//   const arr = comments.parse(str, options);
+//   const cache = {};
+//   const res = [];
 
-//   for (var i = 0; i < arr.length; i++) {
-//     var comment = normalizeComment(arr[i], cache);
+//   for (let i = 0; i < arr.length; i++) {
+//     let comment = normalizeComment(arr[i], cache);
 //     if (comment.public === true) {
 //       res.push(comment);
 //     }

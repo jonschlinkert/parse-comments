@@ -437,17 +437,17 @@ describe('parse type', function() {
 
       type = parseType("{'ok':String}");
       assert.deepEqual(type, {
-        'fields': [
+        fields: [
           {
-            'key': 'ok',
-            'type': 'FieldType',
-            'value': {
-              'name': 'String',
-              'type': 'NameExpression'
+            key: 'ok',
+            type: 'FieldType',
+            value: {
+              name: 'String',
+              type: 'NameExpression'
             }
           }
         ],
-        'type': 'RecordType'
+        type: 'RecordType'
       });
 
       // type = parseType('{"\\r\\n\\t\\u2028\\x20\\u20\\b\\f\\v\\\r\n\\\n\\0\\07\\012\\o":String}');
@@ -469,94 +469,93 @@ describe('parse type', function() {
       // parseType.bind(doctrine, "{'o\n':String}").should.throw();
     });
 
-    it('number value in type', function() {
-      var type;
-
-      type = parseType('{20:String}');
+     it.only('number value in type', function() {
+      let type = parseType('{20:String}');
       assert.deepEqual(type, {
-        'fields': [
+        fields: [
           {
-            'key': '20',
-            'type': 'FieldType',
-            'value': {
-              'name': 'String',
-              'type': 'NameExpression'
+            key: '20',
+            type: 'FieldType',
+            value: {
+              name: 'String',
+              type: 'NameExpression'
             }
           }
         ],
-        'type': 'RecordType'
+        type: 'RecordType'
       });
 
       type = parseType('{.2:String, 30:Number, 0x20:String}');
       assert.deepEqual(type, {
-        'fields': [
+        fields: [
           {
-            'key': '0.2',
-            'type': 'FieldType',
-            'value': {
-              'name': 'String',
-              'type': 'NameExpression'
+            key: '0.2',
+            type: 'FieldType',
+            value: {
+              name: 'String',
+              type: 'NameExpression'
             }
           },
           {
-            'key': '30',
-            'type': 'FieldType',
-            'value': {
-              'name': 'Number',
-              'type': 'NameExpression'
+            key: '30',
+            type: 'FieldType',
+            value: {
+              name: 'Number',
+              type: 'NameExpression'
             }
           },
           {
-            'key': '32',
-            'type': 'FieldType',
-            'value': {
-              'name': 'String',
-              'type': 'NameExpression'
+            key: '32',
+            type: 'FieldType',
+            value: {
+              name: 'String',
+              type: 'NameExpression'
             }
           }
         ],
-        'type': 'RecordType'
+        type: 'RecordType'
       });
 
       type = parseType('{0X2:String, 0:Number, 100e200:String, 10e-20:Number}');
       assert.deepEqual(type, {
-        'fields': [
+        fields: [
           {
-            'key': '2',
-            'type': 'FieldType',
-            'value': {
-              'name': 'String',
-              'type': 'NameExpression'
+            key: '2',
+            type: 'FieldType',
+            value: {
+              name: 'String',
+              type: 'NameExpression'
             }
           },
           {
-            'key': '0',
-            'type': 'FieldType',
-            'value': {
-              'name': 'Number',
-              'type': 'NameExpression'
+            key: '0',
+            type: 'FieldType',
+            value: {
+              name: 'Number',
+              type: 'NameExpression'
             }
           },
           {
-            'key': '1e+202',
-            'type': 'FieldType',
-            'value': {
-              'name': 'String',
-              'type': 'NameExpression'
+            key: '1e+202',
+            type: 'FieldType',
+            value: {
+              name: 'String',
+              type: 'NameExpression'
             }
           },
           {
-            'key': '1e-19',
-            'type': 'FieldType',
-            'value': {
-              'name': 'Number',
-              'type': 'NameExpression'
+            key: '1e-19',
+            type: 'FieldType',
+            value: {
+              name: 'Number',
+              type: 'NameExpression'
             }
           }
         ],
-        'type': 'RecordType'
+        type: 'RecordType'
       });
 
+      console.log(parseType('{0x'));
       // parseType.bind(doctrine, '{0x:String}').should.throw('unexpected token');
       // parseType.bind(doctrine, '{0x').should.throw('unexpected token');
       // parseType.bind(doctrine, '{0xd').should.throw('unexpected token');

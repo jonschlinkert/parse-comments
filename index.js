@@ -211,7 +211,7 @@ class Comments extends Emitter {
 
       for (const fn of fns) {
         if (typeof fn !== 'function') {
-          var err = new TypeError('expected plugin to be a function:' + fn);
+          let err = new TypeError('expected plugin to be a function:' + fn);
           err.node = node;
           err.type = type;
           throw err;
@@ -226,8 +226,8 @@ class Comments extends Emitter {
    * Tokenize a single javascript comment.
    *
    * ```js
-   * var parser = new ParseComments();
-   * var tokens = parser.tokenize([string]);
+   * const parser = new ParseComments();
+   * const tokens = parser.tokenize([string]);
    * ```
    * @param {String} `javascript` String of javascript
    * @param {Object} `options`
@@ -243,8 +243,8 @@ class Comments extends Emitter {
    * Extracts and parses code comments from the given `str` of JavaScript.
    *
    * ```js
-   * var parser = new ParseComments();
-   * var comments = parser.parse(string);
+   * const parser = new ParseComments();
+   * const comments = parser.parse(string);
    * ```
    * @param {String} `str` String of javascript
    * @param {Object} `options`
@@ -283,7 +283,7 @@ class Comments extends Emitter {
       comment = this.parse.apply(this, arguments)[0];
 
     } else {
-      var tok = this.tokenize(comment.val, opts);
+      let tok = this.tokenize(comment.value, opts);
       this.tokens.push(tok);
 
       comment = assign({}, comment, tok);
@@ -298,9 +298,9 @@ class Comments extends Emitter {
 
     // parse inline tags
     if (comment.description) {
-      var inline = this.parseInlineTags(comment.description, opts);
+      let inline = this.parseInlineTags(comment.description, opts);
       if (inline.tags.length) {
-        comment.description = inline.val;
+        comment.description = inline.value;
         comment.inlineTags = inline.tags;
       }
     }
@@ -331,17 +331,16 @@ class Comments extends Emitter {
    */
 
   parseTags(comment, options) {
-    var opts = assign({}, this.options, options);
-    var parsers = assign({}, this.plugins.middleware, opts.parse);
-    var tags = [];
+    let opts = assign({}, this.options, options);
+    let parsers = assign({}, this.plugins.middleware, opts.parse);
+    let tags = [];
 
     if (typeof parsers.parseTags === 'function') {
       return parsers.parseTags.call(this, comment, opts);
     }
 
-    for (var i = 0; i < comment.tags.length; i++) {
-      var raw = comment.tags[i];
-      var tag = this.parseTag(raw, opts);
+    for (let raw of comment.tags) {
+      let tag = this.parseTag(raw, opts);
       if (tag) {
         utils.define(tag, 'rawType', tag.rawType);
         utils.define(tag, 'raw', raw);
@@ -373,7 +372,7 @@ class Comments extends Emitter {
     let tag;
 
     if (typeof tok === 'string') {
-      tok = { raw: tok, val: tok };
+      tok = { raw: tok, value: tok };
     }
 
     if (typeof parsers.tag === 'function') {
@@ -415,7 +414,7 @@ class Comments extends Emitter {
     if (tag.description) {
       var inline = this.parseInlineTags(tag.description, opts);
       if (inline.tags.length) {
-        tag.description = inline.val;
+        tag.description = inline.value;
         tag.inlineTags = inline.tags;
       }
     }
@@ -438,7 +437,7 @@ class Comments extends Emitter {
    * @param {String[]}
    * @param {Array<String|Function|Array>=}
    * ```
-   * @param {String} val The
+   * @param {String} value The
    * @return {Object}
    * @api public
    */
@@ -515,9 +514,9 @@ class Comments extends Emitter {
       options = {};
     }
 
-    var opts = assign({}, this.options, options);
-    var comments = [];
-    var res = [];
+    let comments = [];
+    const opts = assign({}, this.options, options);
+    const res = [];
 
     if (typeof opts.extract === 'function') {
       comments = utils.arrayify(opts.extract.call(this, str, opts));
@@ -525,12 +524,12 @@ class Comments extends Emitter {
       comments = extract.block(str, opts);
     }
 
-    for (var i = 0; i < comments.length; i++) {
+    for (let i = 0; i < comments.length; i++) {
       if (this.isValid(comments[i], options) === false) {
         continue;
       }
 
-      var comment = this.preprocess(comments[i], options);
+      let comment = this.preprocess(comments[i], options);
       if (typeof fn === 'function') {
         comment = fn.call(this, comment) || comment;
       } else {
@@ -586,7 +585,7 @@ class Comments extends Emitter {
       return false;
     }
 
-    return !utils.isConfigComment(comment.val);
+    return !utils.isConfigComment(comment.value);
   }
 
   /**
@@ -594,8 +593,8 @@ class Comments extends Emitter {
    * `.compile` is called.
    */
 
-  set snapdragon(val) {
-    utils.define(this, '_snapdragon', val);
+  set snapdragon(value) {
+    utils.define(this, '_snapdragon', value);
   }
   get snapdragon() {
     if (!this._snapdragon) {

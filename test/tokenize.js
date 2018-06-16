@@ -13,15 +13,8 @@ describe('tokenize', function() {
     comments = new Comments();
   });
 
-  it('should throw an error when invalid args are passed', function(cb) {
-    try {
-      comments.tokenize();
-      cb(new Error('expected an error'));
-    } catch (err) {
-      assert(err);
-      assert.equal(err.message, 'expected comment to be a string');
-      cb();
-    }
+  it('should throw an error when invalid args are passed', function() {
+    assert.throws(() => comments.tokenize(), /expected/);
   });
 
   it('should tokenize a block comment with one leading star', function() {
@@ -45,7 +38,7 @@ describe('tokenize', function() {
           key: 'constructor',
           raw: '@constructor',
           type: 'tag',
-          val: ''
+          value: ''
         }
       ]
     });
@@ -76,13 +69,13 @@ describe('tokenize', function() {
           key: 'param',
           raw: '@param {string} something',
           type: 'tag',
-          val: '{string} something'
+          value: '{string} something'
         },
         {
           key: 'param',
           raw: '@param {string} else',
           type: 'tag',
-          val: '{string} else'
+          value: '{string} else'
         }
       ]
     });
@@ -108,13 +101,13 @@ describe('tokenize', function() {
           key: 'param',
           raw: '@param {string} something',
           type: 'tag',
-          val: '{string} something'
+          value: '{string} something'
         },
         {
           key: 'param',
           raw: '@param {string} else',
           type: 'tag',
-          val: '{string} else'
+          value: '{string} else'
         }
       ]
     });
@@ -136,13 +129,13 @@ describe('tokenize', function() {
           key: 'param',
           raw: '@param {string} something',
           type: 'tag',
-          val: '{string} something'
+          value: '{string} something'
         },
         {
           key: 'param',
           raw: '@param {string} else',
           type: 'tag',
-          val: '{string} else'
+          value: '{string} else'
         }
       ]
     });
@@ -158,7 +151,7 @@ describe('tokenize', function() {
         language: '',
         description: '',
         raw: '@example\n <example name="NgModelController" module="customControl" deps="angular-sanitize.js">\n    <file name="style.css">\n      [contenteditable] {\n        border: 1px solid black;\n        background-color: white;\n        min-height: 20px;\n      }\n\n      .ng-invalid {\n        border: 1px solid red;\n      }\n\n    </file>\n    <file name="script.js">\n      angular.module(\'customControl\', [\'ngSanitize\']).\n        directive(\'contenteditable\', [\'$sce\', function($sce) {\n          return {\n            restrict: \'A\', // only activate on element attribute\n            require: \'?ngModel\', // get a hold of NgModelController\n            link: function(scope, element, attrs, ngModel) {\n              if (!ngModel) return; // do nothing if no ng-model\n\n              // Specify how UI should be updated\n              ngModel.$render = function() {\n                element.html($sce.getTrustedHtml(ngModel.$viewValue || \'\'));\n              };\n\n              // Listen for change events to enable binding\n              element.on(\'blur keyup change\', function() {\n                scope.$evalAsync(read);\n              });\n              read(); // initialize\n\n              // Write data to the model\n              function read() {\n                var html = element.html();\n                // When we clear the content editable the browser leaves a <br> behind\n                // If strip-br attribute is provided then we strip this out\n                if ( attrs.stripBr && html == \'<br>\' ) {\n                  html = \'\';\n                }\n                ngModel.$setViewValue(html);\n              }\n            }\n          };\n        }]);\n    </file>\n    <file name="index.html">\n      <form name="myForm">\n       <div contenteditable\n            name="myWidget" ng-model="userContent"\n            strip-br="true"\n            required>Change me!</div>\n        <span ng-show="myForm.myWidget.$error.required">Required!</span>\n       <hr>\n       <textarea ng-model="userContent" aria-label="Dynamic textarea"></textarea>\n      </form>\n    </file>\n    <file name="protractor.js" type="protractor">\n    it(\'should data-bind and become invalid\', function() {\n      if (browser.params.browser == \'safari\' || browser.params.browser == \'firefox\') {\n        // SafariDriver can\'t handle contenteditable\n        // and Firefox driver can\'t clear contenteditables very well\n        return;\n      }\n      var contentEditable = element(by.css(\'[contenteditable]\'));\n      var content = \'Change me!\';\n\n      expect(contentEditable.getText()).toEqual(content);\n\n      contentEditable.clear();\n      contentEditable.sendKeys(protractor.Key.BACK_SPACE);\n      expect(contentEditable.getText()).toEqual(\'\');\n      expect(contentEditable.getAttribute(\'class\')).toMatch(/ng-invalid-required/);\n    });\n    </file>\n </example>\n',
-        val: '\n <example name="NgModelController" module="customControl" deps="angular-sanitize.js">\n    <file name="style.css">\n      [contenteditable] {\n        border: 1px solid black;\n        background-color: white;\n        min-height: 20px;\n      }\n\n      .ng-invalid {\n        border: 1px solid red;\n      }\n\n    </file>\n    <file name="script.js">\n      angular.module(\'customControl\', [\'ngSanitize\']).\n        directive(\'contenteditable\', [\'$sce\', function($sce) {\n          return {\n            restrict: \'A\', // only activate on element attribute\n            require: \'?ngModel\', // get a hold of NgModelController\n            link: function(scope, element, attrs, ngModel) {\n              if (!ngModel) return; // do nothing if no ng-model\n\n              // Specify how UI should be updated\n              ngModel.$render = function() {\n                element.html($sce.getTrustedHtml(ngModel.$viewValue || \'\'));\n              };\n\n              // Listen for change events to enable binding\n              element.on(\'blur keyup change\', function() {\n                scope.$evalAsync(read);\n              });\n              read(); // initialize\n\n              // Write data to the model\n              function read() {\n                var html = element.html();\n                // When we clear the content editable the browser leaves a <br> behind\n                // If strip-br attribute is provided then we strip this out\n                if ( attrs.stripBr && html == \'<br>\' ) {\n                  html = \'\';\n                }\n                ngModel.$setViewValue(html);\n              }\n            }\n          };\n        }]);\n    </file>\n    <file name="index.html">\n      <form name="myForm">\n       <div contenteditable\n            name="myWidget" ng-model="userContent"\n            strip-br="true"\n            required>Change me!</div>\n        <span ng-show="myForm.myWidget.$error.required">Required!</span>\n       <hr>\n       <textarea ng-model="userContent" aria-label="Dynamic textarea"></textarea>\n      </form>\n    </file>\n    <file name="protractor.js" type="protractor">\n    it(\'should data-bind and become invalid\', function() {\n      if (browser.params.browser == \'safari\' || browser.params.browser == \'firefox\') {\n        // SafariDriver can\'t handle contenteditable\n        // and Firefox driver can\'t clear contenteditables very well\n        return;\n      }\n      var contentEditable = element(by.css(\'[contenteditable]\'));\n      var content = \'Change me!\';\n\n      expect(contentEditable.getText()).toEqual(content);\n\n      contentEditable.clear();\n      contentEditable.sendKeys(protractor.Key.BACK_SPACE);\n      expect(contentEditable.getText()).toEqual(\'\');\n      expect(contentEditable.getAttribute(\'class\')).toMatch(/ng-invalid-required/);\n    });\n    </file>\n </example>\n'
+        value: '\n <example name="NgModelController" module="customControl" deps="angular-sanitize.js">\n    <file name="style.css">\n      [contenteditable] {\n        border: 1px solid black;\n        background-color: white;\n        min-height: 20px;\n      }\n\n      .ng-invalid {\n        border: 1px solid red;\n      }\n\n    </file>\n    <file name="script.js">\n      angular.module(\'customControl\', [\'ngSanitize\']).\n        directive(\'contenteditable\', [\'$sce\', function($sce) {\n          return {\n            restrict: \'A\', // only activate on element attribute\n            require: \'?ngModel\', // get a hold of NgModelController\n            link: function(scope, element, attrs, ngModel) {\n              if (!ngModel) return; // do nothing if no ng-model\n\n              // Specify how UI should be updated\n              ngModel.$render = function() {\n                element.html($sce.getTrustedHtml(ngModel.$viewValue || \'\'));\n              };\n\n              // Listen for change events to enable binding\n              element.on(\'blur keyup change\', function() {\n                scope.$evalAsync(read);\n              });\n              read(); // initialize\n\n              // Write data to the model\n              function read() {\n                var html = element.html();\n                // When we clear the content editable the browser leaves a <br> behind\n                // If strip-br attribute is provided then we strip this out\n                if ( attrs.stripBr && html == \'<br>\' ) {\n                  html = \'\';\n                }\n                ngModel.$setViewValue(html);\n              }\n            }\n          };\n        }]);\n    </file>\n    <file name="index.html">\n      <form name="myForm">\n       <div contenteditable\n            name="myWidget" ng-model="userContent"\n            strip-br="true"\n            required>Change me!</div>\n        <span ng-show="myForm.myWidget.$error.required">Required!</span>\n       <hr>\n       <textarea ng-model="userContent" aria-label="Dynamic textarea"></textarea>\n      </form>\n    </file>\n    <file name="protractor.js" type="protractor">\n    it(\'should data-bind and become invalid\', function() {\n      if (browser.params.browser == \'safari\' || browser.params.browser == \'firefox\') {\n        // SafariDriver can\'t handle contenteditable\n        // and Firefox driver can\'t clear contenteditables very well\n        return;\n      }\n      var contentEditable = element(by.css(\'[contenteditable]\'));\n      var content = \'Change me!\';\n\n      expect(contentEditable.getText()).toEqual(content);\n\n      contentEditable.clear();\n      contentEditable.sendKeys(protractor.Key.BACK_SPACE);\n      expect(contentEditable.getText()).toEqual(\'\');\n      expect(contentEditable.getAttribute(\'class\')).toMatch(/ng-invalid-required/);\n    });\n    </file>\n </example>\n'
       }],
       tags: []
     });
@@ -175,7 +168,7 @@ describe('tokenize', function() {
           type: 'tag',
           raw: '@param {string} something',
           key: 'param',
-          val: '{string} something'
+          value: '{string} something'
         }
       ]
     });
@@ -200,13 +193,13 @@ describe('tokenize', function() {
           key: 'param',
           raw: '@param {string} something',
           type: 'tag',
-          val: '{string} something'
+          value: '{string} something'
         },
         {
           key: 'param',
           raw: '@param {string} else',
           type: 'tag',
-          val: '{string} else'
+          value: '{string} else'
         }
       ]
     });
@@ -223,22 +216,22 @@ describe('tokenize', function() {
         type: 'tag',
         raw: '@private',
         key: 'private',
-        val: ''
+        value: ''
       }, {
         type: 'tag',
         raw: '@param {*} obj',
         key: 'param',
-        val: '{*} obj'
+        value: '{*} obj'
       }, {
         type: 'tag',
         raw: '@param {*} obj true if `obj` is an array or array-like object (NodeList, Arguments,\n               String ...)',
         key: 'param',
-        val: '{*} obj true if `obj` is an array or array-like object (NodeList, Arguments,\n               String ...)'
+        value: '{*} obj true if `obj` is an array or array-like object (NodeList, Arguments,\n               String ...)'
       }, {
         type: 'tag',
         raw: '@return {boolean}',
         key: 'return',
-        val: '{boolean}'
+        value: '{boolean}'
       }]
     });
   });
@@ -254,19 +247,19 @@ describe('tokenize', function() {
           type: 'tag',
           raw: '@private',
           key: 'private',
-          val: ''
+          value: ''
         },
         {
           type: 'tag',
           raw: '@param {*} obj',
           key: 'param',
-          val: '{*} obj'
+          value: '{*} obj'
         },
         {
           type: 'tag',
           raw: '@return {boolean} Returns true if `obj` is an array or array-like object (NodeList, Arguments,\n               String ...)',
           key: 'return',
-          val: '{boolean} Returns true if `obj` is an array or array-like object (NodeList, Arguments,\n               String ...)'
+          value: '{boolean} Returns true if `obj` is an array or array-like object (NodeList, Arguments,\n               String ...)'
         }
       ]
     });
@@ -295,19 +288,19 @@ describe('tokenize', function() {
           type: 'tag',
           raw: '@param {string} module The namespace to use for the new minErr instance.',
           key: 'param',
-          val: '{string} module The namespace to use for the new minErr instance.'
+          value: '{string} module The namespace to use for the new minErr instance.'
         },
         {
           type: 'tag',
           raw: '@param {function} ErrorConstructor Custom error constructor to be instantiated when returning\n   error from returned function, for cases when a particular type of error is useful.',
           key: 'param',
-          val: '{function} ErrorConstructor Custom error constructor to be instantiated when returning\n   error from returned function, for cases when a particular type of error is useful.'
+          value: '{function} ErrorConstructor Custom error constructor to be instantiated when returning\n   error from returned function, for cases when a particular type of error is useful.'
         },
         {
           type: 'tag',
           raw: '@returns {function(code:string, template:string, ...templateArgs): Error} minErr instance',
           key: 'returns',
-          val: '{function(code:string, template:string, ...templateArgs): Error} minErr instance'
+          value: '{function(code:string, template:string, ...templateArgs): Error} minErr instance'
         }
       ]
     });
@@ -325,19 +318,19 @@ describe('tokenize', function() {
           key: 'ngdoc',
           raw: '@ngdoc module',
           type: 'tag',
-          val: 'module'
+          value: 'module'
         },
         {
           key: 'name',
           raw: '@name ng',
           type: 'tag',
-          val: 'ng'
+          value: 'ng'
         },
         {
           key: 'module',
           raw: '@module ng',
           type: 'tag',
-          val: 'ng'
+          value: 'ng'
         }
       ]
     });
@@ -353,37 +346,37 @@ describe('tokenize', function() {
           key: 'ngdoc',
           raw: '@ngdoc function',
           type: 'tag',
-          val: 'function'
+          value: 'function'
         },
         {
           key: 'name',
           raw: '@name angular.lowercase',
           type: 'tag',
-          val: 'angular.lowercase'
+          value: 'angular.lowercase'
         },
         {
           key: 'module',
           raw: '@module ng',
           type: 'tag',
-          val: 'ng'
+          value: 'ng'
         },
         {
           key: 'kind',
           raw: '@kind function',
           type: 'tag',
-          val: 'function'
+          value: 'function'
         },
         {
           key: 'param',
           raw: '@param {string} string String to be converted to lowercase.',
           type: 'tag',
-          val: '{string} string String to be converted to lowercase.'
+          value: '{string} string String to be converted to lowercase.'
         },
         {
           key: 'returns',
           raw: '@returns {string} Lowercased string.',
           type: 'tag',
-          val: '{string} Lowercased string.'
+          value: '{string} Lowercased string.'
         }
       ]
     });
