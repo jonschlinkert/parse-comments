@@ -255,7 +255,7 @@ describe('parse type', function() {
     });
 
     it('array-style type application', function() {
-      var type = parseType('String[]');
+      const type = parseType('String[]');
       assert.deepEqual(type, {
         type: 'TypeApplication',
         expression: {
@@ -469,7 +469,7 @@ describe('parse type', function() {
       // parseType.bind(doctrine, "{'o\n':String}").should.throw();
     });
 
-     it.only('number value in type', function() {
+     it('number value in type', function() {
       let type = parseType('{20:String}');
       assert.deepEqual(type, {
         fields: [
@@ -555,7 +555,6 @@ describe('parse type', function() {
         type: 'RecordType'
       });
 
-      console.log(parseType('{0x'));
       // parseType.bind(doctrine, '{0x:String}').should.throw('unexpected token');
       // parseType.bind(doctrine, '{0x').should.throw('unexpected token');
       // parseType.bind(doctrine, '{0xd').should.throw('unexpected token');
@@ -745,7 +744,7 @@ describe('parse type', function() {
     });
 
     it('function type union', function() {
-      var type = parseType('function(): ?|number');
+      const type = parseType('function(): ?|number');
       assert.deepEqual(type, {
         type: 'UnionType',
         elements: [

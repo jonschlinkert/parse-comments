@@ -25,12 +25,13 @@
     "test": "mocha"
   },
   "dependencies": {
-    "@sellside/emitter": "^1.2.1",
     "extract-comments": "^1.0.0",
     "floating-point-regex": "^0.1.0",
     "inflection": "^1.12.0",
     "map-schema": "^0.2.4",
-    "snapdragon": "^0.11.3",
+    "snapdragon-lexer": "file:../../snapdragon/libraries/lexer",
+    "snapdragon-node": "file:../../snapdragon/libraries/node",
+    "snapdragon-parser": "file:../../snapdragon/libraries/parser",
     "tokenize-comment": "file:../../comments/tokenize-comment",
     "union-value": "^1.0.0"
   },

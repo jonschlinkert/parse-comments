@@ -2,8 +2,7 @@
 
 // require('time-require');
 const assign = Object.assign;
-const Snapdragon = require('snapdragon');
-const Emitter = require('@sellside/emitter');
+const Emitter = require('events');
 const extract = require('extract-comments');
 const tokenize = require('tokenize-comment');
 const { expects, allows, format, validate, normalize, utils, parse } = require('./lib');
@@ -273,8 +272,8 @@ class Comments extends Emitter {
    */
 
   parseComment(comment, options) {
-    var opts = assign({}, this.options, options);
-    var parsers = assign({}, this.plugins.middleware, opts.parse);
+    const opts = assign({}, this.options, options);
+    const parsers = assign({}, this.plugins.middleware, opts.parse);
 
     if (typeof parsers.comment === 'function') {
       comment = parsers.comment.call(this, comment, opts);
@@ -586,26 +585,6 @@ class Comments extends Emitter {
     }
 
     return !utils.isConfigComment(comment.value);
-  }
-
-  /**
-   * Getter for lazily instantiating Snapdragon when `.parse` or
-   * `.compile` is called.
-   */
-
-  set snapdragon(value) {
-    utils.define(this, '_snapdragon', value);
-  }
-  get snapdragon() {
-    if (!this._snapdragon) {
-      this._snapdragon = new Snapdragon(this.options);
-    }
-    return this._snapdragon;
-  }
-
-  static parse(str, options) {
-    const comments = new Comments(options);
-    return comments.parse(str);
   }
 }
 
