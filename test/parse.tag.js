@@ -4,6 +4,7 @@ require('mocha');
 require('should');
 const assert = require('assert');
 const Comments = require('..');
+const doctrine = require('doctrine');
 let comments;
 
 /**
@@ -761,13 +762,14 @@ describe('parse tag', function() {
     });
 
     it('param record', function() {
-      const res = comments.parse([
+      const str = [
         '/**',
         ' * @param {{ok:String}} userName',
         '*/'
-      ].join('\n'), {
-        unwrap: true
-      });
+      ].join('\n');
+
+      const res = comments.parse(str, {unwrap: true });
+
       assert.equal(res[0].tags.length, 1);
       res[0].tags[0].should.have.property('title', 'param');
       res[0].tags[0].should.have.property('name', 'userName');

@@ -95,7 +95,7 @@ class Comments extends Emitter {
 
   set(type, fn) {
     if (Array.isArray(type)) {
-      for (var i = 0; i < type.length; i++) {
+      for (let i = 0; i < type.length; i++) {
         this.set(type[i], fn);
       }
     } else {
@@ -262,8 +262,8 @@ class Comments extends Emitter {
    * Parse a single code comment.
    *
    * ```js
-   * var parser = new ParseComments();
-   * var comments = parser.parseComment(string);
+   * let parser = new ParseComments();
+   * let comments = parser.parseComment(string);
    * ```
    * @param {String} `str` JavaScript comment
    * @param {Object} `options`
@@ -289,7 +289,7 @@ class Comments extends Emitter {
       normalize.examples(comment, opts);
       comment.tags = this.parseTags(comment, options);
 
-      // var name = get(comment, 'code.context.name');
+      // let name = get(comment, 'code.context.name');
       // if (name) {
       //   set(this.cache, name, comment);
       // }
@@ -411,7 +411,7 @@ class Comments extends Emitter {
     }
 
     if (tag.description) {
-      var inline = this.parseInlineTags(tag.description, opts);
+      let inline = this.parseInlineTags(tag.description, opts);
       if (inline.tags.length) {
         tag.description = inline.value;
         tag.inlineTags = inline.tags;
@@ -446,8 +446,8 @@ class Comments extends Emitter {
       throw new TypeError('expected a string');
     }
 
-    const opts = assign({}, this.options, options);
-    const parsers = assign({}, this.plugins.middleware, opts.parse);
+    const opts = { ...this.options, ...options };
+    const parsers = { ...this.plugins.middleware, ...opts.parse };
 
     if (typeof parsers.inlineTag === 'function') {
       return parsers.inlineTag.call(this, str, opts);
@@ -475,8 +475,8 @@ class Comments extends Emitter {
       throw new TypeError('expected a string');
     }
 
-    const opts = assign({}, this.options, options);
-    const parsers = assign({}, this.plugins.middleware, opts.parse);
+    const opts = { ...this.options, ...options };
+    const parsers = { ...this.plugins.middleware, ...opts.parse };
 
     if (typeof parsers.type === 'function') {
       return parsers.type.call(this, str, tag, opts);
@@ -490,8 +490,8 @@ class Comments extends Emitter {
       throw new TypeError('expected a string');
     }
 
-    const opts = assign({}, this.options, options);
-    const parsers = assign({}, this.plugins.middleware, opts.parse);
+    const opts = { ...this.options, ...options };
+    const parsers = { ...this.plugins.middleware, ...opts.parse };
 
     if (typeof parsers.paramType === 'function') {
       return parsers.paramType.call(this, str, opts);
@@ -542,13 +542,13 @@ class Comments extends Emitter {
   }
 
   preprocess(comment, options) {
-    var opts = assign({}, this.options, options);
+    let opts = assign({}, this.options, options);
 
     if (typeof opts.preprocess === 'function') {
       return opts.preprocess.call(this, comment, opts);
     }
 
-    var obj = utils.copyNode(comment);
+    let obj = utils.copyNode(comment);
     obj.code = utils.copyNode(comment.code);
     obj.code.context = utils.copyNode(comment.code.context);
     return obj;
@@ -571,7 +571,7 @@ class Comments extends Emitter {
       throw new TypeError('expected comment to be an object');
     }
 
-    var opts = assign({}, this.options, options);
+    let opts = assign({}, this.options, options);
     if (typeof opts.isValid === 'function') {
       return opts.isValid(comment);
     }

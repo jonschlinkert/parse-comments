@@ -75,7 +75,7 @@ describe('tagged namepaths', function() {
     assert(res.hasOwnProperty('title', 'param'));
 
     res.type = type(res.rawType.slice(1, -1));
-
+    console.log(res.type)
     assert.deepEqual(res.type, {
       name: 'external:Foo.bar',
       type: 'NameExpression'

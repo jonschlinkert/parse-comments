@@ -2,9 +2,9 @@
 
 require('mocha');
 require('should');
-var assert = require('assert');
-var doctrine = require('doctrine');
-var parseType = require('../lib/parse/type');
+const assert = require('assert');
+const doctrine = require('doctrine');
+const parseType = require('../lib/parse/type');
 
 describe('parse type', function() {
   describe('empty', function() {
@@ -47,7 +47,6 @@ describe('parse type', function() {
 
     it('should parse multiple types in parens', function() {
       assert.deepEqual(parseType('(boolean|string)'), doctrine.parseType('(boolean|string)'));
-
       assert.deepEqual(parseType('(boolean|string|array)'), doctrine.parseType('(boolean|string|array)'));
     });
   });
@@ -517,8 +516,10 @@ describe('parse type', function() {
         ],
         type: 'RecordType'
       });
+    });
 
-      type = parseType('{.2:String, 30:Number, 0x20:String}');
+    it('multiple number values in type', function() {
+      let type = parseType('{.2:String, 30:Number, 0x20:String}');
       assert.deepEqual(type, {
         fields: [
           {
