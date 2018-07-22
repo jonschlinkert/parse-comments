@@ -32,7 +32,10 @@ describe('parse type', function() {
     });
 
     it('should parse string literal union types', function() {
-      assert.deepEqual(parseType("('public'|'protected'|'private')"), doctrine.parseType("('public'|'protected'|'private')"));
+      assert.deepEqual(
+        parseType("('public'|'protected'|'private')"),
+        doctrine.parseType("('public'|'protected'|'private')")
+      );
     });
   });
 
@@ -86,38 +89,48 @@ describe('parse type', function() {
     it('union type closure-compiler extended', function() {
       assert.deepEqual(parseType('string|number'), {
         type: 'UnionType',
-        elements: [{
-          type: 'NameExpression',
-          name: 'string'
-        }, {
-          type: 'NameExpression',
-          name: 'number'
-        }]
+        elements: [
+          {
+            type: 'NameExpression',
+            name: 'string'
+          },
+          {
+            type: 'NameExpression',
+            name: 'number'
+          }
+        ]
       });
 
       assert.deepEqual(parseType('(string|number)'), {
         type: 'UnionType',
-        elements: [{
-          type: 'NameExpression',
-          name: 'string'
-        }, {
-          type: 'NameExpression',
-          name: 'number'
-        }]
+        elements: [
+          {
+            type: 'NameExpression',
+            name: 'string'
+          },
+          {
+            type: 'NameExpression',
+            name: 'number'
+          }
+        ]
       });
 
       assert.deepEqual(parseType('string|array|number'), {
         type: 'UnionType',
-        elements: [{
-          type: 'NameExpression',
-          name: 'string'
-        }, {
-          type: 'NameExpression',
-          name: 'array'
-        }, {
-          type: 'NameExpression',
-          name: 'number'
-        }]
+        elements: [
+          {
+            type: 'NameExpression',
+            name: 'string'
+          },
+          {
+            type: 'NameExpression',
+            name: 'array'
+          },
+          {
+            type: 'NameExpression',
+            name: 'number'
+          }
+        ]
       });
     });
 
@@ -133,10 +146,12 @@ describe('parse type', function() {
       var type = parseType('[string]');
       assert.deepEqual(type, {
         type: 'ArrayType',
-        elements: [{
-          type: 'NameExpression',
-          name: 'string'
-        }]
+        elements: [
+          {
+            type: 'NameExpression',
+            name: 'string'
+          }
+        ]
       });
     });
 
@@ -144,10 +159,12 @@ describe('parse type', function() {
       var type = parseType('[string,]');
       assert.deepEqual(type, {
         type: 'ArrayType',
-        elements: [{
-          type: 'NameExpression',
-          name: 'string'
-        }]
+        elements: [
+          {
+            type: 'NameExpression',
+            name: 'string'
+          }
+        ]
       });
     });
 
@@ -155,9 +172,11 @@ describe('parse type', function() {
       var type = parseType('[*]');
       assert.deepEqual(type, {
         type: 'ArrayType',
-        elements: [{
-          type: 'AllLiteral'
-        }]
+        elements: [
+          {
+            type: 'AllLiteral'
+          }
+        ]
       });
     });
 
@@ -165,9 +184,11 @@ describe('parse type', function() {
       var type = parseType('[?]');
       assert.deepEqual(type, {
         type: 'ArrayType',
-        elements: [{
-          type: 'NullableLiteral'
-        }]
+        elements: [
+          {
+            type: 'NullableLiteral'
+          }
+        ]
       });
     });
 
@@ -200,10 +221,12 @@ describe('parse type', function() {
           type: 'NameExpression',
           name: 'Array'
         },
-        applications: [{
-          type: 'NameExpression',
-          name: 'String'
-        }]
+        applications: [
+          {
+            type: 'NameExpression',
+            name: 'String'
+          }
+        ]
       });
     });
 
@@ -215,9 +238,11 @@ describe('parse type', function() {
           type: 'NameExpression',
           name: 'Array'
         },
-        applications: [{
-          type: 'NullableLiteral'
-        }]
+        applications: [
+          {
+            type: 'NullableLiteral'
+          }
+        ]
       });
     });
 
@@ -229,13 +254,16 @@ describe('parse type', function() {
           type: 'NameExpression',
           name: 'Array'
         },
-        applications: [{
-          type: 'NameExpression',
-          name: 'String'
-        }, {
-          type: 'NameExpression',
-          name: 'Number'
-        }]
+        applications: [
+          {
+            type: 'NameExpression',
+            name: 'String'
+          },
+          {
+            type: 'NameExpression',
+            name: 'Number'
+          }
+        ]
       });
     });
 
@@ -247,10 +275,12 @@ describe('parse type', function() {
           type: 'NameExpression',
           name: 'Array'
         },
-        applications: [{
-          type: 'NameExpression',
-          name: 'String'
-        }]
+        applications: [
+          {
+            type: 'NameExpression',
+            name: 'String'
+          }
+        ]
       });
     });
 
@@ -262,155 +292,157 @@ describe('parse type', function() {
           type: 'NameExpression',
           name: 'Array'
         },
-        applications: [{
-          type: 'NameExpression',
-          name: 'String'
-        }]
+        applications: [
+          {
+            type: 'NameExpression',
+            name: 'String'
+          }
+        ]
       });
     });
 
     it('function type simple', function() {
       var type = parseType('function()');
       assert.deepEqual(type, {
-        'type': 'FunctionType',
-        'params': [],
-        'result': null
+        type: 'FunctionType',
+        params: [],
+        result: null
       });
     });
 
     it('function type with name', function() {
       var type = parseType('function(a)');
       assert.deepEqual(type, {
-        'type': 'FunctionType',
-        'params': [
+        type: 'FunctionType',
+        params: [
           {
-            'type': 'NameExpression',
-            'name': 'a'
+            type: 'NameExpression',
+            name: 'a'
           }
         ],
-        'result': null
+        result: null
       });
     });
 
     it('function type with name and type', function() {
       var type = parseType('function(a:b)');
       assert.deepEqual(type, {
-        'type': 'FunctionType',
-        'params': [
+        type: 'FunctionType',
+        params: [
           {
-            'type': 'ParameterType',
-            'name': 'a',
-            'expression': {
-              'type': 'NameExpression',
-              'name': 'b'
+            type: 'ParameterType',
+            name: 'a',
+            expression: {
+              type: 'NameExpression',
+              name: 'b'
             }
           }
         ],
-        'result': null
+        result: null
       });
     });
 
     it('function type with optional param', function() {
       var type = parseType('function(a=)');
       assert.deepEqual(type, {
-        'type': 'FunctionType',
-        'params': [
+        type: 'FunctionType',
+        params: [
           {
-            'type': 'OptionalType',
-            'expression': {
-              'type': 'NameExpression',
-              'name': 'a'
+            type: 'OptionalType',
+            expression: {
+              type: 'NameExpression',
+              name: 'a'
             }
           }
         ],
-        'result': null
+        result: null
       });
     });
 
     it('function type with optional param name and type', function() {
       var type = parseType('function(a:b=)');
       assert.deepEqual(type, {
-        'type': 'FunctionType',
-        'params': [
+        type: 'FunctionType',
+        params: [
           {
-            'type': 'OptionalType',
-            'expression': {
-              'type': 'ParameterType',
-              'name': 'a',
-              'expression': {
-                'type': 'NameExpression',
-                'name': 'b'
+            type: 'OptionalType',
+            expression: {
+              type: 'ParameterType',
+              name: 'a',
+              expression: {
+                type: 'NameExpression',
+                name: 'b'
               }
             }
           }
         ],
-        'result': null
+        result: null
       });
     });
 
     it('function type with rest param', function() {
       var type = parseType('function(...a)');
       assert.deepEqual(type, {
-        'type': 'FunctionType',
-        'params': [
+        type: 'FunctionType',
+        params: [
           {
-            'type': 'RestType',
-            'expression': {
-              'type': 'NameExpression',
-              'name': 'a'
+            type: 'RestType',
+            expression: {
+              type: 'NameExpression',
+              name: 'a'
             }
           }
         ],
-        'result': null
+        result: null
       });
     });
 
     it('function type with rest param name and type', function() {
       var type = parseType('function(...a:b)');
       assert.deepEqual(type, {
-        'type': 'FunctionType',
-        'params': [
+        type: 'FunctionType',
+        params: [
           {
-            'type': 'RestType',
-            'expression': {
-              'type': 'ParameterType',
-              'name': 'a',
-              'expression': {
-                'type': 'NameExpression',
-                'name': 'b'
+            type: 'RestType',
+            expression: {
+              type: 'ParameterType',
+              name: 'a',
+              expression: {
+                type: 'NameExpression',
+                name: 'b'
               }
             }
           }
         ],
-        'result': null
+        result: null
       });
     });
 
     it('function type with optional rest param', function() {
       var type = parseType('function(...a=)');
       assert.deepEqual(type, {
-        'type': 'FunctionType',
-        'params': [
+        type: 'FunctionType',
+        params: [
           {
-            'type': 'RestType',
-            'expression': {
-              'type': 'OptionalType',
-              'expression': {
-                'type': 'NameExpression',
-                'name': 'a'
+            type: 'RestType',
+            expression: {
+              type: 'OptionalType',
+              expression: {
+                type: 'NameExpression',
+                name: 'a'
               }
             }
           }
         ],
-        'result': null
+        result: null
       });
     });
 
     it('function type with optional rest param name and type', function() {
       var type = parseType('function(...a:b=)');
       assert.deepEqual(type, {
-        'type': 'FunctionType',
-        'params': [
+        type: 'FunctionType',
+        params: [
           {
             type: 'RestType',
 
@@ -427,8 +459,9 @@ describe('parse type', function() {
                 }
               }
             }
-          }],
-        'result': null
+          }
+        ],
+        result: null
       });
     });
 
@@ -465,11 +498,11 @@ describe('parse type', function() {
       //   'type': 'RecordType'
       // });
 
-      parseType.bind(doctrine, "{'ok\":String}").should.throw();
+      parseType.bind(doctrine, '{\'ok":String}').should.throw();
       // parseType.bind(doctrine, "{'o\n':String}").should.throw();
     });
 
-     it('number value in type', function() {
+    it('number value in type', function() {
       let type = parseType('{20:String}');
       assert.deepEqual(type, {
         fields: [
@@ -575,93 +608,93 @@ describe('parse type', function() {
     it('dotted type', function() {
       var type = parseType('Cocoa.Cappuccino');
       assert.deepEqual(type, {
-        'name': 'Cocoa.Cappuccino',
-        'type': 'NameExpression'
+        name: 'Cocoa.Cappuccino',
+        type: 'NameExpression'
       });
     });
 
     it('rest array type', function() {
       var type = parseType('[string,...string]');
       assert.deepEqual(type, {
-        'elements': [
+        elements: [
           {
-            'name': 'string',
-            'type': 'NameExpression'
+            name: 'string',
+            type: 'NameExpression'
           },
           {
-            'expression': {
-              'name': 'string',
-              'type': 'NameExpression'
+            expression: {
+              name: 'string',
+              type: 'NameExpression'
             },
-            'type': 'RestType'
+            type: 'RestType'
           }
         ],
-        'type': 'ArrayType'
+        type: 'ArrayType'
       });
     });
 
     it('nullable type', function() {
       assert.deepEqual(parseType('string?'), doctrine.parseType('string?'));
       assert.deepEqual(parseType('string?'), {
-        'expression': {
-          'name': 'string',
-          'type': 'NameExpression'
+        expression: {
+          name: 'string',
+          type: 'NameExpression'
         },
-        'prefix': false,
-        'type': 'NullableType'
+        prefix: false,
+        type: 'NullableType'
       });
 
       assert.deepEqual(parseType('?string'), doctrine.parseType('?string'));
       assert.deepEqual(parseType('?string'), {
-        'expression': {
-          'name': 'string',
-          'type': 'NameExpression'
+        expression: {
+          name: 'string',
+          type: 'NameExpression'
         },
-        'prefix': true,
-        'type': 'NullableType'
+        prefix: true,
+        type: 'NullableType'
       });
     });
 
     it('non-nullable type', function() {
       assert.deepEqual(parseType('!string'), doctrine.parseType('!string'));
       assert.deepEqual(parseType('!string'), {
-        'expression': {
-          'name': 'string',
-          'type': 'NameExpression'
+        expression: {
+          name: 'string',
+          type: 'NameExpression'
         },
-        'prefix': true,
-        'type': 'NonNullableType'
+        prefix: true,
+        type: 'NonNullableType'
       });
 
       assert.deepEqual(parseType('string!'), doctrine.parseType('string!'));
       assert.deepEqual(parseType('string!'), {
-        'expression': {
-          'name': 'string',
-          'type': 'NameExpression'
+        expression: {
+          name: 'string',
+          type: 'NameExpression'
         },
-        'prefix': false,
-        'type': 'NonNullableType'
+        prefix: false,
+        type: 'NonNullableType'
       });
     });
 
     it('toplevel multiple pipe type', function() {
       var type = parseType('string|number|Test');
       assert.deepEqual(type, {
-        'elements': [
+        elements: [
           {
-            'name': 'string',
-            'type': 'NameExpression'
+            name: 'string',
+            type: 'NameExpression'
           },
           {
-            'name': 'number',
-            'type': 'NameExpression'
+            name: 'number',
+            type: 'NameExpression'
           },
           {
-            'name': 'Test',
-            'type': 'NameExpression'
+            name: 'Test',
+            type: 'NameExpression'
           }
         ],
-        'type': 'UnionType'
+        type: 'UnionType'
       });
     });
 
@@ -719,12 +752,15 @@ describe('parse type', function() {
       var type = parseType('function(?, number)');
       assert.deepEqual(type, {
         type: 'FunctionType',
-        params: [{
-          type: 'NullableLiteral'
-        }, {
-          type: 'NameExpression',
-          name: 'number'
-        }],
+        params: [
+          {
+            type: 'NullableLiteral'
+          },
+          {
+            type: 'NameExpression',
+            name: 'number'
+          }
+        ],
         result: null
       });
     });
@@ -733,12 +769,15 @@ describe('parse type', function() {
       var type = parseType('function(number, ?)');
       assert.deepEqual(type, {
         type: 'FunctionType',
-        params: [{
-          type: 'NameExpression',
-          name: 'number'
-        }, {
-          type: 'NullableLiteral'
-        }],
+        params: [
+          {
+            type: 'NameExpression',
+            name: 'number'
+          },
+          {
+            type: 'NullableLiteral'
+          }
+        ],
         result: null
       });
     });

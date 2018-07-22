@@ -2,7 +2,7 @@
 
 require('mocha');
 require('should');
-var doctrine = require('doctrine');
+const doctrine = require('doctrine');
 
 /**
  * integration tests from doctrine (since we use doctrine for parsing tags)
