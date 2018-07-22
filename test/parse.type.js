@@ -4,7 +4,7 @@ require('mocha');
 require('should');
 var assert = require('assert');
 var doctrine = require('doctrine');
-var parseType = require('../lib/parsers/type');
+var parseType = require('../lib/parse/type');
 
 describe('parse type', function() {
   describe('empty', function() {

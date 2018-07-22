@@ -29,6 +29,7 @@
     "floating-point-regex": "^0.1.0",
     "inflection": "^1.12.0",
     "map-schema": "^0.2.4",
+    "snapdragon": "^0.12.0",
     "snapdragon-lexer": "file:../../snapdragon/libraries/lexer",
     "snapdragon-node": "file:../../snapdragon/libraries/node",
     "snapdragon-parser": "file:../../snapdragon/libraries/parser",
@@ -41,6 +42,7 @@
     "doctrine": "^2.1.0",
     "gulp-format-md": "^1.0.0",
     "mocha": "^3.5.3",
+    "object.pick": "^1.3.0",
     "should": "^13.2.1"
   },
   "keywords": [

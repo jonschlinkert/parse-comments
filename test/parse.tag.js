@@ -796,27 +796,31 @@ describe('parse tag', function() {
       res[0].tags.should.be.empty;
     });
 
-    it('param multiple', function() {
-      const res = comments.parse([
+    it.only('param multiple', function() {
+      const str = [
         '/**',
         ' * @param {string|array|function} foo',
         '*/'
-      ].join('\n'), {
-        unwrap: true
-      });
+      ].join('\n');
 
+      const res = comments.parse(str, { unwrap: true });
+      console.log(res[0].tags[0].type)
       assert.deepEqual(res[0].tags[0].type, {
         type: 'UnionType',
-        elements: [{
-          type: 'NameExpression',
-          name: 'string'
-        }, {
-          type: 'NameExpression',
-          name: 'array'
-        }, {
-          type: 'NameExpression',
-          name: 'function'
-        }]
+        elements: [
+          {
+            type: 'NameExpression',
+            name: 'string'
+          },
+          {
+            type: 'NameExpression',
+            name: 'array'
+          },
+          {
+            type: 'NameExpression',
+            name: 'function'
+          }
+        ]
       });
     });
 

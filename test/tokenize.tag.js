@@ -2,7 +2,7 @@
 
 require('mocha');
 var assert = require('assert');
-var tag = require('../lib/parsers/tag');
+var tag = require('../lib/parse/tag');
 
 describe('tokenize-tag', function() {
   describe('empty', function() {
