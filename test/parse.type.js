@@ -33,8 +33,8 @@ describe('parse type', function() {
 
     it('should parse string literal union types', function() {
       assert.deepEqual(
-        parseType("('public'|'protected'|'private')"),
-        doctrine.parseType("('public'|'protected'|'private')")
+        parseType('(\'public\'|\'protected\'|\'private\')'),
+        doctrine.parseType('(\'public\'|\'protected\'|\'private\')')
       );
     });
   });
@@ -783,24 +783,31 @@ describe('parse type', function() {
       });
     });
 
+    // the following unit test differs from doctrine. I (jon schlinkert) think
+    // doctrine's result is wrong, and parse-comments is correct. If my assumption
+    // is wrong, please create an issue to discuss.
     it('function type union', function() {
       const type = parseType('function(): ?|number');
-      assert.deepEqual(type, {
-        type: 'UnionType',
-        elements: [
-          {
-            type: 'FunctionType',
-            params: [],
-            result: {
-              type: 'NullableLiteral'
-            }
-          },
-          {
-            type: 'NameExpression',
-            name: 'number'
-          }
-        ]
-      });
+      const expected = {
+        type: 'FunctionType',
+        params: [],
+        result: {
+          type: 'TypeUnion',
+          elements: [{ type: 'NullableLiteral' }, { type: 'NameExpression', name: 'number' }]
+        }
+      };
+
+      assert.deepEqual(type, expected);
+
+      // the following is the result from doctrine
+
+      // assert.deepEqual(type, {
+      //   type: 'UnionType',
+      //   elements: [
+      //     { type: 'FunctionType', params: [], result: { type: 'NullableLiteral' } },
+      //     { type: 'NameExpression', name: 'number' }
+      //   ]
+      // });
     });
   });
 });

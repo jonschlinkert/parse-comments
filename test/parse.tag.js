@@ -38,8 +38,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'alias');
-      res[0].tags[0].should.have.property('name', 'aliasName');
+      assert(res[0].tags[0].hasOwnProperty('title', 'alias'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'aliasName'));
     });
 
     it('alias with namepath', function() {
@@ -47,8 +47,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'alias');
-      res[0].tags[0].should.have.property('name', 'aliasName.OK');
+      assert(res[0].tags[0].hasOwnProperty('title', 'alias'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'aliasName.OK'));
     });
 
     it('alias with namepath with slash', function() {
@@ -56,8 +56,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'alias');
-      res[0].tags[0].should.have.property('name', 'module:mymodule/mymodule.init');
+      assert(res[0].tags[0].hasOwnProperty('title', 'alias'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'module:mymodule/mymodule.init'));
     });
 
     it('alias with namepath with hyphen in it', function() {
@@ -65,8 +65,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'alias');
-      res[0].tags[0].should.have.property('name', 'module:mymodule/my-module');
+      assert(res[0].tags[0].hasOwnProperty('title', 'alias'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'module:mymodule/my-module'));
     });
 
     it('const', function() {
@@ -74,7 +74,7 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'const');
+      assert(res[0].tags[0].hasOwnProperty('title', 'const'));
     });
 
     it('const with name', function() {
@@ -82,8 +82,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'const');
-      res[0].tags[0].should.have.property('name', 'constname');
+      assert(res[0].tags[0].hasOwnProperty('title', 'const'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'constname'));
     });
 
     it('constant with name', function() {
@@ -91,8 +91,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'constant');
-      res[0].tags[0].should.have.property('name', 'constname');
+      assert(res[0].tags[0].hasOwnProperty('title', 'constant'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'constname'));
     });
 
     it('const with type and name', function() {
@@ -100,9 +100,9 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'const');
-      res[0].tags[0].should.have.property('name', 'constname');
-      res[0].tags[0].should.have.property('type');
+      assert(res[0].tags[0].hasOwnProperty('title', 'const'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'constname'));
+      assert(res[0].tags[0].hasOwnProperty('type'));
       assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'String'
@@ -115,9 +115,9 @@ describe('parse tag', function() {
       });
 
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'Const');
-      res[0].tags[0].should.have.property('name', 'constname');
-      res[0].tags[0].should.have.property('type');
+      assert(res[0].tags[0].hasOwnProperty('title', 'Const'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'constname'));
+      assert(res[0].tags[0].hasOwnProperty('type'));
       assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'String'
@@ -129,9 +129,9 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'constant');
-      res[0].tags[0].should.have.property('name', 'constname');
-      res[0].tags[0].should.have.property('type');
+      assert(res[0].tags[0].hasOwnProperty('title', 'constant'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'constname'));
+      assert(res[0].tags[0].hasOwnProperty('type'));
       assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'String'
@@ -143,8 +143,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 2);
-      res[0].tags[0].should.have.property('title', 'const');
-      res[0].tags[1].should.have.property('title', 'const');
+      assert(res[0].tags[0].hasOwnProperty('title', 'const'));
+      assert(res[0].tags[1].hasOwnProperty('title', 'const'));
     });
 
     it('const double', function() {
@@ -152,8 +152,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 2);
-      res[0].tags[0].should.have.property('title', 'const');
-      res[0].tags[1].should.have.property('title', 'const');
+      assert(res[0].tags[0].hasOwnProperty('title', 'const'));
+      assert(res[0].tags[1].hasOwnProperty('title', 'const'));
     });
 
     it('const triple', function() {
@@ -167,9 +167,9 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 3);
-      res[0].tags[0].should.have.property('title', 'const');
-      res[0].tags[1].should.have.property('title', 'const');
-      res[0].tags[2].should.have.property('title', 'const');
+      assert(res[0].tags[0].hasOwnProperty('title', 'const'));
+      assert(res[0].tags[1].hasOwnProperty('title', 'const'));
+      assert(res[0].tags[2].hasOwnProperty('title', 'const'));
     });
 
     it('constructor', function() {
@@ -177,7 +177,7 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'constructor');
+      assert(res[0].tags[0].hasOwnProperty('title', 'constructor'));
     });
 
     it('constructor with type', function() {
@@ -185,7 +185,7 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'constructor');
+      assert(res[0].tags[0].hasOwnProperty('title', 'constructor'));
       assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'Object'
@@ -197,8 +197,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'constructor');
-      res[0].tags[0].should.have.property('name', 'objName');
+      assert(res[0].tags[0].hasOwnProperty('title', 'constructor'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'objName'));
       assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'Object'
@@ -210,7 +210,7 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'class');
+      assert(res[0].tags[0].hasOwnProperty('title', 'class'));
     });
 
     it('class with type', function() {
@@ -218,7 +218,7 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'class');
+      assert(res[0].tags[0].hasOwnProperty('title', 'class'));
       assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'Object'
@@ -230,8 +230,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'class');
-      res[0].tags[0].should.have.property('name', 'objName');
+      assert(res[0].tags[0].hasOwnProperty('title', 'class'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'objName'));
       assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'Object'
@@ -244,14 +244,14 @@ describe('parse tag', function() {
       });
 
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'deprecated');
+      assert(res[0].tags[0].hasOwnProperty('title', 'deprecated'));
 
       res = comments.parse('/** @deprecated some text here describing why it is deprecated */', {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'deprecated');
-      res[0].tags[0].should.have.property('description', 'some text here describing why it is deprecated');
+      assert(res[0].tags[0].hasOwnProperty('title', 'deprecated'));
+      assert(res[0].tags[0].hasOwnProperty('description', 'some text here describing why it is deprecated'));
     });
 
     it('func', function() {
@@ -259,7 +259,7 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'func');
+      assert(res[0].tags[0].hasOwnProperty('title', 'func'));
     });
 
     it('func with name', function() {
@@ -267,8 +267,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'func');
-      res[0].tags[0].should.have.property('name', 'thingName.func');
+      assert(res[0].tags[0].hasOwnProperty('title', 'func'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'thingName.func'));
     });
 
     it('func with type', function() {
@@ -284,7 +284,7 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'function');
+      assert(res[0].tags[0].hasOwnProperty('title', 'function'));
     });
 
     it('function with name', function() {
@@ -292,8 +292,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'function');
-      res[0].tags[0].should.have.property('name', 'thingName.function');
+      assert(res[0].tags[0].hasOwnProperty('title', 'function'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'thingName.function'));
     });
 
     it('function with type', function() {
@@ -307,14 +307,14 @@ describe('parse tag', function() {
     it('recognize "function" type', function() {
       const res = comments.parse('/** @param {function} foo description */', {});
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'param');
-      res[0].tags[0].should.have.property('type');
+      assert(res[0].tags[0].hasOwnProperty('title', 'param'));
+      assert(res[0].tags[0].hasOwnProperty('type'));
       assert.deepEqual(res[0].tags[0].type, {
         'name': 'function',
         'type': 'NameExpression'
       });
-      res[0].tags[0].should.have.property('name', 'foo');
-      res[0].tags[0].should.have.property('description', 'description');
+      assert(res[0].tags[0].hasOwnProperty('name', 'foo'));
+      assert(res[0].tags[0].hasOwnProperty('description', 'description'));
     });
 
     it('member', function() {
@@ -322,7 +322,7 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'member');
+      assert(res[0].tags[0].hasOwnProperty('title', 'member'));
     });
 
     it('member with name', function() {
@@ -330,8 +330,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'member');
-      res[0].tags[0].should.have.property('name', 'thingName.name');
+      assert(res[0].tags[0].hasOwnProperty('title', 'member'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'thingName.name'));
     });
 
     it('member with type', function() {
@@ -339,9 +339,9 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'member');
-      res[0].tags[0].should.have.property('name', 'thingName.name');
-      res[0].tags[0].should.have.property('type');
+      assert(res[0].tags[0].hasOwnProperty('title', 'member'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'thingName.name'));
+      assert(res[0].tags[0].hasOwnProperty('type'));
       assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'Object'
@@ -353,7 +353,7 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'method');
+      assert(res[0].tags[0].hasOwnProperty('title', 'method'));
     });
 
     it('method with name', function() {
@@ -361,8 +361,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'method');
-      res[0].tags[0].should.have.property('name', 'thingName.function');
+      assert(res[0].tags[0].hasOwnProperty('title', 'method'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'thingName.function'));
     });
 
     it('method with type', function() {
@@ -393,8 +393,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'mixes');
-      res[0].tags[0].should.have.property('name', 'thingName');
+      assert(res[0].tags[0].hasOwnProperty('title', 'mixes'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'thingName'));
     });
 
     it('mixes with namepath', function() {
@@ -402,8 +402,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'mixes');
-      res[0].tags[0].should.have.property('name', 'thingName.name');
+      assert(res[0].tags[0].hasOwnProperty('title', 'mixes'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'thingName.name'));
     });
 
     it('mixin', function() {
@@ -411,7 +411,7 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'mixin');
+      assert(res[0].tags[0].hasOwnProperty('title', 'mixin'));
     });
 
     it('mixin with name', function() {
@@ -419,8 +419,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'mixin');
-      res[0].tags[0].should.have.property('name', 'thingName');
+      assert(res[0].tags[0].hasOwnProperty('title', 'mixin'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'thingName'));
     });
 
     it('mixin with namepath', function() {
@@ -428,8 +428,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'mixin');
-      res[0].tags[0].should.have.property('name', 'thingName.name');
+      assert(res[0].tags[0].hasOwnProperty('title', 'mixin'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'thingName.name'));
     });
 
     it('module', function() {
@@ -437,7 +437,7 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'module');
+      assert(res[0].tags[0].hasOwnProperty('title', 'module'));
     });
 
     it('module with name', function() {
@@ -445,8 +445,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'module');
-      res[0].tags[0].should.have.property('name', 'thingName.name');
+      assert(res[0].tags[0].hasOwnProperty('title', 'module'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'thingName.name'));
     });
 
     it('module with name that has a hyphen in it', function() {
@@ -454,8 +454,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'module');
-      res[0].tags[0].should.have.property('name', 'thingName-name');
+      assert(res[0].tags[0].hasOwnProperty('title', 'module'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'thingName-name'));
     });
 
     it('module with type', function() {
@@ -463,9 +463,9 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'module');
-      res[0].tags[0].should.have.property('name', 'thingName.name');
-      res[0].tags[0].should.have.property('type');
+      assert(res[0].tags[0].hasOwnProperty('title', 'module'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'thingName.name'));
+      assert(res[0].tags[0].hasOwnProperty('type'));
       assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'Object'
@@ -477,8 +477,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'module');
-      res[0].tags[0].should.have.property('name', 'path/to/thingName.name');
+      assert(res[0].tags[0].hasOwnProperty('title', 'module'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'path/to/thingName.name'));
     });
 
     it('name', function() {
@@ -486,8 +486,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'name');
-      res[0].tags[0].should.have.property('name', 'thingName.name');
+      assert(res[0].tags[0].hasOwnProperty('title', 'name'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'thingName.name'));
     });
 
     it('name', function() {
@@ -495,8 +495,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'name');
-      res[0].tags[0].should.have.property('name', 'thingName#name');
+      assert(res[0].tags[0].hasOwnProperty('title', 'name'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'thingName#name'));
     });
 
     it('name', function() {
@@ -504,8 +504,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'name');
-      res[0].tags[0].should.have.property('name', 'thingName~name');
+      assert(res[0].tags[0].hasOwnProperty('title', 'name'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'thingName~name'));
     });
 
     it('name', function() {
@@ -521,7 +521,7 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'namespace');
+      assert(res[0].tags[0].hasOwnProperty('title', 'namespace'));
     });
 
     it('namespace with name', function() {
@@ -529,8 +529,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'namespace');
-      res[0].tags[0].should.have.property('name', 'thingName.name');
+      assert(res[0].tags[0].hasOwnProperty('title', 'namespace'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'thingName.name'));
     });
 
     it('namespace with type', function() {
@@ -538,9 +538,9 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'namespace');
-      res[0].tags[0].should.have.property('name', 'thingName.name');
-      res[0].tags[0].should.have.property('type');
+      assert(res[0].tags[0].hasOwnProperty('title', 'namespace'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'thingName.name'));
+      assert(res[0].tags[0].hasOwnProperty('type'));
       assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'Object'
@@ -557,9 +557,9 @@ describe('parse tag', function() {
       });
 
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'param');
-      res[0].tags[0].should.have.property('name', 'userName');
-      res[0].tags[0].should.have.property('type');
+      assert(res[0].tags[0].hasOwnProperty('title', 'param'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'userName'));
+      assert(res[0].tags[0].hasOwnProperty('type'));
       assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'String'
@@ -575,9 +575,9 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'param');
-      res[0].tags[0].should.have.property('name', 'user.name');
-      res[0].tags[0].should.have.property('type');
+      assert(res[0].tags[0].hasOwnProperty('title', 'param'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'user.name'));
+      assert(res[0].tags[0].hasOwnProperty('type'));
       assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'String'
@@ -593,10 +593,10 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'param');
-      res[0].tags[0].should.have.property('name', 'user.name');
-      res[0].tags[0].should.have.property('description', 'hi');
-      res[0].tags[0].should.have.property('type');
+      assert(res[0].tags[0].hasOwnProperty('title', 'param'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'user.name'));
+      assert(res[0].tags[0].hasOwnProperty('description', 'hi'));
+      assert(res[0].tags[0].hasOwnProperty('type'));
       assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'String'
@@ -612,10 +612,10 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'param');
-      res[0].tags[0].should.have.property('name', 'employee[].name');
-      res[0].tags[0].should.have.property('description', 'hi');
-      res[0].tags[0].should.have.property('type');
+      assert(res[0].tags[0].hasOwnProperty('title', 'param'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'employee[].name'));
+      assert(res[0].tags[0].hasOwnProperty('description', 'hi'));
+      assert(res[0].tags[0].hasOwnProperty('type'));
       assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'string'
@@ -631,10 +631,10 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'param');
-      res[0].tags[0].should.have.property('name', 'employee[].name');
-      res[0].tags[0].should.have.property('description', '');
-      res[0].tags[0].should.have.property('type');
+      assert(res[0].tags[0].hasOwnProperty('title', 'param'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'employee[].name'));
+      assert(res[0].tags[0].hasOwnProperty('description', ''));
+      assert(res[0].tags[0].hasOwnProperty('type'));
       assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'string'
@@ -650,9 +650,9 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'arg');
-      res[0].tags[0].should.have.property('name', 'user.name');
-      res[0].tags[0].should.have.property('type');
+      assert(res[0].tags[0].hasOwnProperty('title', 'arg'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'user.name'));
+      assert(res[0].tags[0].hasOwnProperty('type'));
       assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'String'
@@ -668,9 +668,9 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'argument');
-      res[0].tags[0].should.have.property('name', 'user.name');
-      res[0].tags[0].should.have.property('type');
+      assert(res[0].tags[0].hasOwnProperty('title', 'argument'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'user.name'));
+      assert(res[0].tags[0].hasOwnProperty('type'));
       assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'String'
@@ -752,9 +752,9 @@ describe('parse tag', function() {
       });
 
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'param');
-      res[0].tags[0].should.have.property('name', 'userName');
-      res[0].tags[0].should.have.property('type');
+      assert(res[0].tags[0].hasOwnProperty('title', 'param'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'userName'));
+      assert(res[0].tags[0].hasOwnProperty('type'));
       assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'String'
@@ -771,9 +771,9 @@ describe('parse tag', function() {
       const res = comments.parse(str, {unwrap: true });
 
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'param');
-      res[0].tags[0].should.have.property('name', 'userName');
-      res[0].tags[0].should.have.property('type');
+      assert(res[0].tags[0].hasOwnProperty('title', 'param'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'userName'));
+      assert(res[0].tags[0].hasOwnProperty('type'));
       assert.deepEqual(res[0].tags[0].type, {
         type: 'RecordType',
         fields: [{
@@ -837,9 +837,9 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'param');
-      res[0].tags[0].should.have.property('name', 'userName');
-      res[0].tags[0].should.have.property('type');
+      assert(res[0].tags[0].hasOwnProperty('title', 'param'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'userName'));
+      assert(res[0].tags[0].hasOwnProperty('type'));
       assert.deepEqual(res[0].tags[0].type, {
         type: 'UnionType',
         elements: [{
@@ -861,10 +861,10 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'param');
-      res[0].tags[0].should.have.property('name', 'string');
-      res[0].tags[0].should.have.property('type', null);
-      res[0].tags[0].should.have.property('description', 'name description');
+      assert(res[0].tags[0].hasOwnProperty('title', 'param'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'string'));
+      assert(res[0].tags[0].hasOwnProperty('type', null));
+      assert(res[0].tags[0].hasOwnProperty('description', 'name description'));
     });
 
     it('param w/ hyphen before description', function() {
@@ -921,14 +921,14 @@ describe('parse tag', function() {
 
       res[0].description.should.eql('Description\nblah blah blah');
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'param');
-      res[0].tags[0].should.have.property('name', 'name');
-      res[0].tags[0].should.have.property('type');
+      assert(res[0].tags[0].hasOwnProperty('title', 'param'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'name'));
+      assert(res[0].tags[0].hasOwnProperty('type'));
       assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'string'
       });
-      res[0].tags[0].should.have.property('description', 'description');
+      assert(res[0].tags[0].hasOwnProperty('description', 'description'));
     });
 
     it('regular block comment instead of jsdoc-style block comment', function() {
@@ -957,8 +957,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'augments');
-      res[0].tags[0].should.have.property('name', 'ClassName');
+      assert(res[0].tags[0].hasOwnProperty('title', 'augments'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'ClassName'));
     });
 
     it('augments with type', function() {
@@ -967,7 +967,7 @@ describe('parse tag', function() {
       });
 
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'augments');
+      assert(res[0].tags[0].hasOwnProperty('title', 'augments'));
       assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'ClassName'
@@ -979,8 +979,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'augments');
-      res[0].tags[0].should.have.property('name', 'ClassName.OK');
+      assert(res[0].tags[0].hasOwnProperty('title', 'augments'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'ClassName.OK'));
     });
 
     it('extends', function() {
@@ -995,8 +995,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'extends');
-      res[0].tags[0].should.have.property('name', 'ClassName');
+      assert(res[0].tags[0].hasOwnProperty('title', 'extends'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'ClassName'));
     });
 
     it('extends with type', function() {
@@ -1004,7 +1004,7 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'extends');
+      assert(res[0].tags[0].hasOwnProperty('title', 'extends'));
       assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'ClassName'
@@ -1016,8 +1016,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'extends');
-      res[0].tags[0].should.have.property('name', 'ClassName.OK');
+      assert(res[0].tags[0].hasOwnProperty('title', 'extends'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'ClassName.OK'));
     });
 
     it('extends with namepath', function() {
@@ -1025,8 +1025,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'extends');
-      res[0].tags[0].should.have.property('name', 'module:path/ClassName~OK');
+      assert(res[0].tags[0].hasOwnProperty('title', 'extends'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'module:path/ClassName~OK'));
     });
 
     it('prop', function() {
@@ -1038,10 +1038,10 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'prop');
-      res[0].tags[0].should.have.property('description', 'does some stuff');
-      res[0].tags[0].type.should.have.property('name', 'string');
-      res[0].tags[0].should.have.property('name', 'thingName');
+      assert(res[0].tags[0].hasOwnProperty('title', 'prop'));
+      assert(res[0].tags[0].hasOwnProperty('description', 'does some stuff'));
+      assert(res[0].tags[0].type.hasOwnProperty('name', 'string'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'thingName'));
     });
 
     it('prop without type', function() {
@@ -1076,10 +1076,10 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'property');
-      res[0].tags[0].should.have.property('description', 'does some stuff');
-      res[0].tags[0].type.should.have.property('name', 'string');
-      res[0].tags[0].should.have.property('name', 'thingName');
+      assert(res[0].tags[0].hasOwnProperty('title', 'property'));
+      assert(res[0].tags[0].hasOwnProperty('description', 'does some stuff'));
+      assert(res[0].tags[0].type.hasOwnProperty('name', 'string'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'thingName'));
     });
 
     it('property without type', function() {
@@ -1106,8 +1106,8 @@ describe('parse tag', function() {
         strict: false
       });
 
-      res[0].tags[1].should.have.property('title', 'property');
-      res[0].tags[1].should.have.property('type');
+      assert(res[0].tags[1].hasOwnProperty('title', 'property'));
+      assert(res[0].tags[1].hasOwnProperty('type'));
       assert.deepEqual(res[0].tags[1].type, {
         type: 'OptionalType',
         expression: {
@@ -1126,8 +1126,8 @@ describe('parse tag', function() {
         strict: false
       });
 
-      res[0].tags[1].should.have.property('title', 'property');
-      res[0].tags[1].should.have.property('type');
+      assert(res[0].tags[1].hasOwnProperty('title', 'property'));
+      assert(res[0].tags[1].hasOwnProperty('type'));
       assert.deepEqual(res[0].tags[1].type, {
         type: 'NameExpression',
         name: 'String'
@@ -1143,10 +1143,10 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'property');
-      res[0].tags[0].should.have.property('description', 'does some stuff');
-      res[0].tags[0].type.should.have.property('name', 'string');
-      res[0].tags[0].should.have.property('name', 'thingName.name');
+      assert(res[0].tags[0].hasOwnProperty('title', 'property'));
+      assert(res[0].tags[0].hasOwnProperty('description', 'does some stuff'));
+      assert(res[0].tags[0].type.hasOwnProperty('name', 'string'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'thingName.name'));
     });
 
     it('throws', function() {
@@ -1158,9 +1158,9 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'throws');
-      res[0].tags[0].should.have.property('description', 'if something goes wrong');
-      res[0].tags[0].type.should.have.property('name', 'Error');
+      assert(res[0].tags[0].hasOwnProperty('title', 'throws'));
+      assert(res[0].tags[0].hasOwnProperty('description', 'if something goes wrong'));
+      assert(res[0].tags[0].type.hasOwnProperty('name', 'Error'));
     });
 
     it('throws without type', function() {
@@ -1172,8 +1172,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'throws');
-      res[0].tags[0].should.have.property('description', 'if something goes wrong');
+      assert(res[0].tags[0].hasOwnProperty('title', 'throws'));
+      assert(res[0].tags[0].hasOwnProperty('description', 'if something goes wrong'));
     });
 
     it('kind', function() {
@@ -1181,8 +1181,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'kind');
-      res[0].tags[0].should.have.property('kind', 'class');
+      assert(res[0].tags[0].hasOwnProperty('title', 'kind'));
+      assert(res[0].tags[0].hasOwnProperty('kind', 'class'));
     });
 
     it('kind error', function() {
@@ -1191,7 +1191,7 @@ describe('parse tag', function() {
         recoverable: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('errors');
+      assert(res[0].tags[0].hasOwnProperty('errors'));
       assert.equal(res[0].tags[0].errors.length, 1);
       res[0].tags[0].errors[0].should.equal('Invalid kind name "ng"');
     });
@@ -1201,8 +1201,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'todo');
-      res[0].tags[0].should.have.property('description', 'Write the documentation');
+      assert(res[0].tags[0].hasOwnProperty('title', 'todo'));
+      assert(res[0].tags[0].hasOwnProperty('description', 'Write the documentation'));
     });
 
     it('typedef', function() {
@@ -1210,12 +1210,12 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('type');
+      assert(res[0].tags[0].hasOwnProperty('type'));
       assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'Object'
       });
-      res[0].tags[0].should.have.property('name', 'NumberLike');
+      assert(res[0].tags[0].hasOwnProperty('name', 'NumberLike'));
     });
 
     it('summary', function() {
@@ -1224,8 +1224,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'summary');
-      res[0].tags[0].should.have.property('description', 'ゆるゆり3期おめでとー');
+      assert(res[0].tags[0].hasOwnProperty('title', 'summary'));
+      assert(res[0].tags[0].hasOwnProperty('description', 'ゆるゆり3期おめでとー'));
     });
 
     it('variation', function() {
@@ -1234,8 +1234,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'variation');
-      res[0].tags[0].should.have.property('variation', 42);
+      assert(res[0].tags[0].hasOwnProperty('title', 'variation'));
+      assert(res[0].tags[0].hasOwnProperty('variation', 42));
     });
 
     it('variation error', function() {
@@ -1245,7 +1245,7 @@ describe('parse tag', function() {
         recoverable: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('errors');
+      assert(res[0].tags[0].hasOwnProperty('errors'));
       assert.equal(res[0].tags[0].errors.length, 1);
       res[0].tags[0].errors[0].should.equal('Invalid variation "Animation"');
     });
@@ -1255,8 +1255,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'access');
-      res[0].tags[0].should.have.property('access', 'public');
+      assert(res[0].tags[0].hasOwnProperty('title', 'access'));
+      assert(res[0].tags[0].hasOwnProperty('access', 'public'));
     });
 
     it('access error', function() {
@@ -1265,7 +1265,7 @@ describe('parse tag', function() {
         recoverable: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('errors');
+      assert(res[0].tags[0].hasOwnProperty('errors'));
       assert.equal(res[0].tags[0].errors.length, 1);
       res[0].tags[0].errors[0].should.equal('Invalid access name "ng"');
     });
@@ -1275,7 +1275,7 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'public');
+      assert(res[0].tags[0].hasOwnProperty('title', 'public'));
     });
 
     it('public type and description', function() {
@@ -1284,9 +1284,9 @@ describe('parse tag', function() {
         recoverable: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'public');
-      res[0].tags[0].should.have.property('description', 'ok');
-      res[0].tags[0].should.have.property('type');
+      assert(res[0].tags[0].hasOwnProperty('title', 'public'));
+      assert(res[0].tags[0].hasOwnProperty('description', 'ok'));
+      assert(res[0].tags[0].hasOwnProperty('type'));
       assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'number'
@@ -1298,7 +1298,7 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'protected');
+      assert(res[0].tags[0].hasOwnProperty('title', 'protected'));
     });
 
     it('protected type and description', function() {
@@ -1307,9 +1307,9 @@ describe('parse tag', function() {
         recoverable: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'protected');
-      res[0].tags[0].should.have.property('description', 'ok');
-      res[0].tags[0].should.have.property('type');
+      assert(res[0].tags[0].hasOwnProperty('title', 'protected'));
+      assert(res[0].tags[0].hasOwnProperty('description', 'ok'));
+      assert(res[0].tags[0].hasOwnProperty('type'));
       assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'number'
@@ -1321,7 +1321,7 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'private');
+      assert(res[0].tags[0].hasOwnProperty('title', 'private'));
     });
 
     it('private type and description', function() {
@@ -1330,9 +1330,9 @@ describe('parse tag', function() {
         recoverable: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'private');
-      res[0].tags[0].should.have.property('description', 'ok');
-      res[0].tags[0].should.have.property('type');
+      assert(res[0].tags[0].hasOwnProperty('title', 'private'));
+      assert(res[0].tags[0].hasOwnProperty('description', 'ok'));
+      assert(res[0].tags[0].hasOwnProperty('type'));
       assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'number'
@@ -1345,7 +1345,7 @@ describe('parse tag', function() {
       });
 
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'readonly');
+      assert(res[0].tags[0].hasOwnProperty('title', 'readonly'));
     });
 
     it('readonly description (non-strict)', function() {
@@ -1360,7 +1360,7 @@ describe('parse tag', function() {
         strict: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('errors');
+      assert(res[0].tags[0].hasOwnProperty('errors'));
       assert.equal(res[0].tags[0].errors.length, 1);
       res[0].tags[0].errors[0].should.equal('@readonly cannot have a description in strict mode');
     });
@@ -1385,8 +1385,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'requires');
-      res[0].tags[0].should.have.property('name', 'name.path');
+      assert(res[0].tags[0].hasOwnProperty('title', 'requires'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'name.path'));
     });
 
     it('global', function() {
@@ -1394,7 +1394,7 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'global');
+      assert(res[0].tags[0].hasOwnProperty('title', 'global'));
     });
 
     it('global description', function() {
@@ -1412,7 +1412,7 @@ describe('parse tag', function() {
       });
 
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('errors');
+      assert(res[0].tags[0].hasOwnProperty('errors'));
       assert.equal(res[0].tags[0].errors.length, 1);
       res[0].tags[0].errors[0].should.equal('@global cannot have a description in strict mode');
     });
@@ -1422,7 +1422,7 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'inner');
+      assert(res[0].tags[0].hasOwnProperty('title', 'inner'));
     });
 
     it('inner description', function() {
@@ -1440,7 +1440,7 @@ describe('parse tag', function() {
         strict: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('errors');
+      assert(res[0].tags[0].hasOwnProperty('errors'));
       assert.equal(res[0].tags[0].errors.length, 1);
       res[0].tags[0].errors[0].should.equal('@inner cannot have a description in strict mode');
     });
@@ -1450,7 +1450,7 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'instance');
+      assert(res[0].tags[0].hasOwnProperty('title', 'instance'));
     });
 
     it('instance description', function() {
@@ -1465,7 +1465,7 @@ describe('parse tag', function() {
         strict: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('errors');
+      assert(res[0].tags[0].hasOwnProperty('errors'));
       assert.equal(res[0].tags[0].errors.length, 1);
       res[0].tags[0].errors[0].should.equal('@instance cannot have a description in strict mode');
     });
@@ -1475,8 +1475,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'since');
-      res[0].tags[0].should.have.property('description', '1.2.1');
+      assert(res[0].tags[0].hasOwnProperty('title', 'since'));
+      assert(res[0].tags[0].hasOwnProperty('description', '1.2.1'));
     });
 
     it('static', function() {
@@ -1484,13 +1484,13 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'static');
+      assert(res[0].tags[0].hasOwnProperty('title', 'static'));
     });
 
     it('static description', function() {
       const res = comments.parse('/** @static ng */', {unwrap: true});
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('description', 'ng');
+      assert(res[0].tags[0].hasOwnProperty('description', 'ng'));
     });
 
     it('static error', function() {
@@ -1499,7 +1499,7 @@ describe('parse tag', function() {
         strict: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('errors');
+      assert(res[0].tags[0].hasOwnProperty('errors'));
       assert.equal(res[0].tags[0].errors.length, 1);
       res[0].tags[0].errors[0].should.equal('@static cannot have a description in strict mode');
     });
@@ -1513,8 +1513,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'this');
-      res[0].tags[0].should.have.property('name', 'thingName');
+      assert(res[0].tags[0].hasOwnProperty('title', 'this'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'thingName'));
     });
 
     it('this with namepath', function() {
@@ -1526,8 +1526,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'this');
-      res[0].tags[0].should.have.property('name', 'thingName.name');
+      assert(res[0].tags[0].hasOwnProperty('title', 'this'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'thingName.name'));
     });
 
     it('this with name expression', function() {
@@ -1540,8 +1540,8 @@ describe('parse tag', function() {
       });
 
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'this');
-      res[0].tags[0].should.have.property('name', 'thingName.name');
+      assert(res[0].tags[0].hasOwnProperty('title', 'this'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'thingName.name'));
     });
 
     it('this with multiple application types', function() {
@@ -1555,7 +1555,7 @@ describe('parse tag', function() {
       });
 
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'this');
+      assert(res[0].tags[0].hasOwnProperty('title', 'this'));
       assert.deepEqual(res[0].tags[0].type, {
         'type': 'TypeApplication',
         'applications': [
@@ -1586,8 +1586,8 @@ describe('parse tag', function() {
       });
 
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'this');
-      res[0].tags[0].should.have.property('errors');
+      assert(res[0].tags[0].hasOwnProperty('title', 'this'));
+      assert(res[0].tags[0].hasOwnProperty('errors'));
       assert.equal(res[0].tags[0].errors.length, 1);
       res[0].tags[0].errors[0].should.equal('Invalid name for @this');
     });
@@ -1602,8 +1602,8 @@ describe('parse tag', function() {
       });
 
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'this');
-      res[0].tags[0].should.have.property('errors');
+      assert(res[0].tags[0].hasOwnProperty('title', 'this'));
+      assert(res[0].tags[0].hasOwnProperty('errors'));
       assert.equal(res[0].tags[0].errors.length, 1);
       res[0].tags[0].errors[0].should.equal('expected @this tag to have type and name properties');
     });
@@ -1613,7 +1613,7 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'var');
+      assert(res[0].tags[0].hasOwnProperty('title', 'var'));
     });
 
     it('var with name', function() {
@@ -1621,8 +1621,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'var');
-      res[0].tags[0].should.have.property('name', 'thingName.name');
+      assert(res[0].tags[0].hasOwnProperty('title', 'var'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'thingName.name'));
     });
 
     it('var with type', function() {
@@ -1630,9 +1630,9 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'var');
-      res[0].tags[0].should.have.property('name', 'thingName.name');
-      res[0].tags[0].should.have.property('type');
+      assert(res[0].tags[0].hasOwnProperty('title', 'var'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'thingName.name'));
+      assert(res[0].tags[0].hasOwnProperty('type'));
       assert.deepEqual(res[0].tags[0].type, {
         type: 'NameExpression',
         name: 'Object'
@@ -1644,8 +1644,8 @@ describe('parse tag', function() {
         unwrap: true
       });
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'version');
-      res[0].tags[0].should.have.property('description', '1.2.1');
+      assert(res[0].tags[0].hasOwnProperty('title', 'version'));
+      assert(res[0].tags[0].hasOwnProperty('description', '1.2.1'));
     });
 
     it('invalid name', function() {
@@ -1670,9 +1670,9 @@ describe('parse tag', function() {
       });
 
       assert.equal(res[0].tags.length, 2);
-      res[0].tags[1].should.have.property('title', 'property');
-      res[0].tags[1].should.have.property('name', 'access');
-      res[0].tags[1].type.should.have.property('type', 'UnionType');
+      assert(res[0].tags[1].hasOwnProperty('title', 'property'));
+      assert(res[0].tags[1].hasOwnProperty('name', 'access'));
+      assert(res[0].tags[1].type.hasOwnProperty('type', 'UnionType'));
       assert.equal(res[0].tags[1].type.elements.length, 3);
       assert.deepEqual(res[0].tags[1].type.elements[0], {
         type: 'StringLiteralType',
@@ -1699,9 +1699,9 @@ describe('parse tag', function() {
       });
 
       assert.equal(res[0].tags.length, 2);
-      res[0].tags[1].should.have.property('title', 'property');
-      res[0].tags[1].should.have.property('name', 'access');
-      res[0].tags[1].type.should.have.property('type', 'UnionType');
+      assert(res[0].tags[1].hasOwnProperty('title', 'property'));
+      assert(res[0].tags[1].hasOwnProperty('name', 'access'));
+      assert(res[0].tags[1].type.hasOwnProperty('type', 'UnionType'));
       assert.equal(res[0].tags[1].type.elements.length, 3);
       assert.deepEqual(res[0].tags[1].type.elements[0], {
         type: 'NumericLiteralType',
@@ -1728,9 +1728,9 @@ describe('parse tag', function() {
       });
 
       assert.equal(res[0].tags.length, 2);
-      res[0].tags[1].should.have.property('title', 'property');
-      res[0].tags[1].should.have.property('name', 'access');
-      res[0].tags[1].type.should.have.property('type', 'UnionType');
+      assert(res[0].tags[1].hasOwnProperty('title', 'property'));
+      assert(res[0].tags[1].hasOwnProperty('name', 'access'));
+      assert(res[0].tags[1].type.hasOwnProperty('type', 'UnionType'));
       assert.equal(res[0].tags[1].type.elements.length, 2);
       assert.deepEqual(res[0].tags[1].type.elements[0], {
         type: 'BooleanLiteralType',
@@ -1750,13 +1750,13 @@ describe('parse tag', function() {
       ].join('\n'), {unwrap: true});
 
       assert.equal(res[0].tags.length, 1);
-      res[0].tags[0].should.have.property('title', 'typedef');
-      res[0].tags[0].should.have.property('name', 'Result');
-      res[0].tags[0].type.should.have.property('type', 'UnionType');
+      assert(res[0].tags[0].hasOwnProperty('title', 'typedef'));
+      assert(res[0].tags[0].hasOwnProperty('name', 'Result'));
+      assert(res[0].tags[0].type.hasOwnProperty('type', 'UnionType'));
       assert.equal(res[0].tags[0].type.elements.length, 2);
 
       let e0 = res[0].tags[0].type.elements[0];
-      e0.should.have.property('type', 'RecordType');
+      assert(e0.hasOwnProperty('type', 'RecordType'));
       assert.equal(e0.fields.length, 2);
       assert.deepEqual(e0.fields[0], {
         type: 'FieldType',
@@ -1776,7 +1776,7 @@ describe('parse tag', function() {
       });
 
       var e1 = res[0].tags[0].type.elements[1];
-      e1.should.have.property('type', 'RecordType');
+      assert(e1.hasOwnProperty('type', 'RecordType'));
       assert.equal(e1.fields.length, 2);
       assert.deepEqual(e1.fields[0], {
         type: 'FieldType',
