@@ -20,208 +20,13 @@ const { utils } = lib;
  */
 
 class Comments extends Emitter {
-  constructor(options) {
+  constructor(options = {}) {
     super();
-    this.options = Object.assign({}, options);
+    this.options = options;
     this.comments = [];
-    this.ast = {};
-    this.cache = {
-      comments: {},
-      files: {},
-      links: {}
-    };
-
     this.parsers = {};
     this.tokens = [];
-    this.plugins = {
-      fns: [],
-      middleware: {},
-      before: {},
-      after: {}
-    };
-  }
-
-  /**
-   * Register a parser function of the given `type`
-   *
-   * @param {string|object} `type`
-   * @param {Function} `fn`
-   * @return {Object}
-   * @api public
-   */
-
-  parser(type, fn) {
-    this.parsers[type] = fn;
-    return this;
-  }
-
-  /**
-   * Register a compiler plugin `fn`. Plugin functions should take an
-   * options object, and return a function that takes an instance of
-   * comments.
-   *
-   * ```js
-   * // plugin example
-   * function yourPlugin(options) {
-   *   return function(comments) {
-   *     // do stuff
-   *   };
-   * }
-   * // usage
-   * comments.use(yourPlugin());
-   * ```
-   *
-   * @param {Function} `fn` plugin function
-   * @return {Object} Returns the comments instance for chaining.
-   * @api public
-   */
-
-  use(fn) {
-    this.plugins.fns = this.plugins.fns.concat(fn);
-    return this;
-  }
-
-  /**
-   * Register a handler function to be called on a node of the given `type`.
-   * Override a built-in handler `type`, or register a new type.
-   *
-   * ```js
-   * comments.set('param', function(node) {
-   *   // do stuff to node
-   * });
-   * ```
-   * @param {String} `type` The `node.type` to call the handler on. You can override built-in middleware by registering a handler of the same name, or register a handler for rendering a new type.
-   * @param {Function} `fn` The handler function
-   * @return {Object} Returns the instance for chaining.
-   * @api public
-   */
-
-  set(type, fn) {
-    if (Array.isArray(type)) {
-      for (let i = 0; i < type.length; i++) {
-        this.set(type[i], fn);
-      }
-    } else {
-      this.plugins.middleware[type] = fn;
-    }
-    return this;
-  }
-
-  /**
-   * Register a handler that will be called by the compiler on every node
-   * of the given `type`, _before other middleware are called_ on that node.
-   *
-   * ```js
-   * comments.before('param', function(node) {
-   *   // do stuff to node
-   * });
-   *
-   * // or
-   * comments.before(['param', 'returns'], function(node) {
-   *   // do stuff to node
-   * });
-   *
-   * // or
-   * comments.before({
-   *   param: function(node) {
-   *     // do stuff to node
-   *   },
-   *   returns: function(node) {
-   *     // do stuff to node
-   *   }
-   * });
-   * ```
-   * @param {String|Object|Array} `type` Handler name(s), or an object of middleware
-   * @param {Function} `fn` Handler function, if `type` is a string or array. Otherwise this argument is ignored.
-   * @return {Object} Returns the instance for chaining.
-   * @api public
-   */
-
-  before(type, fn) {
-    let before = this.plugins.before;
-    if (utils.isObject(type)) {
-      for (let key of Object.keys(type)) {
-        this.before(key, type[key]);
-      }
-    } else if (Array.isArray(type)) {
-      for (let key of type) this.before(key, fn);
-    } else {
-      before[type] = before[type] || [];
-      before[type].push(fn);
-    }
-    return this;
-  }
-
-  /**
-   * Register a handler that will be called by the compiler on every node
-   * of the given `type`, _after other middleware are called_ on that node.
-   *
-   * ```js
-   * comments.after('param', function(node) {
-   *   // do stuff to node
-   * });
-   *
-   * // or
-   * comments.after(['param', 'returns'], function(node) {
-   *   // do stuff to node
-   * });
-   *
-   * // or
-   * comments.after({
-   *   param: function(node) {
-   *     // do stuff to node
-   *   },
-   *   returns: function(node) {
-   *     // do stuff to node
-   *   }
-   * });
-   * ```
-   * @param {String|Object|Array} `type` Handler name(s), or an object of middleware
-   * @param {Function} `fn` Handler function, if `type` is a string or array. Otherwise this argument is ignored.
-   * @return {Object} Returns the instance for chaining.
-   * @api public
-   */
-
-  after(type, fn) {
-    let after = this.plugins.after;
-    if (utils.isObject(type)) {
-      for (let key of Object.keys(type)) {
-        this.after(key, type[key]);
-      }
-    } else if (Array.isArray(type)) {
-      for (let key of type) this.after(key, fn);
-    } else {
-      after[type] = after[type] || [];
-      after[type].push(fn);
-    }
-    return this;
-  }
-
-  /**
-   * Run plugin functions on a node of the given `type`.
-   *
-   * @param {String} `type` Either `before` or `after`
-   * @param {Object} `compiler` Snapdragon compiler instance
-   * @return {Function} Returns a function that takes a `node`. Any plugins registered for that `node.type` will be run on the node.
-   */
-
-  run(type, compiler) {
-    let plugins = this.plugins[type];
-
-    return node => {
-      let fns = plugins[node.type] || [];
-
-      for (let fn of fns) {
-        if (typeof fn !== 'function') {
-          let err = new TypeError('expected plugin to be a function:' + fn);
-          err.node = node;
-          err.type = type;
-          throw err;
-        }
-        node = fn.call(compiler, node) || node;
-      }
-      return node;
-    };
+    this.ast = {};
   }
 
   /**
@@ -282,7 +87,7 @@ class Comments extends Emitter {
 
   parseComment(comment, options) {
     let opts = Object.assign({}, this.options, options);
-    let parsers = Object.assign({}, this.plugins.middleware, opts.parse);
+    let parsers = opts.parse || {};
 
     if (typeof parsers.comment === 'function') {
       comment = parsers.comment.call(this, comment, opts);
@@ -297,11 +102,6 @@ class Comments extends Emitter {
       comment = Object.assign({}, comment, tok);
       lib.normalize.examples(comment, opts);
       comment.tags = this.parseTags(comment, options);
-
-      // let name = get(comment, 'code.context.name');
-      // if (name) {
-      //   set(this.cache, name, comment);
-      // }
     }
 
     // parse inline tags
@@ -338,7 +138,7 @@ class Comments extends Emitter {
 
   parseTags(comment, options) {
     let opts = Object.assign({}, this.options, options);
-    let parsers = Object.assign({}, this.plugins.middleware, opts.parse);
+    let parsers = opts.parse || {};
     let tags = [];
 
     if (typeof parsers.parseTags === 'function') {
@@ -374,7 +174,7 @@ class Comments extends Emitter {
 
   parseTag(tok, options) {
     let opts = Object.assign({}, this.options, options);
-    let parsers = Object.assign({}, this.plugins.middleware, opts.parse);
+    let parsers = opts.parse || {};
     let tag;
 
     if (typeof tok === 'string') {
@@ -452,7 +252,7 @@ class Comments extends Emitter {
     }
 
     let opts = { ...this.options, ...options };
-    let parsers = { ...this.plugins.middleware, ...opts.parse };
+    let parsers = opts.parse || {};
 
     if (typeof parsers.inlineTag === 'function') {
       return parsers.inlineTag.call(this, str, opts);
@@ -481,7 +281,7 @@ class Comments extends Emitter {
     }
 
     let opts = { ...this.options, ...options };
-    let parsers = { ...this.plugins.middleware, ...opts.parse };
+    let parsers = opts.parse || {};
 
     if (typeof parsers.type === 'function') {
       return parsers.type.call(this, str, tag, opts);
@@ -497,7 +297,7 @@ class Comments extends Emitter {
     }
 
     let opts = { ...this.options, ...options };
-    let parsers = { ...this.plugins.middleware, ...opts.parse };
+    let parsers = opts.parse || {};
 
     if (typeof parsers.paramType === 'function') {
       return parsers.paramType.call(this, str, opts);
@@ -558,10 +358,10 @@ class Comments extends Emitter {
   }
 
   /**
-   * Returns true if the given `comment` is valid. By default, comments
-   * are considered valid when they begin with `/**`, and do not contain
-   * `jslint`, `jshint`, `eshint`, or `eslint`. A custom `isValid` function may be
-   * passed on the constructor options.
+   * Returns true if the given `comment` is valid (meaning the comment
+   * may be parsed). Comments are considered valid when they begin with
+   * `/**`, and do not contain `jslint`, `jshint`, `eshint`, or `eslint`.
+   * A custom `isValid` function may be passed on the constructor options.
    *
    * @param {Object} `comment`
    * @param {Object} `options`
@@ -582,12 +382,21 @@ class Comments extends Emitter {
     if (!utils.isValidBlockComment(comment, options)) {
       return false;
     }
+    return true;
+  }
 
-    if (opts.protected === false && utils.isProtectedComment(comment.raw)) {
-      return false;
+  isConfigComment(comment, names) {
+    if (!utils.isObject(comment)) {
+      throw new TypeError('expected comment to be an object');
     }
+    return utils.isConfigComment(comment.value, names);
+  }
 
-    return !utils.isConfigComment(comment.value);
+  isProtectedComment(comment) {
+    if (!utils.isObject(comment)) {
+      throw new TypeError('expected comment to be an object');
+    }
+    return utils.isProtectedComment(comment.raw);
   }
 
   static parse(str, options) {

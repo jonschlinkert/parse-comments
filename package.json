@@ -19,13 +19,13 @@
   ],
   "main": "index.js",
   "engines": {
-    "node": ">=4"
+    "node": ">=8"
   },
   "scripts": {
     "test": "mocha"
   },
   "dependencies": {
-    "extract-comments": "^1.0.0",
+    "extract-comments": "^1.1.0",
     "floating-point-regex": "^0.1.0",
     "get-value": "^3.0.1",
     "inflection": "^1.12.0",
