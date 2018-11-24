@@ -8,12 +8,12 @@ var comments;
 
 var fixtures = support.files(__dirname, 'fixtures');
 
-describe('gfm', function() {
+describe('gfm', () => {
   beforeEach(function() {
     comments = new Comments();
   });
 
-  it('should tokenize gfm code examples', function() {
+  it('should tokenize gfm code examples', () => {
     var tok = comments.tokenize([
       '/**',
       ' * foo bar baz',
@@ -56,7 +56,7 @@ describe('gfm', function() {
     });
   });
 
-  it('should preserve indentation in gfm code examples', function() {
+  it('should preserve indentation in gfm code examples', () => {
     var tok = comments.tokenize([
       '/**',
       ' * foo bar baz',
@@ -100,7 +100,7 @@ describe('gfm', function() {
     });
   });
 
-  it('should detect a description for a gfm code example', function() {
+  it('should detect a description for a gfm code example', () => {
     var tok = comments.tokenize([
       '/**',
       ' * foo bar baz',
@@ -145,7 +145,7 @@ describe('gfm', function() {
     });
   });
 
-  it('should detect a description & leading newline for a gfm example', function() {
+  it('should detect a description & leading newline for a gfm example', () => {
     var tok = comments.tokenize([
       '/**',
       ' * foo bar baz',
@@ -191,7 +191,7 @@ describe('gfm', function() {
     });
   });
 
-  it('should support gfm examples without extra leading/trailing newlines', function() {
+  it('should support gfm examples without extra leading/trailing newlines', () => {
     var tok = comments.tokenize([
       '/**',
       ' * foo bar baz',
@@ -235,7 +235,7 @@ describe('gfm', function() {
     });
   });
 
-  it('should work when no stars prefix the gfm example', function() {
+  it('should work when no stars prefix the gfm example', () => {
     var tok = comments.tokenize(fixtures['examples-gfm-no-stars']);
 
     assert.deepEqual(tok, {

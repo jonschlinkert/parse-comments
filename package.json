@@ -29,20 +29,19 @@
     "floating-point-regex": "^0.1.0",
     "get-value": "^3.0.1",
     "inflection": "^1.12.0",
-    "kind-of": "^6.0.2",
     "map-schema": "^0.2.4",
-    "snapdragon-node": "file:../../snapdragon/libraries/node",
-    "snapdragon-parser": "file:../../snapdragon/libraries/parser",
-    "tokenize-comment": "file:../../comments/tokenize-comment"
+    "snapdragon-node": "^3.0.0",
+    "snapdragon-parser": "^1.0.0",
+    "tokenize-comment": "^3.0.1"
   },
   "devDependencies": {
     "ansi": "^0.3.1",
     "benchmark": "^2.1.4",
-    "doctrine": "^2.1.0",
-    "gulp-format-md": "^1.0.0",
-    "mocha": "^3.5.3",
-    "object.pick": "^1.3.0",
-    "should": "^13.2.1"
+    "catharsis": "^0.8.9",
+    "doctrine": "^3.0.0",
+    "gulp-format-md": "^2.0.0",
+    "mocha": "^5.2.0",
+    "object.pick": "^1.3.0"
   },
   "keywords": [
     "code",

@@ -1,20 +1,19 @@
 'use strict';
 
 require('mocha');
-require('should');
-var assert = require('assert');
-var doctrine = require('doctrine');
-var parseName = require('../lib/parse/name');
+const assert = require('assert');
+const doctrine = require('doctrine');
+const parseName = require('../lib/parse/name');
 
-describe('parse name', function() {
-  it('should parse a name passed as a string', function() {
+describe('parse name', () => {
+  it('should parse a name passed as a string', () => {
     assert.deepEqual(parseName('foo'), {
       type: 'NameExpression',
       name: 'foo'
     });
   });
 
-  it('should parse a name passed as an object', function() {
+  it('should parse a name passed as an object', () => {
     assert.deepEqual(parseName({
       type: 'NameExpression',
       name: 'foo'
@@ -24,7 +23,7 @@ describe('parse name', function() {
     });
   });
 
-  it('should set OptionalType', function() {
+  it('should set OptionalType', () => {
     assert.deepEqual(parseName('[foo]'), {
       type: 'OptionalType',
       expression: {
@@ -34,7 +33,7 @@ describe('parse name', function() {
     });
   });
 
-  it('should strip backticks', function() {
+  it('should strip backticks', () => {
     assert.deepEqual(parseName('`foo`'), {
       type: 'NameExpression',
       name: 'foo'

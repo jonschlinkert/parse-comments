@@ -9,8 +9,13 @@ const { utils } = lib;
 /**
  * Create an instance of `Comments` with the given `options`.
  *
+ * ```js
+ * const Comments = require('parse-comments');
+ * const comments = new Comments();
+ * ```
+ * @name Comments
  * @extends Emitter
- * @param {object|string} options Pass options if you need to instantiate Comments, or a string to convert HTML to markdown.
+ * @param {Object} options
  * @api public
  */
 
@@ -133,13 +138,13 @@ class Comments extends Emitter {
    */
 
   before(type, fn) {
-    const before = this.plugins.before;
+    let before = this.plugins.before;
     if (utils.isObject(type)) {
-      for (const key of Object.keys(type)) {
+      for (let key of Object.keys(type)) {
         this.before(key, type[key]);
       }
     } else if (Array.isArray(type)) {
-      for (const key of type) this.before(key, fn);
+      for (let key of type) this.before(key, fn);
     } else {
       before[type] = before[type] || [];
       before[type].push(fn);
@@ -178,13 +183,13 @@ class Comments extends Emitter {
    */
 
   after(type, fn) {
-    const after = this.plugins.after;
+    let after = this.plugins.after;
     if (utils.isObject(type)) {
-      for (const key of Object.keys(type)) {
+      for (let key of Object.keys(type)) {
         this.after(key, type[key]);
       }
     } else if (Array.isArray(type)) {
-      for (const key of type) this.after(key, fn);
+      for (let key of type) this.after(key, fn);
     } else {
       after[type] = after[type] || [];
       after[type].push(fn);
@@ -201,12 +206,12 @@ class Comments extends Emitter {
    */
 
   run(type, compiler) {
-    const plugins = this.plugins[type];
+    let plugins = this.plugins[type];
 
     return node => {
-      const fns = plugins[node.type] || [];
+      let fns = plugins[node.type] || [];
 
-      for (const fn of fns) {
+      for (let fn of fns) {
         if (typeof fn !== 'function') {
           let err = new TypeError('expected plugin to be a function:' + fn);
           err.node = node;
@@ -232,8 +237,14 @@ class Comments extends Emitter {
    * @api public
    */
 
-  tokenize(str, options) {
-    return tokenize(str, Object.assign({}, this.options, options));
+  tokenize(input, options) {
+    let opts = Object.assign({}, this.options, options);
+    // this only needs to be roughly correct. the tokenizer is smarter
+    let isComment = str => /^(\s*\/\*|\*\s*@| {4,})/gm.test(str);
+    if (opts.stripStars === void 0 && input && !isComment(input)) {
+      opts.stripStars = false;
+    }
+    return tokenize(input, opts);
   }
 
   /**
@@ -270,8 +281,8 @@ class Comments extends Emitter {
    */
 
   parseComment(comment, options) {
-    const opts = Object.assign({}, this.options, options);
-    const parsers = Object.assign({}, this.plugins.middleware, opts.parse);
+    let opts = Object.assign({}, this.options, options);
+    let parsers = Object.assign({}, this.plugins.middleware, opts.parse);
 
     if (typeof parsers.comment === 'function') {
       comment = parsers.comment.call(this, comment, opts);
@@ -296,10 +307,8 @@ class Comments extends Emitter {
     // parse inline tags
     if (comment.description) {
       let inline = this.parseInlineTags(comment.description, opts);
-      if (inline.tags.length) {
-        comment.description = inline.value;
-        comment.inlineTags = inline.tags;
-      }
+      comment.description = inline.value;
+      comment.inlineTags = inline.tags;
     }
 
     // optionally format comment object
@@ -364,8 +373,8 @@ class Comments extends Emitter {
    */
 
   parseTag(tok, options) {
-    const opts = Object.assign({}, this.options, options);
-    const parsers = Object.assign({}, this.plugins.middleware, opts.parse);
+    let opts = Object.assign({}, this.options, options);
+    let parsers = Object.assign({}, this.plugins.middleware, opts.parse);
     let tag;
 
     if (typeof tok === 'string') {
@@ -410,10 +419,8 @@ class Comments extends Emitter {
 
     if (tag.description) {
       let inline = this.parseInlineTags(tag.description, opts);
-      if (inline.tags.length) {
-        tag.description = inline.value;
-        tag.inlineTags = inline.tags;
-      }
+      tag.description = inline.value;
+      tag.inlineTags = inline.tags;
     }
 
     return tag;
@@ -444,8 +451,8 @@ class Comments extends Emitter {
       throw new TypeError('expected a string');
     }
 
-    const opts = { ...this.options, ...options };
-    const parsers = { ...this.plugins.middleware, ...opts.parse };
+    let opts = { ...this.options, ...options };
+    let parsers = { ...this.plugins.middleware, ...opts.parse };
 
     if (typeof parsers.inlineTag === 'function') {
       return parsers.inlineTag.call(this, str, opts);
@@ -473,14 +480,15 @@ class Comments extends Emitter {
       throw new TypeError('expected a string');
     }
 
-    const opts = { ...this.options, ...options };
-    const parsers = { ...this.plugins.middleware, ...opts.parse };
+    let opts = { ...this.options, ...options };
+    let parsers = { ...this.plugins.middleware, ...opts.parse };
 
     if (typeof parsers.type === 'function') {
       return parsers.type.call(this, str, tag, opts);
     }
 
-    return lib.parse.type(str, tag, opts);
+    let ast = lib.parse.type(str, tag, opts);
+    return ast.value;
   }
 
   parseParamType(str, options) {
@@ -488,8 +496,8 @@ class Comments extends Emitter {
       throw new TypeError('expected a string');
     }
 
-    const opts = { ...this.options, ...options };
-    const parsers = { ...this.plugins.middleware, ...opts.parse };
+    let opts = { ...this.options, ...options };
+    let parsers = { ...this.plugins.middleware, ...opts.parse };
 
     if (typeof parsers.paramType === 'function') {
       return parsers.paramType.call(this, str, opts);
@@ -499,7 +507,7 @@ class Comments extends Emitter {
   }
 
   decorate(name, obj) {
-    const fn = this.decorators[name];
+    let fn = this.decorators[name];
     if (typeof fn === 'function') {
       fn.call(this, obj);
     }
@@ -512,8 +520,8 @@ class Comments extends Emitter {
     }
 
     let comments = [];
-    const opts = Object.assign({}, this.options, options);
-    const res = [];
+    let opts = Object.assign({}, this.options, options);
+    let res = [];
 
     if (typeof opts.extract === 'function') {
       comments = [].concat(opts.extract.call(this, str, opts) || []);
@@ -530,7 +538,6 @@ class Comments extends Emitter {
       if (typeof fn === 'function') {
         comment = fn.call(this, comment) || comment;
       }
-
       res.push(comment);
     }
 
@@ -581,6 +588,16 @@ class Comments extends Emitter {
     }
 
     return !utils.isConfigComment(comment.value);
+  }
+
+  static parse(str, options) {
+    let comments = new Comments(options);
+    return comments.parse(str);
+  }
+
+  static parseType(str, options) {
+    let comments = new Comments(options);
+    return comments.parseType(str);
   }
 }
 

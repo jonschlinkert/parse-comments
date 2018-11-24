@@ -1,5 +1,7 @@
 'use strict';
 
+console.time('total');
+process.on('exit', () => console.timeEnd('total'));
 const Comments = require('..');
 const comments = new Comments();
 const tags = [

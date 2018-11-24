@@ -8,26 +8,26 @@ var comments;
 
 var fixtures = support.files(__dirname, 'fixtures');
 
-describe('tokenize', function() {
+describe('tokenize', () => {
   beforeEach(function() {
     comments = new Comments();
   });
 
-  it('should throw an error when invalid args are passed', function() {
+  it('should throw an error when invalid args are passed', () => {
     assert.throws(() => comments.tokenize(), /expected/);
   });
 
-  it('should tokenize a block comment with one leading star', function() {
+  it('should tokenize a block comment with one leading star', () => {
     var tok = comments.tokenize('/* foo */');
     assert.deepEqual(tok, { description: 'foo', footer: '', examples: [], tags: [] });
   });
 
-  it('should tokenize a block comment with two leading stars', function() {
+  it('should tokenize a block comment with two leading stars', () => {
     var tok = comments.tokenize('/** foo */');
     assert.deepEqual(tok, { description: 'foo', footer: '', examples: [], tags: [] });
   });
 
-  it('should tokenize a block comment with a single-line tag', function() {
+  it('should tokenize a block comment with a single-line tag', () => {
     var tok = comments.tokenize('/** @constructor */');
     assert.deepEqual(tok, {
       description: '',
@@ -44,12 +44,12 @@ describe('tokenize', function() {
     });
   });
 
-  it('should tokenize a comment with a multi-line description', function() {
+  it('should tokenize a comment with a multi-line description', () => {
     var tok = comments.tokenize('/* foo\nbar\nbaz */');
     assert.deepEqual(tok, { description: 'foo\nbar\nbaz', footer: '', examples: [], tags: [] });
   });
 
-  it('should strip extraneous indentation from comments', function() {
+  it('should strip extraneous indentation from comments', () => {
     var tok = comments.tokenize([
       '/**',
       ' *      foo bar baz',
@@ -81,7 +81,7 @@ describe('tokenize', function() {
     });
   });
 
-  it('should work with comments that already have stars stripped', function() {
+  it('should work with comments that already have stars stripped', () => {
     var tok1 = comments.tokenize([
       '',
       ' foo bar baz',
@@ -141,7 +141,7 @@ describe('tokenize', function() {
     });
   });
 
-  it('should tokenize complicated comments', function() {
+  it('should tokenize complicated comments', () => {
     var tok1 = comments.tokenize(fixtures['example-large']);
     assert.deepEqual(tok1, {
       description: '',
@@ -150,14 +150,14 @@ describe('tokenize', function() {
         type: 'javadoc',
         language: '',
         description: '',
-        raw: '@example\n <example name="NgModelController" module="customControl" deps="angular-sanitize.js">\n    <file name="style.css">\n      [contenteditable] {\n        border: 1px solid black;\n        background-color: white;\n        min-height: 20px;\n      }\n\n      .ng-invalid {\n        border: 1px solid red;\n      }\n\n    </file>\n    <file name="script.js">\n      angular.module(\'customControl\', [\'ngSanitize\']).\n        directive(\'contenteditable\', [\'$sce\', function($sce) {\n          return {\n            restrict: \'A\', // only activate on element attribute\n            require: \'?ngModel\', // get a hold of NgModelController\n            link: function(scope, element, attrs, ngModel) {\n              if (!ngModel) return; // do nothing if no ng-model\n\n              // Specify how UI should be updated\n              ngModel.$render = function() {\n                element.html($sce.getTrustedHtml(ngModel.$viewValue || \'\'));\n              };\n\n              // Listen for change events to enable binding\n              element.on(\'blur keyup change\', function() {\n                scope.$evalAsync(read);\n              });\n              read(); // initialize\n\n              // Write data to the model\n              function read() {\n                var html = element.html();\n                // When we clear the content editable the browser leaves a <br> behind\n                // If strip-br attribute is provided then we strip this out\n                if ( attrs.stripBr && html == \'<br>\' ) {\n                  html = \'\';\n                }\n                ngModel.$setViewValue(html);\n              }\n            }\n          };\n        }]);\n    </file>\n    <file name="index.html">\n      <form name="myForm">\n       <div contenteditable\n            name="myWidget" ng-model="userContent"\n            strip-br="true"\n            required>Change me!</div>\n        <span ng-show="myForm.myWidget.$error.required">Required!</span>\n       <hr>\n       <textarea ng-model="userContent" aria-label="Dynamic textarea"></textarea>\n      </form>\n    </file>\n    <file name="protractor.js" type="protractor">\n    it(\'should data-bind and become invalid\', function() {\n      if (browser.params.browser == \'safari\' || browser.params.browser == \'firefox\') {\n        // SafariDriver can\'t handle contenteditable\n        // and Firefox driver can\'t clear contenteditables very well\n        return;\n      }\n      var contentEditable = element(by.css(\'[contenteditable]\'));\n      var content = \'Change me!\';\n\n      expect(contentEditable.getText()).toEqual(content);\n\n      contentEditable.clear();\n      contentEditable.sendKeys(protractor.Key.BACK_SPACE);\n      expect(contentEditable.getText()).toEqual(\'\');\n      expect(contentEditable.getAttribute(\'class\')).toMatch(/ng-invalid-required/);\n    });\n    </file>\n </example>\n',
-        value: '\n <example name="NgModelController" module="customControl" deps="angular-sanitize.js">\n    <file name="style.css">\n      [contenteditable] {\n        border: 1px solid black;\n        background-color: white;\n        min-height: 20px;\n      }\n\n      .ng-invalid {\n        border: 1px solid red;\n      }\n\n    </file>\n    <file name="script.js">\n      angular.module(\'customControl\', [\'ngSanitize\']).\n        directive(\'contenteditable\', [\'$sce\', function($sce) {\n          return {\n            restrict: \'A\', // only activate on element attribute\n            require: \'?ngModel\', // get a hold of NgModelController\n            link: function(scope, element, attrs, ngModel) {\n              if (!ngModel) return; // do nothing if no ng-model\n\n              // Specify how UI should be updated\n              ngModel.$render = function() {\n                element.html($sce.getTrustedHtml(ngModel.$viewValue || \'\'));\n              };\n\n              // Listen for change events to enable binding\n              element.on(\'blur keyup change\', function() {\n                scope.$evalAsync(read);\n              });\n              read(); // initialize\n\n              // Write data to the model\n              function read() {\n                var html = element.html();\n                // When we clear the content editable the browser leaves a <br> behind\n                // If strip-br attribute is provided then we strip this out\n                if ( attrs.stripBr && html == \'<br>\' ) {\n                  html = \'\';\n                }\n                ngModel.$setViewValue(html);\n              }\n            }\n          };\n        }]);\n    </file>\n    <file name="index.html">\n      <form name="myForm">\n       <div contenteditable\n            name="myWidget" ng-model="userContent"\n            strip-br="true"\n            required>Change me!</div>\n        <span ng-show="myForm.myWidget.$error.required">Required!</span>\n       <hr>\n       <textarea ng-model="userContent" aria-label="Dynamic textarea"></textarea>\n      </form>\n    </file>\n    <file name="protractor.js" type="protractor">\n    it(\'should data-bind and become invalid\', function() {\n      if (browser.params.browser == \'safari\' || browser.params.browser == \'firefox\') {\n        // SafariDriver can\'t handle contenteditable\n        // and Firefox driver can\'t clear contenteditables very well\n        return;\n      }\n      var contentEditable = element(by.css(\'[contenteditable]\'));\n      var content = \'Change me!\';\n\n      expect(contentEditable.getText()).toEqual(content);\n\n      contentEditable.clear();\n      contentEditable.sendKeys(protractor.Key.BACK_SPACE);\n      expect(contentEditable.getText()).toEqual(\'\');\n      expect(contentEditable.getAttribute(\'class\')).toMatch(/ng-invalid-required/);\n    });\n    </file>\n </example>\n'
+        raw: '@example\n <example name="NgModelController" module="customControl" deps="angular-sanitize.js">\n    <file name="style.css">\n      [contenteditable] {\n        border: 1px solid black;\n        background-color: white;\n        min-height: 20px;\n      }\n\n      .ng-invalid {\n        border: 1px solid red;\n      }\n\n    </file>\n    <file name="script.js">\n      angular.module(\'customControl\', [\'ngSanitize\']).\n        directive(\'contenteditable\', [\'$sce\', function($sce) {\n          return {\n            restrict: \'A\', // only activate on element attribute\n            require: \'?ngModel\', // get a hold of NgModelController\n            link: function(scope, element, attrs, ngModel) {\n              if (!ngModel) return; // do nothing if no ng-model\n\n              // Specify how UI should be updated\n              ngModel.$render = function() {\n                element.html($sce.getTrustedHtml(ngModel.$viewValue || \'\'));\n              };\n\n              // Listen for change events to enable binding\n              element.on(\'blur keyup change\', () => {\n                scope.$evalAsync(read);\n              });\n              read(); // initialize\n\n              // Write data to the model\n              function read() {\n                var html = element.html();\n                // When we clear the content editable the browser leaves a <br> behind\n                // If strip-br attribute is provided then we strip this out\n                if ( attrs.stripBr && html == \'<br>\' ) {\n                  html = \'\';\n                }\n                ngModel.$setViewValue(html);\n              }\n            }\n          };\n        }]);\n    </file>\n    <file name="index.html">\n      <form name="myForm">\n       <div contenteditable\n            name="myWidget" ng-model="userContent"\n            strip-br="true"\n            required>Change me!</div>\n        <span ng-show="myForm.myWidget.$error.required">Required!</span>\n       <hr>\n       <textarea ng-model="userContent" aria-label="Dynamic textarea"></textarea>\n      </form>\n    </file>\n    <file name="protractor.js" type="protractor">\n    it(\'should data-bind and become invalid\', () => {\n      if (browser.params.browser == \'safari\' || browser.params.browser == \'firefox\') {\n        // SafariDriver can\'t handle contenteditable\n        // and Firefox driver can\'t clear contenteditables very well\n        return;\n      }\n      var contentEditable = element(by.css(\'[contenteditable]\'));\n      var content = \'Change me!\';\n\n      expect(contentEditable.getText()).toEqual(content);\n\n      contentEditable.clear();\n      contentEditable.sendKeys(protractor.Key.BACK_SPACE);\n      expect(contentEditable.getText()).toEqual(\'\');\n      expect(contentEditable.getAttribute(\'class\')).toMatch(/ng-invalid-required/);\n    });\n    </file>\n </example>\n',
+        value: '\n <example name="NgModelController" module="customControl" deps="angular-sanitize.js">\n    <file name="style.css">\n      [contenteditable] {\n        border: 1px solid black;\n        background-color: white;\n        min-height: 20px;\n      }\n\n      .ng-invalid {\n        border: 1px solid red;\n      }\n\n    </file>\n    <file name="script.js">\n      angular.module(\'customControl\', [\'ngSanitize\']).\n        directive(\'contenteditable\', [\'$sce\', function($sce) {\n          return {\n            restrict: \'A\', // only activate on element attribute\n            require: \'?ngModel\', // get a hold of NgModelController\n            link: function(scope, element, attrs, ngModel) {\n              if (!ngModel) return; // do nothing if no ng-model\n\n              // Specify how UI should be updated\n              ngModel.$render = function() {\n                element.html($sce.getTrustedHtml(ngModel.$viewValue || \'\'));\n              };\n\n              // Listen for change events to enable binding\n              element.on(\'blur keyup change\', () => {\n                scope.$evalAsync(read);\n              });\n              read(); // initialize\n\n              // Write data to the model\n              function read() {\n                var html = element.html();\n                // When we clear the content editable the browser leaves a <br> behind\n                // If strip-br attribute is provided then we strip this out\n                if ( attrs.stripBr && html == \'<br>\' ) {\n                  html = \'\';\n                }\n                ngModel.$setViewValue(html);\n              }\n            }\n          };\n        }]);\n    </file>\n    <file name="index.html">\n      <form name="myForm">\n       <div contenteditable\n            name="myWidget" ng-model="userContent"\n            strip-br="true"\n            required>Change me!</div>\n        <span ng-show="myForm.myWidget.$error.required">Required!</span>\n       <hr>\n       <textarea ng-model="userContent" aria-label="Dynamic textarea"></textarea>\n      </form>\n    </file>\n    <file name="protractor.js" type="protractor">\n    it(\'should data-bind and become invalid\', () => {\n      if (browser.params.browser == \'safari\' || browser.params.browser == \'firefox\') {\n        // SafariDriver can\'t handle contenteditable\n        // and Firefox driver can\'t clear contenteditables very well\n        return;\n      }\n      var contentEditable = element(by.css(\'[contenteditable]\'));\n      var content = \'Change me!\';\n\n      expect(contentEditable.getText()).toEqual(content);\n\n      contentEditable.clear();\n      contentEditable.sendKeys(protractor.Key.BACK_SPACE);\n      expect(contentEditable.getText()).toEqual(\'\');\n      expect(contentEditable.getAttribute(\'class\')).toMatch(/ng-invalid-required/);\n    });\n    </file>\n </example>\n'
       }],
       tags: []
     });
   });
 
-  it('should tokenize a comment with a tag', function() {
+  it('should tokenize a comment with a tag', () => {
     var tok = comments.tokenize('/* foo\nbar\nbaz\n * \n@param {string} something */');
     assert.deepEqual(tok, {
       description: 'foo\nbar\nbaz',
@@ -174,7 +174,7 @@ describe('tokenize', function() {
     });
   });
 
-  it('should tokenize a comment with multiple tags', function() {
+  it('should tokenize a comment with multiple tags', () => {
     var tok = comments.tokenize(`
       /**
        * foo bar baz
@@ -205,7 +205,7 @@ describe('tokenize', function() {
     });
   });
 
-  it('should work with malformed tags', function() {
+  it('should work with malformed tags', () => {
     var tok = comments.tokenize(fixtures['tags-malformed-middle']);
 
     assert.deepEqual(tok, {
@@ -236,7 +236,7 @@ describe('tokenize', function() {
     });
   });
 
-  it('should work with trailing malformed tags', function() {
+  it('should work with trailing malformed tags', () => {
     var tok = comments.tokenize(fixtures['tags-malformed-trailing']);
     assert.deepEqual(tok, {
       description: '',
@@ -265,7 +265,7 @@ describe('tokenize', function() {
     });
   });
 
-  it('should tokenize a comment with no tags', function() {
+  it('should tokenize a comment with no tags', () => {
     var tok = comments.tokenize(fixtures['description-no-tags']);
 
     assert.deepEqual(tok, {
@@ -276,7 +276,7 @@ describe('tokenize', function() {
     });
   });
 
-  it('should tokenize a comment that starts with a @description tag', function() {
+  it('should tokenize a comment that starts with a @description tag', () => {
     var tok = comments.tokenize(fixtures['description-tag'].replace(/\/\/[^\n]+/, ''));
 
     assert.deepEqual(tok, {
@@ -306,7 +306,7 @@ describe('tokenize', function() {
     });
   });
 
-  it('should tokenize a comment with a @description tag in the middle', function() {
+  it('should tokenize a comment with a @description tag in the middle', () => {
     var tok1 = comments.tokenize(fixtures['description-tag-middle'].replace(/\/\/[^\n]+/, ''));
 
     assert.deepEqual(tok1, {

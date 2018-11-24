@@ -5,12 +5,12 @@ var assert = require('assert');
 var Comments = require('..');
 var comments;
 
-describe('indented', function() {
+describe('indented', () => {
   beforeEach(function() {
     comments = new Comments();
   });
 
-  it('should tokenize indented code examples', function() {
+  it('should tokenize indented code examples', () => {
     var tok = comments.tokenize([
       '/**',
       ' * Code:',
@@ -34,7 +34,7 @@ describe('indented', function() {
     });
   });
 
-  it('should work with extra indentation', function() {
+  it('should work with extra indentation', () => {
     var tok = comments.tokenize([
       '/**',
       ' *   Code:',
@@ -58,7 +58,7 @@ describe('indented', function() {
     });
   });
 
-  it('should work with comments not prefixed by stars', function() {
+  it('should work with comments not prefixed by stars', () => {
     var tok = comments.tokenize([
       '',
       ' Code:',
@@ -82,7 +82,7 @@ describe('indented', function() {
     });
   });
 
-  it('should tokenize single-line indented code examples', function() {
+  it('should tokenize single-line indented code examples', () => {
     var tok = comments.tokenize([
       '/**',
       ' * foo bar baz',
@@ -118,7 +118,7 @@ describe('indented', function() {
     });
   });
 
-  it('should tokenize multi-line indented code examples', function() {
+  it('should tokenize multi-line indented code examples', () => {
     var tok = comments.tokenize([
       '/**',
       ' * foo bar baz',
@@ -155,7 +155,7 @@ describe('indented', function() {
     });
   });
 
-  it('should work with multiple newlines', function() {
+  it('should work with multiple newlines', () => {
     var tok = comments.tokenize([
       '/**',
       ' * foo bar baz',
@@ -195,7 +195,7 @@ describe('indented', function() {
     });
   });
 
-  it('should preserve indentation in indented code examples', function() {
+  it('should preserve indentation in indented code examples', () => {
     var tok = comments.tokenize([
       '/**',
       ' * foo bar baz',
@@ -234,7 +234,7 @@ describe('indented', function() {
     });
   });
 
-  it('should detect a description for a indented code example', function() {
+  it('should detect a description for a indented code example', () => {
     var tok = comments.tokenize([
       '/**',
       ' * foo bar baz',
@@ -272,7 +272,7 @@ describe('indented', function() {
     });
   });
 
-  it('should detect a description & leading newline for a indented example', function() {
+  it('should detect a description & leading newline for a indented example', () => {
     var tok = comments.tokenize([
       '/**',
       ' * foo bar baz',

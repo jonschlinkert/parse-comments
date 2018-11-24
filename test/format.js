@@ -27,7 +27,7 @@
 //   ''
 // ].join('\n');
 
-// describe('parseType (formatted)', function() {
+// describe('parseType (formatted)', () => {
 //   beforeEach(function() {
 //     comments = new Comments({
 //       format: {
@@ -38,15 +38,15 @@
 //     });
 //   });
 
-//   describe.skip('types', function() {
-//     it('should ', function() {
+//   describe.skip('types', () => {
+//     it('should ', () => {
 
 //       var comment = comments.parse(a);
 //       var tags = comment[0].tags;
 //       console.log(comment);
 //     });
 
-//     it('should format a comment with a single type', function() {
+//     it('should format a comment with a single type', () => {
 //       var res = comments.parse('/** @param {boolean} */', {format: true});
 //       assert.deepEqual(res[0].tags[0].types, ['boolean']);
 //       // assert.deepEqual(comments.parse('/** @param {Window} */', {format: true}), {
@@ -71,12 +71,12 @@
 //       // });
 //     });
 
-//     it('should parse a type with dot-notation', function() {
+//     it('should parse a type with dot-notation', () => {
 //       assert.deepEqual(comments.parse('foo.bar'), { types: [ { name: 'foo.bar' } ] });
 //       assert.deepEqual(comments.parse('a.b.c'), { types: [ { name: 'a.b.c' } ] });
 //     });
 
-//     it('should parse multiple types', function() {
+//     it('should parse multiple types', () => {
 //       assert.deepEqual(comments.parse('boolean|string'), {
 //         types: [
 //           { name: 'boolean' },
@@ -86,13 +86,13 @@
 //     });
 //   });
 
-//   describe('parens', function() {
-//     it('should parse a type in parens', function() {
+//   describe('parens', () => {
+//     it('should parse a type in parens', () => {
 //       assert.deepEqual(comments.parse('(boolean)'), { types: [ { name: 'boolean' } ] });
 //       assert.deepEqual(comments.parse('(Window)'), { types: [ { name: 'Window' } ] });
 //     });
 
-//     it('should parse multiple types in parens', function() {
+//     it('should parse multiple types in parens', () => {
 //       assert.deepEqual(comments.parse('(boolean|string)'), {
 //         types: [
 //           { name: 'boolean' },
@@ -110,37 +110,37 @@
 //     });
 //   });
 
-//   describe('any', function() {
-//     it('should set tag.any to true when * is defined', function() {
+//   describe('any', () => {
+//     it('should set tag.any to true when * is defined', () => {
 //       assert.deepEqual(comments.parse('(*)'), { types: [], any: true });
 //       assert.deepEqual(comments.parse('*'), { types: [], any: true });
 //     });
 
-//     it('should set tag.any to true when tag.name is "all"', function() {
+//     it('should set tag.any to true when tag.name is "all"', () => {
 //       assert.deepEqual(comments.parse('(all)'), { types: [], any: true });
 //       assert.deepEqual(comments.parse('all'), { types: [], any: true });
 //     });
 
-//     it('should set tag.any to true when tag.name is "any"', function() {
+//     it('should set tag.any to true when tag.name is "any"', () => {
 //       assert.deepEqual(comments.parse('(any)'), { types: [], any: true });
 //       assert.deepEqual(comments.parse('any'), { types: [], any: true });
 //     });
 //   });
 
-//   describe('unknown', function() {
-//     it('should set tag.unknown to true when ? is defined', function() {
+//   describe('unknown', () => {
+//     it('should set tag.unknown to true when ? is defined', () => {
 //       assert.deepEqual(comments.parse('(?)'), { types: [], unknown: true });
 //       assert.deepEqual(comments.parse('?'), { types: [], unknown: true });
 //     });
 
-//     it('should set tag.unknown to true when tag.name is "unknown"', function() {
+//     it('should set tag.unknown to true when tag.name is "unknown"', () => {
 //       assert.deepEqual(comments.parse('(unknown)'), { types: [], unknown: true });
 //       assert.deepEqual(comments.parse('unknown'), { types: [], unknown: true });
 //     });
 //   });
 
-//   describe('variadic', function() {
-//     it('should set variadic to "true" when an argument is ...', function() {
+//   describe('variadic', () => {
+//     it('should set variadic to "true" when an argument is ...', () => {
 //       assert.deepEqual(comments.parse('boolean|string|...'), {
 //         types: [
 //           { name: 'boolean' },
@@ -174,7 +174,7 @@
 //       });
 //     });
 
-//     it('should set variadic to "true" when param has ...', function() {
+//     it('should set variadic to "true" when param has ...', () => {
 //       assert.deepEqual(comments.parse('boolean...'), {
 //         types: [
 //           { name: 'boolean' }
@@ -199,8 +199,8 @@
 //     });
 //   });
 
-//   describe('optional', function() {
-//     it('should set optional to "true" when trailing = is defined', function() {
+//   describe('optional', () => {
+//     it('should set optional to "true" when trailing = is defined', () => {
 //       assert.deepEqual(comments.parse('boolean|string='), {
 //         types: [
 //           { name: 'boolean' },
@@ -226,7 +226,7 @@
 //       });
 //     });
 
-//     it('should set optional to "true" when leading = is defined', function() {
+//     it('should set optional to "true" when leading = is defined', () => {
 //       assert.deepEqual(comments.parse('boolean|=string'), {
 //         types: [
 //           { name: 'boolean' },
@@ -252,7 +252,7 @@
 //       });
 //     });
 
-//     it('should work when multiple equals are defined', function() {
+//     it('should work when multiple equals are defined', () => {
 //       assert.deepEqual(comments.parse('boolean|=string='), {
 //         types: [
 //           { name: 'boolean' },
@@ -279,8 +279,8 @@
 //     });
 //   });
 
-//   describe('nullable', function() {
-//     it('should parse nullable types', function() {
+//   describe('nullable', () => {
+//     it('should parse nullable types', () => {
 //       assert.deepEqual(comments.parse('?number'), {
 //         types: [
 //           { name: 'number' }
@@ -297,7 +297,7 @@
 //       });
 //     });
 
-//     it('should parse optional nullable types', function() {
+//     it('should parse optional nullable types', () => {
 //       assert.deepEqual(comments.parse('?number|string='), {
 //         types: [
 //           { name: 'number' },
@@ -326,7 +326,7 @@
 //       });
 //     });
 
-//     it('should support trailing question marks', function() {
+//     it('should support trailing question marks', () => {
 //       assert.deepEqual(comments.parse('number?'), {
 //         nullable: true,
 //         types: [
@@ -344,8 +344,8 @@
 //     });
 //   });
 
-//   describe('non-nullable', function() {
-//     it('should parse non-nullable types', function() {
+//   describe('non-nullable', () => {
+//     it('should parse non-nullable types', () => {
 //       assert.deepEqual(comments.parse('!number'), {
 //         types: [
 //           { name: 'number' }
@@ -362,7 +362,7 @@
 //       });
 //     });
 
-//     it('should parse optional nullable types', function() {
+//     it('should parse optional nullable types', () => {
 //       assert.deepEqual(comments.parse('!number|string='), {
 //         types: [
 //           { name: 'number' },
@@ -392,8 +392,8 @@
 //     });
 //   });
 
-//   describe('parameterTypeUnions', function() {
-//     it('should parse function union types', function() {
+//   describe('parameterTypeUnions', () => {
+//     it('should parse function union types', () => {
 //       assert.deepEqual(comments.parse('function()'), {
 //         types: [{
 //           parameterTypeUnions: []
@@ -498,7 +498,7 @@
 //       });
 //     });
 
-//     it('should parse union types', function() {
+//     it('should parse union types', () => {
 //       assert.deepEqual(comments.parse('string[]'), {
 //         types: [{
 //           parameterTypeUnions: [{
@@ -542,8 +542,8 @@
 //     });
 //   });
 
-//   describe('returnTypeUnion', function() {
-//     it('should parse variable return types', function() {
+//   describe('returnTypeUnion', () => {
+//     it('should parse variable return types', () => {
 //       assert.deepEqual(comments.parse('function(string|object): number'), {
 //         types: [{
 //           parameterTypeUnions: [{
@@ -610,7 +610,7 @@
 //       // });
 //     });
 
-//     it('should parse return types', function() {
+//     it('should parse return types', () => {
 //       assert.deepEqual(comments.parse('function(string, object): number'), {
 //         types: [{
 //           parameterTypeUnions: [{
@@ -696,8 +696,8 @@
 //     });
 //   });
 
-//   describe('entries', function() {
-//     it('should parse entries', function() {
+//   describe('entries', () => {
+//     it('should parse entries', () => {
 //       var expected = {
 //         types: [
 //           {
@@ -734,7 +734,7 @@
 //       });
 //     });
 
-//     it('should parse comma-separated entries', function() {
+//     it('should parse comma-separated entries', () => {
 //       assert.deepEqual(comments.parse('{foo: number, string}'), {
 //         types: [{
 //           entries: [{
@@ -780,7 +780,7 @@
 //       });
 //     });
 
-//     it.skip('should parse multiple comma-separated entries', function() {
+//     it.skip('should parse multiple comma-separated entries', () => {
 //       assert.deepEqual(doctrine.parseType('{foo: number, bar: string, array}'), {
 //         types: [{
 //           entries: [{
@@ -809,26 +809,26 @@
 //     });
 //   });
 
-//   describe('options.jsdoc', function() {
-//     describe('all', function() {
-//       it('should set tag.all to true when * is defined', function() {
+//   describe('options.jsdoc', () => {
+//     describe('all', () => {
+//       it('should set tag.all to true when * is defined', () => {
 //         assert.deepEqual(comments.parse('(*)', {jsdoc: true}), { types: [], all: true });
 //         assert.deepEqual(comments.parse('*', {jsdoc: true}), { types: [], all: true });
 //       });
 
-//       it('should set tag.all to true when tag.name is "all"', function() {
+//       it('should set tag.all to true when tag.name is "all"', () => {
 //         assert.deepEqual(comments.parse('(all)', {jsdoc: true}), { types: [], all: true });
 //         assert.deepEqual(comments.parse('all', {jsdoc: true}), { types: [], all: true });
 //       });
 
-//       it('should set tag.all to true when tag.name is "any"', function() {
+//       it('should set tag.all to true when tag.name is "any"', () => {
 //         assert.deepEqual(comments.parse('(any)', {jsdoc: true}), { types: [], all: true });
 //         assert.deepEqual(comments.parse('any', {jsdoc: true}), { types: [], all: true });
 //       });
 //     });
 
-//     describe('variable', function() {
-//       it('should set variable to "true" when an argument is ...', function() {
+//     describe('variable', () => {
+//       it('should set variable to "true" when an argument is ...', () => {
 //         assert.deepEqual(comments.parse('boolean|string|...', {jsdoc: true}), {
 //           types: [
 //             { name: 'boolean' },
@@ -862,7 +862,7 @@
 //         });
 //       });
 
-//       it('should set variable to "true" when an argument has ...', function() {
+//       it('should set variable to "true" when an argument has ...', () => {
 //         assert.deepEqual(comments.parse('boolean...', {jsdoc: true}), {
 //           types: [
 //             { name: 'boolean' }
@@ -888,8 +888,8 @@
 //     });
 //   });
 
-//   describe('errors', function() {
-//     it('should throw when a paren is unclosed', function() {
+//   describe('errors', () => {
+//     it('should throw when a paren is unclosed', () => {
 //       assert.throws(function() {
 //         comments.parse('(boolean=|string');
 //       }, /unclosed paren: \(boolean=\|string/);

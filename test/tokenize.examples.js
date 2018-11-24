@@ -8,12 +8,12 @@ var comments;
 
 var fixtures = support.files(__dirname, 'fixtures');
 
-describe('examples', function() {
+describe('examples', () => {
   beforeEach(function() {
     comments = new Comments();
   });
 
-  it('should tokenize gfm, indented or javadoc examples', function() {
+  it('should tokenize gfm, indented or javadoc examples', () => {
     var tok = comments.tokenize(fixtures['examples-multiple']);
 
     assert.deepEqual(tok, {
@@ -86,7 +86,7 @@ describe('examples', function() {
     });
   });
 
-  it('should work with arbitrary markdown', function() {
+  it('should work with arbitrary markdown', () => {
     var tok = comments.tokenize(fixtures.markdown);
 
     assert.deepEqual(tok, {

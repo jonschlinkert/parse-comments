@@ -5,12 +5,12 @@ var assert = require('assert');
 var Comments = require('..');
 var comments;
 
-describe('javadoc', function() {
+describe('javadoc', () => {
   beforeEach(function() {
     comments = new Comments();
   });
 
-  it('should tokenize javadoc code examples', function() {
+  it('should tokenize javadoc code examples', () => {
     var tok = comments.tokenize([
       '/**',
       ' * foo bar baz',
@@ -47,7 +47,7 @@ describe('javadoc', function() {
     });
   });
 
-  it('should preserve indentation in javadoc code examples', function() {
+  it('should preserve indentation in javadoc code examples', () => {
     var tok = comments.tokenize([
       '/**',
       ' * foo bar baz',
@@ -85,7 +85,7 @@ describe('javadoc', function() {
     });
   });
 
-  it('should detect a description for a javadoc code example', function() {
+  it('should detect a description for a javadoc code example', () => {
     var tok = comments.tokenize([
       '/**',
       ' * foo bar baz',
@@ -124,7 +124,7 @@ describe('javadoc', function() {
     });
   });
 
-  it('should detect a description & leading newline for a javadoc example', function() {
+  it('should detect a description & leading newline for a javadoc example', () => {
     var tok = comments.tokenize([
       '/**',
       ' * foo bar baz',

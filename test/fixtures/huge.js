@@ -147,7 +147,7 @@ is set to `true`. The parse error is stored in `ngModel.$error.parse`.
               };
 
               // Listen for change events to enable binding
-              element.on('blur keyup change', function() {
+              element.on('blur keyup change', () => {
                 scope.$evalAsync(read);
               });
               read(); // initialize
@@ -178,7 +178,7 @@ is set to `true`. The parse error is stored in `ngModel.$error.parse`.
       </form>
     </file>
     <file name="protractor.js" type="protractor">
-    it('should data-bind and become invalid', function() {
+    it('should data-bind and become invalid', () => {
       if (browser.params.browser == 'safari' || browser.params.browser == 'firefox') {
         // SafariDriver can't handle contenteditable
         // and Firefox driver can't clear contenteditables very well

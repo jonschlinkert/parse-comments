@@ -11,7 +11,7 @@ function normalizeType(type, tag, comment) {
   tag.types = tag.types || [];
   if (!type) return;
 
-  const schema = new Schema()
+  let schema = new Schema()
     .field('name', 'string', {
       normalize(val) {
         if (typeof val === 'string') {
@@ -68,7 +68,7 @@ function normalizeTag(tag, comment) {
 }
 
 function normalizeCode(code, comment) {
-  const schema = new Schema()
+  let schema = new Schema()
     .field('val', 'string', function(val) {
       return val;
     })
@@ -85,8 +85,8 @@ function normalizeCode(code, comment) {
 function normalizeComment(comment, cache) {
   comment.is = comment.is || {};
 
-  const schema = new Schema()
-    .field('tags', function(tags) {
+  let schema = new Schema()
+    .field('tags', tags => {
       for (let i = 0; i < tags.length; i++) {
         normalizeTag(tags[i], comment);
       }
@@ -121,9 +121,9 @@ function normalizeComment(comment, cache) {
 module.exports = normalizeComment;
 
 // function parse(str, options) {
-//   const arr = comments.parse(str, options);
-//   const cache = {};
-//   const res = [];
+//   let arr = comments.parse(str, options);
+//   let cache = {};
+//   let res = [];
 
 //   for (let i = 0; i < arr.length; i++) {
 //     let comment = normalizeComment(arr[i], cache);

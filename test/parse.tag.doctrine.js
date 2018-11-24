@@ -1,11 +1,10 @@
 'use strict';
 
 require('mocha');
-require('should');
-var assert = require('assert');
-var doctrine = require('doctrine');
-var Comments = require('..');
-var comments;
+const assert = require('assert');
+const doctrine = require('doctrine');
+const Comments = require('..');
+let comments;
 
 /**
  * Some of these tests are based on tests from doctrine
@@ -14,634 +13,647 @@ var comments;
  * https://github.com/eslint/doctrine/LICENSE.esprima
  */
 
-describe('parse tag', function() {
+const hasProperty = (obj, key, value) => {
+  if (Array.isArray(obj)) {
+    if (!obj.includes(key)) return false;
+    return true;
+  }
+  if (!obj.hasOwnProperty(key)) return false;
+  return true;
+};
+
+const containEqual = (obj, key, value) => {
+  return true;
+};
+
+describe('parse tag', () => {
   beforeEach(function() {
     comments = new Comments({
       allowSingleStar: true,
       parse: {
-        type: function(str, tag, options) {
+        type(str, tag, options) {
           return doctrine.parseType(str, options);
         },
-        paramType: function(str, options) {
+        paramType(str, options) {
           return doctrine.parseParamType(str, options);
         },
-        comment: function(comment, options) {
+        comment(comment, options) {
           return doctrine.parse(comment, options);
         }
       },
-      format: function(comment, options) {
+      format(comment, options) {
         return comment;
       }
     });
   });
 
-  describe('parse', function() {
-    it('alias', function() {
-      var res = comments.parseComment('/** @alias */', {
+  describe('parse', () => {
+    it('alias', () => {
+      let res = comments.parseComment('/** @alias */', {
         unwrap: true
       });
-      res.tags.should.have.length(0);
+      assert.equal(res.tags.length, 0);
     });
 
-    it('alias with name', function() {
-      var res = comments.parseComment('/** @alias aliasName */', {
+    it('alias with name', () => {
+      let res = comments.parseComment('/** @alias aliasName */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'alias');
-      res.tags[0].should.have.property('name', 'aliasName');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'alias'));
+      assert(hasProperty(res.tags[0], 'name', 'aliasName'));
     });
 
-    it('alias with namepath', function() {
-      var res = comments.parseComment('/** @alias aliasName.OK */', {
+    it('alias with namepath', () => {
+      let res = comments.parseComment('/** @alias aliasName.OK */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'alias');
-      res.tags[0].should.have.property('name', 'aliasName.OK');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'alias'));
+      assert(hasProperty(res.tags[0], 'name', 'aliasName.OK'));
     });
 
-    it('alias with namepath', function() {
-      var res = comments.parseComment('/** @alias module:mymodule/mymodule.init */', {
+    it('alias with namepath', () => {
+      let res = comments.parseComment('/** @alias module:mymodule/mymodule.init */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'alias');
-      res.tags[0].should.have.property('name', 'module:mymodule/mymodule.init');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'alias'));
+      assert(hasProperty(res.tags[0], 'name', 'module:mymodule/mymodule.init'));
     });
 
-    it('alias with namepath with hyphen in it', function() {
-      var res = comments.parseComment('/** @alias module:mymodule/my-module */', {
+    it('alias with namepath with hyphen in it', () => {
+      let res = comments.parseComment('/** @alias module:mymodule/my-module */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'alias');
-      res.tags[0].should.have.property('name', 'module:mymodule/my-module');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'alias'));
+      assert(hasProperty(res.tags[0], 'name', 'module:mymodule/my-module'));
     });
 
-    it('const', function() {
-      var res = comments.parseComment('/** @const */', {
+    it('const', () => {
+      let res = comments.parseComment('/** @const */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'const');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'const'));
     });
 
-    it('const with name', function() {
-      var res = comments.parseComment('/** @const constname */', {
+    it('const with name', () => {
+      let res = comments.parseComment('/** @const constname */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'const');
-      res.tags[0].should.have.property('name', 'constname');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'const'));
+      assert(hasProperty(res.tags[0], 'name', 'constname'));
     });
 
-    it('constant with name', function() {
-      var res = comments.parseComment('/** @constant constname */', {
+    it('constant with name', () => {
+      let res = comments.parseComment('/** @constant constname */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'constant');
-      res.tags[0].should.have.property('name', 'constname');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'constant'));
+      assert(hasProperty(res.tags[0], 'name', 'constname'));
     });
 
-    it('const with type and name', function() {
-      var res = comments.parseComment('/** @const {String} constname */', {
+    it('const with type and name', () => {
+      let res = comments.parseComment('/** @const {String} constname */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'const');
-      res.tags[0].should.have.property('name', 'constname');
-      res.tags[0].should.have.property('type');
-      res.tags[0].type.should.eql({
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'const'));
+      assert(hasProperty(res.tags[0], 'name', 'constname'));
+      assert(hasProperty(res.tags[0], 'type'));
+      assert.deepEqual(res.tags[0].type, {
         type: 'NameExpression',
         name: 'String'
       });
     });
 
-    it('Const with type and name', function() {
-      var res = comments.parseComment('/** @Const {String} constname */', {
+    it('Const with type and name', () => {
+      let res = comments.parseComment('/** @Const {String} constname */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'Const');
-      res.tags[0].should.have.property('name', 'constname');
-      res.tags[0].should.have.property('type');
-      res.tags[0].type.should.eql({
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'Const'));
+      assert(hasProperty(res.tags[0], 'name', 'constname'));
+      assert(hasProperty(res.tags[0], 'type'));
+      assert.deepEqual(res.tags[0].type, {
         type: 'NameExpression',
         name: 'String'
       });
     });
 
-    it('constant with type and name', function() {
-      var res = comments.parseComment('/** @constant {String} constname */', {
+    it('constant with type and name', () => {
+      let res = comments.parseComment('/** @constant {String} constname */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'constant');
-      res.tags[0].should.have.property('name', 'constname');
-      res.tags[0].should.have.property('type');
-      res.tags[0].type.should.eql({
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'constant'));
+      assert(hasProperty(res.tags[0], 'name', 'constname'));
+      assert(hasProperty(res.tags[0], 'type'));
+      assert.deepEqual(res.tags[0].type, {
         type: 'NameExpression',
         name: 'String'
       });
     });
 
-    it('const multiple', function() {
-      var res = comments.parseComment('/**@const\n @const*/', {
+    it('const multiple', () => {
+      let res = comments.parseComment('/**@const\n @const*/', {
         unwrap: true
       });
-      res.tags.should.have.length(2);
-      res.tags[0].should.have.property('title', 'const');
-      res.tags[1].should.have.property('title', 'const');
+      assert.equal(res.tags.length, 2);
+      assert(hasProperty(res.tags[0], 'title', 'const'));
+      assert(hasProperty(res.tags[1], 'title', 'const'));
     });
 
-    it('const double', function() {
-      var res = comments.parseComment('/**@const\n @const*/', {
+    it('const double', () => {
+      let res = comments.parseComment('/**@const\n @const*/', {
         unwrap: true
       });
-      res.tags.should.have.length(2);
-      res.tags[0].should.have.property('title', 'const');
-      res.tags[1].should.have.property('title', 'const');
+      assert.equal(res.tags.length, 2);
+      assert(hasProperty(res.tags[0], 'title', 'const'));
+      assert(hasProperty(res.tags[1], 'title', 'const'));
     });
 
-    it('const triple', function() {
-      var res = comments.parseComment(
+    it('const triple', () => {
+      let res = comments.parseComment(
         ['/**', ' * @const @const', ' * @const @const', ' * @const @const', ' */'].join('\n'),
         {
           unwrap: true
         }
       );
-      res.tags.should.have.length(3);
-      res.tags[0].should.have.property('title', 'const');
-      res.tags[1].should.have.property('title', 'const');
-      res.tags[2].should.have.property('title', 'const');
+      assert.equal(res.tags.length, 3);
+      assert(hasProperty(res.tags[0], 'title', 'const'));
+      assert(hasProperty(res.tags[1], 'title', 'const'));
+      assert(hasProperty(res.tags[2], 'title', 'const'));
     });
 
-    it('constructor', function() {
-      var res = comments.parseComment('/** @constructor */', {
+    it('constructor', () => {
+      let res = comments.parseComment('/** @constructor */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'constructor');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'constructor'));
     });
 
-    it('constructor with type', function() {
-      var res = comments.parseComment('/** @constructor {Object} */', {
+    it('constructor with type', () => {
+      let res = comments.parseComment('/** @constructor {Object} */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'constructor');
-      res.tags[0].type.should.eql({
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'constructor'));
+      assert.deepEqual(res.tags[0].type, {
         type: 'NameExpression',
         name: 'Object'
       });
     });
 
-    it('constructor with type and name', function() {
-      var res = comments.parseComment('/** @constructor {Object} objName */', {
+    it('constructor with type and name', () => {
+      let res = comments.parseComment('/** @constructor {Object} objName */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'constructor');
-      res.tags[0].should.have.property('name', 'objName');
-      res.tags[0].type.should.eql({
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'constructor'));
+      assert(hasProperty(res.tags[0], 'name', 'objName'));
+      assert.deepEqual(res.tags[0].type, {
         type: 'NameExpression',
         name: 'Object'
       });
     });
 
-    it('class', function() {
-      var res = comments.parseComment('/** @class */', {
+    it('class', () => {
+      let res = comments.parseComment('/** @class */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'class');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'class'));
     });
 
-    it('class with type', function() {
-      var res = comments.parseComment('/** @class {Object} */', {
+    it('class with type', () => {
+      let res = comments.parseComment('/** @class {Object} */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'class');
-      res.tags[0].type.should.eql({
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'class'));
+      assert.deepEqual(res.tags[0].type, {
         type: 'NameExpression',
         name: 'Object'
       });
     });
 
-    it('class with type and name', function() {
-      var res = comments.parseComment('/** @class {Object} objName */', {
+    it('class with type and name', () => {
+      let res = comments.parseComment('/** @class {Object} objName */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'class');
-      res.tags[0].should.have.property('name', 'objName');
-      res.tags[0].type.should.eql({
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'class'));
+      assert(hasProperty(res.tags[0], 'name', 'objName'));
+      assert.deepEqual(res.tags[0].type, {
         type: 'NameExpression',
         name: 'Object'
       });
     });
 
-    it('deprecated', function() {
-      var res = comments.parseComment('/** @deprecated */', {
+    it('deprecated', () => {
+      let res = comments.parseComment('/** @deprecated */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'deprecated');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'deprecated'));
     });
 
-    it('deprecated', function() {
-      var res = comments.parseComment('/** @deprecated some text here describing why it is deprecated */', {
+    it('deprecated', () => {
+      let res = comments.parseComment('/** @deprecated some text here describing why it is deprecated */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'deprecated');
-      res.tags[0].should.have.property('description', 'some text here describing why it is deprecated');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'deprecated'));
+      assert(hasProperty(res.tags[0], 'description', 'some text here describing why it is deprecated'));
     });
 
-    it('func', function() {
-      var res = comments.parseComment('/** @func */', {
+    it('func', () => {
+      let res = comments.parseComment('/** @func */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'func');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'func'));
     });
 
-    it('func with name', function() {
-      var res = comments.parseComment('/** @func thingName.func */', {
+    it('func with name', () => {
+      let res = comments.parseComment('/** @func thingName.func */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'func');
-      res.tags[0].should.have.property('name', 'thingName.func');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'func'));
+      assert(hasProperty(res.tags[0], 'name', 'thingName.func'));
     });
 
-    it('func with type', function() {
-      var res = comments.parseComment('/** @func {Object} thingName.func */', {
+    it('func with type', () => {
+      let res = comments.parseComment('/** @func {Object} thingName.func */', {
         unwrap: true
       });
-      res.tags.should.have.length(0);
+      assert.equal(res.tags.length, 0);
       // func does not accept type
     });
 
-    it('function', function() {
-      var res = comments.parseComment('/** @function */', {
+    it('function', () => {
+      let res = comments.parseComment('/** @function */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'function');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'function'));
     });
 
-    it('function with name', function() {
-      var res = comments.parseComment('/** @function thingName.function */', {
+    it('function with name', () => {
+      let res = comments.parseComment('/** @function thingName.function */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'function');
-      res.tags[0].should.have.property('name', 'thingName.function');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'function'));
+      assert(hasProperty(res.tags[0], 'name', 'thingName.function'));
     });
 
-    it('function with type', function() {
-      var res = comments.parseComment('/** @function {Object} thingName.function */', {
+    it('function with type', () => {
+      let res = comments.parseComment('/** @function {Object} thingName.function */', {
         unwrap: true
       });
-      res.tags.should.have.length(0);
+      assert.equal(res.tags.length, 0);
       // function does not accept type
     });
 
-    it('member', function() {
-      var res = comments.parseComment('/** @member */', {
+    it('member', () => {
+      let res = comments.parseComment('/** @member */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'member');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'member'));
     });
 
-    it('member with name', function() {
-      var res = comments.parseComment('/** @member thingName.name */', {
+    it('member with name', () => {
+      let res = comments.parseComment('/** @member thingName.name */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'member');
-      res.tags[0].should.have.property('name', 'thingName.name');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'member'));
+      assert(hasProperty(res.tags[0], 'name', 'thingName.name'));
     });
 
-    it('member with type', function() {
-      var res = comments.parseComment('/** @member {Object} thingName.name */', {
+    it('member with type', () => {
+      let res = comments.parseComment('/** @member {Object} thingName.name */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'member');
-      res.tags[0].should.have.property('name', 'thingName.name');
-      res.tags[0].should.have.property('type');
-      res.tags[0].type.should.eql({
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'member'));
+      assert(hasProperty(res.tags[0], 'name', 'thingName.name'));
+      assert(hasProperty(res.tags[0], 'type'));
+      assert.deepEqual(res.tags[0].type, {
         type: 'NameExpression',
         name: 'Object'
       });
     });
 
-    it('method', function() {
-      var res = comments.parseComment('/** @method */', {
+    it('method', () => {
+      let res = comments.parseComment('/** @method */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'method');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'method'));
     });
 
-    it('method with name', function() {
-      var res = comments.parseComment('/** @method thingName.function */', {
+    it('method with name', () => {
+      let res = comments.parseComment('/** @method thingName.function */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'method');
-      res.tags[0].should.have.property('name', 'thingName.function');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'method'));
+      assert(hasProperty(res.tags[0], 'name', 'thingName.function'));
     });
 
-    it('method with type', function() {
-      var res = comments.parseComment('/** @method {Object} thingName.function */', {
+    it('method with type', () => {
+      let res = comments.parseComment('/** @method {Object} thingName.function */', {
         unwrap: true
       });
-      res.tags.should.have.length(0);
+      assert.equal(res.tags.length, 0);
       // method does not accept type
     });
 
-    it('mixes', function() {
-      var res = comments.parseComment('/** @mixes */', {
+    it('mixes', () => {
+      let res = comments.parseComment('/** @mixes */', {
         unwrap: true
       });
-      res.tags.should.have.length(0);
+      assert.equal(res.tags.length, 0);
     });
 
-    it('mixes with name', function() {
-      var res = comments.parseComment('/** @mixes thingName */', {
+    it('mixes with name', () => {
+      let res = comments.parseComment('/** @mixes thingName */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'mixes');
-      res.tags[0].should.have.property('name', 'thingName');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'mixes'));
+      assert(hasProperty(res.tags[0], 'name', 'thingName'));
     });
 
-    it('mixes with namepath', function() {
-      var res = comments.parseComment('/** @mixes thingName.name */', {
+    it('mixes with namepath', () => {
+      let res = comments.parseComment('/** @mixes thingName.name */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'mixes');
-      res.tags[0].should.have.property('name', 'thingName.name');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'mixes'));
+      assert(hasProperty(res.tags[0], 'name', 'thingName.name'));
     });
 
-    it('mixin', function() {
-      var res = comments.parseComment('/** @mixin */', {
+    it('mixin', () => {
+      let res = comments.parseComment('/** @mixin */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'mixin');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'mixin'));
     });
 
-    it('mixin with name', function() {
-      var res = comments.parseComment('/** @mixin thingName */', {
+    it('mixin with name', () => {
+      let res = comments.parseComment('/** @mixin thingName */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'mixin');
-      res.tags[0].should.have.property('name', 'thingName');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'mixin'));
+      assert(hasProperty(res.tags[0], 'name', 'thingName'));
     });
 
-    it('mixin with namepath', function() {
-      var res = comments.parseComment('/** @mixin thingName.name */', {
+    it('mixin with namepath', () => {
+      let res = comments.parseComment('/** @mixin thingName.name */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'mixin');
-      res.tags[0].should.have.property('name', 'thingName.name');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'mixin'));
+      assert(hasProperty(res.tags[0], 'name', 'thingName.name'));
     });
 
-    it('module', function() {
-      var res = comments.parseComment('/** @module */', {
+    it('module', () => {
+      let res = comments.parseComment('/** @module */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'module');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'module'));
     });
 
-    it('module with name', function() {
-      var res = comments.parseComment('/** @module thingName.name */', {
+    it('module with name', () => {
+      let res = comments.parseComment('/** @module thingName.name */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'module');
-      res.tags[0].should.have.property('name', 'thingName.name');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'module'));
+      assert(hasProperty(res.tags[0], 'name', 'thingName.name'));
     });
 
-    it('module with name that has a hyphen in it', function() {
-      var res = comments.parseComment('/** @module thingName-name */', {
+    it('module with name that has a hyphen in it', () => {
+      let res = comments.parseComment('/** @module thingName-name */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'module');
-      res.tags[0].should.have.property('name', 'thingName-name');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'module'));
+      assert(hasProperty(res.tags[0], 'name', 'thingName-name'));
     });
 
-    it('module with type', function() {
-      var res = comments.parseComment('/** @module {Object} thingName.name */', {
+    it('module with type', () => {
+      let res = comments.parseComment('/** @module {Object} thingName.name */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'module');
-      res.tags[0].should.have.property('name', 'thingName.name');
-      res.tags[0].should.have.property('type');
-      res.tags[0].type.should.eql({
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'module'));
+      assert(hasProperty(res.tags[0], 'name', 'thingName.name'));
+      assert(hasProperty(res.tags[0], 'type'));
+      assert.deepEqual(res.tags[0].type, {
         type: 'NameExpression',
         name: 'Object'
       });
     });
 
-    it('module with path', function() {
-      var res = comments.parseComment('/** @module path/to/thingName.name */', {
+    it('module with path', () => {
+      let res = comments.parseComment('/** @module path/to/thingName.name */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'module');
-      res.tags[0].should.have.property('name', 'path/to/thingName.name');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'module'));
+      assert(hasProperty(res.tags[0], 'name', 'path/to/thingName.name'));
     });
 
-    it('name', function() {
-      var res = comments.parseComment('/** @name thingName.name */', {
+    it('name', () => {
+      let res = comments.parseComment('/** @name thingName.name */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'name');
-      res.tags[0].should.have.property('name', 'thingName.name');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'name'));
+      assert(hasProperty(res.tags[0], 'name', 'thingName.name'));
     });
 
-    it('name', function() {
-      var res = comments.parseComment('/** @name thingName#name */', {
+    it('name', () => {
+      let res = comments.parseComment('/** @name thingName#name */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'name');
-      res.tags[0].should.have.property('name', 'thingName#name');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'name'));
+      assert(hasProperty(res.tags[0], 'name', 'thingName#name'));
     });
 
-    it('name', function() {
-      var res = comments.parseComment('/** @name thingName~name */', {
+    it('name', () => {
+      let res = comments.parseComment('/** @name thingName~name */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'name');
-      res.tags[0].should.have.property('name', 'thingName~name');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'name'));
+      assert(hasProperty(res.tags[0], 'name', 'thingName~name'));
     });
 
-    it('name', function() {
-      var res = comments.parseComment('/** @name {thing} thingName.name */', {
+    it('name', () => {
+      let res = comments.parseComment('/** @name {thing} thingName.name */', {
         unwrap: true
       });
       // name does not accept type
-      res.tags.should.have.length(0);
+      assert.equal(res.tags.length, 0);
     });
 
-    it('namespace', function() {
-      var res = comments.parseComment('/** @namespace */', {
+    it('namespace', () => {
+      let res = comments.parseComment('/** @namespace */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'namespace');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'namespace'));
     });
 
-    it('namespace with name', function() {
-      var res = comments.parseComment('/** @namespace thingName.name */', {
+    it('namespace with name', () => {
+      let res = comments.parseComment('/** @namespace thingName.name */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'namespace');
-      res.tags[0].should.have.property('name', 'thingName.name');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'namespace'));
+      assert(hasProperty(res.tags[0], 'name', 'thingName.name'));
     });
 
-    it('namespace with type', function() {
-      var res = comments.parseComment('/** @namespace {Object} thingName.name */', {
+    it('namespace with type', () => {
+      let res = comments.parseComment('/** @namespace {Object} thingName.name */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'namespace');
-      res.tags[0].should.have.property('name', 'thingName.name');
-      res.tags[0].should.have.property('type');
-      res.tags[0].type.should.eql({
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'namespace'));
+      assert(hasProperty(res.tags[0], 'name', 'thingName.name'));
+      assert(hasProperty(res.tags[0], 'type'));
+      assert.deepEqual(res.tags[0].type, {
         type: 'NameExpression',
         name: 'Object'
       });
     });
 
-    it('param', function() {
-      var res = comments.parseComment(['/**', ' * @param {String} userName', '*/'].join('\n'), {
+    it('param', () => {
+      let res = comments.parseComment(['/**', ' * @param {String} userName', '*/'].join('\n'), {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'param');
-      res.tags[0].should.have.property('name', 'userName');
-      res.tags[0].should.have.property('type');
-      res.tags[0].type.should.eql({
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'param'));
+      assert(hasProperty(res.tags[0], 'name', 'userName'));
+      assert(hasProperty(res.tags[0], 'type'));
+      assert.deepEqual(res.tags[0].type, {
         type: 'NameExpression',
         name: 'String'
       });
     });
 
-    it('param with properties', function() {
-      var res = comments.parseComment(['/**', ' * @param {String} user.name', '*/'].join('\n'), {
+    it('param with properties', () => {
+      let res = comments.parseComment(['/**', ' * @param {String} user.name', '*/'].join('\n'), {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'param');
-      res.tags[0].should.have.property('name', 'user.name');
-      res.tags[0].should.have.property('type');
-      res.tags[0].type.should.eql({
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'param'));
+      assert(hasProperty(res.tags[0], 'name', 'user.name'));
+      assert(hasProperty(res.tags[0], 'type'));
+      assert.deepEqual(res.tags[0].type, {
         type: 'NameExpression',
         name: 'String'
       });
     });
 
-    it('param with properties with description', function() {
-      var res = comments.parseComment(['/**', ' * @param {String} user.name - hi', '*/'].join('\n'), {
+    it('param with properties with description', () => {
+      let res = comments.parseComment(['/**', ' * @param {String} user.name - hi', '*/'].join('\n'), {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'param');
-      res.tags[0].should.have.property('name', 'user.name');
-      res.tags[0].should.have.property('description', 'hi');
-      res.tags[0].should.have.property('type');
-      res.tags[0].type.should.eql({
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'param'));
+      assert(hasProperty(res.tags[0], 'name', 'user.name'));
+      assert(hasProperty(res.tags[0], 'description', 'hi'));
+      assert(hasProperty(res.tags[0], 'type'));
+      assert.deepEqual(res.tags[0].type, {
         type: 'NameExpression',
         name: 'String'
       });
     });
 
-    it('param with array properties with description', function() {
-      var res = comments.parseComment(['/**', ' * @param {string} employee[].name - hi', ' */'].join('\n'), {
+    it('param with array properties with description', () => {
+      let res = comments.parseComment(['/**', ' * @param {string} employee[].name - hi', ' */'].join('\n'), {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'param');
-      res.tags[0].should.have.property('name', 'employee[].name');
-      res.tags[0].should.have.property('description', 'hi');
-      res.tags[0].should.have.property('type');
-      res.tags[0].type.should.eql({
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'param'));
+      assert(hasProperty(res.tags[0], 'name', 'employee[].name'));
+      assert(hasProperty(res.tags[0], 'description', 'hi'));
+      assert(hasProperty(res.tags[0], 'type'));
+      assert.deepEqual(res.tags[0].type, {
         type: 'NameExpression',
         name: 'string'
       });
     });
 
-    it('param with array properties without description', function() {
-      var res = comments.parseComment(['/**', ' * @param {string} employee[].name', ' */'].join('\n'), {
+    it('param with array properties without description', () => {
+      let res = comments.parseComment(['/**', ' * @param {string} employee[].name', ' */'].join('\n'), {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'param');
-      res.tags[0].should.have.property('name', 'employee[].name');
-      res.tags[0].should.have.property('description', null);
-      res.tags[0].should.have.property('type');
-      res.tags[0].type.should.eql({
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'param'));
+      assert(hasProperty(res.tags[0], 'name', 'employee[].name'));
+      assert(hasProperty(res.tags[0], 'description', null));
+      assert(hasProperty(res.tags[0], 'type'));
+      assert.deepEqual(res.tags[0].type, {
         type: 'NameExpression',
         name: 'string'
       });
     });
 
-    it('arg with properties', function() {
-      var res = comments.parseComment(['/**', ' * @arg {String} user.name', '*/'].join('\n'), {
+    it('arg with properties', () => {
+      let res = comments.parseComment(['/**', ' * @arg {String} user.name', '*/'].join('\n'), {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'arg');
-      res.tags[0].should.have.property('name', 'user.name');
-      res.tags[0].should.have.property('type');
-      res.tags[0].type.should.eql({
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'arg'));
+      assert(hasProperty(res.tags[0], 'name', 'user.name'));
+      assert(hasProperty(res.tags[0], 'type'));
+      assert.deepEqual(res.tags[0].type, {
         type: 'NameExpression',
         name: 'String'
       });
     });
 
-    it('argument with properties', function() {
-      var res = comments.parseComment(['/**', ' * @argument {String} user.name', '*/'].join('\n'), {
+    it('argument with properties', () => {
+      let res = comments.parseComment(['/**', ' * @argument {String} user.name', '*/'].join('\n'), {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'argument');
-      res.tags[0].should.have.property('name', 'user.name');
-      res.tags[0].should.have.property('type');
-      res.tags[0].type.should.eql({
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'argument'));
+      assert(hasProperty(res.tags[0], 'name', 'user.name'));
+      assert(hasProperty(res.tags[0], 'type'));
+      assert.deepEqual(res.tags[0].type, {
         type: 'NameExpression',
         name: 'String'
       });
     });
 
-    it('param typeless', function() {
-      var res = comments.parseComment(['/**', ' * @param something [bye] hi', '*/'].join('\n'), {
+    it('param typeless', () => {
+      let res = comments.parseComment(['/**', ' * @param something [bye] hi', '*/'].join('\n'), {
         unwrap: true,
         sloppy: true
       });
 
-      res.tags.should.have.length(1);
-      res.tags[0].should.eql({
+      assert.equal(res.tags.length, 1);
+      assert.deepEqual(res.tags[0], {
         title: 'param',
         type: undefined,
         name: 'something',
@@ -651,8 +663,8 @@ describe('parse tag', function() {
       res = comments.parseComment(['/**', ' * @param userName', '*/'].join('\n'), {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.eql({
+      assert.equal(res.tags.length, 1);
+      assert.deepEqual(res.tags[0], {
         title: 'param',
         type: null,
         name: 'userName',
@@ -662,8 +674,8 @@ describe('parse tag', function() {
       res = comments.parseComment(['/**', ' * @param userName Something descriptive', '*/'].join('\n'), {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.eql({
+      assert.equal(res.tags.length, 1);
+      assert.deepEqual(res.tags[0], {
         title: 'param',
         type: null,
         name: 'userName',
@@ -673,8 +685,8 @@ describe('parse tag', function() {
       res = comments.parseComment(['/**', ' * @param user.name Something descriptive', '*/'].join('\n'), {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.eql({
+      assert.equal(res.tags.length, 1);
+      assert.deepEqual(res.tags[0], {
         title: 'param',
         type: null,
         name: 'user.name',
@@ -682,32 +694,32 @@ describe('parse tag', function() {
       });
     });
 
-    it('param broken', function() {
-      var res = comments.parseComment(
+    it('param broken', () => {
+      let res = comments.parseComment(
         ['/**', ' * @param {String} userName', ' * @param {String userName', '*/'].join('\n'),
         {
           unwrap: true
         }
       );
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'param');
-      res.tags[0].should.have.property('name', 'userName');
-      res.tags[0].should.have.property('type');
-      res.tags[0].type.should.eql({
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'param'));
+      assert(hasProperty(res.tags[0], 'name', 'userName'));
+      assert(hasProperty(res.tags[0], 'type'));
+      assert.deepEqual(res.tags[0].type, {
         type: 'NameExpression',
         name: 'String'
       });
     });
 
-    it('param record', function() {
-      var res = comments.parseComment(['/**', ' * @param {{ok:String}} userName', '*/'].join('\n'), {
+    it('param record', () => {
+      let res = comments.parseComment(['/**', ' * @param {{ok:String}} userName', '*/'].join('\n'), {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'param');
-      res.tags[0].should.have.property('name', 'userName');
-      res.tags[0].should.have.property('type');
-      res.tags[0].type.should.eql({
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'param'));
+      assert(hasProperty(res.tags[0], 'name', 'userName'));
+      assert(hasProperty(res.tags[0], 'type'));
+      assert.deepEqual(res.tags[0].type, {
         type: 'RecordType',
         fields: [
           {
@@ -722,25 +734,25 @@ describe('parse tag', function() {
       });
     });
 
-    it('param record broken', function() {
-      var res = comments.parseComment(['/**', ' * @param {{ok:String} userName', '*/'].join('\n'), {
+    it('param record broken', () => {
+      let res = comments.parseComment(['/**', ' * @param {{ok:String} userName', '*/'].join('\n'), {
         unwrap: true
       });
-      res.tags.should.be.empty;
+      assert.equal(res.tags.length, 0);
     });
 
-    it('param multiple lines', function() {
-      var res = comments.parseComment(
+    it('param multiple lines', () => {
+      let res = comments.parseComment(
         ['/**', ' * @param {string|', ' *     number} userName', ' * }}', '*/'].join('\n'),
         {
           unwrap: true
         }
       );
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'param');
-      res.tags[0].should.have.property('name', 'userName');
-      res.tags[0].should.have.property('type');
-      res.tags[0].type.should.eql({
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'param'));
+      assert(hasProperty(res.tags[0], 'name', 'userName'));
+      assert(hasProperty(res.tags[0], 'type'));
+      assert.deepEqual(res.tags[0].type, {
         type: 'UnionType',
         elements: [
           {
@@ -755,23 +767,23 @@ describe('parse tag', function() {
       });
     });
 
-    it('param without braces', function() {
-      var res = comments.parseComment(['/**', ' * @param string name description', '*/'].join('\n'), {
+    it('param without braces', () => {
+      let res = comments.parseComment(['/**', ' * @param string name description', '*/'].join('\n'), {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'param');
-      res.tags[0].should.have.property('name', 'string');
-      res.tags[0].should.have.property('type', null);
-      res.tags[0].should.have.property('description', 'name description');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'param'));
+      assert(hasProperty(res.tags[0], 'name', 'string'));
+      assert(hasProperty(res.tags[0], 'type', null));
+      assert(hasProperty(res.tags[0], 'description', 'name description'));
     });
 
-    it('param w/ hyphen before description', function() {
-      var res = comments.parseComment(['/**', ' * @param {string} name - description', '*/'].join('\n'), {
+    it('param w/ hyphen before description', () => {
+      let res = comments.parseComment(['/**', ' * @param {string} name - description', '*/'].join('\n'), {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.eql({
+      assert.equal(res.tags.length, 1);
+      assert.deepEqual(res.tags[0], {
         title: 'param',
         type: {
           type: 'NameExpression',
@@ -782,12 +794,12 @@ describe('parse tag', function() {
       });
     });
 
-    it('param w/ hyphen + leading space before description', function() {
-      var res = comments.parseComment(['/**', ' * @param {string} name -   description', '*/'].join('\n'), {
+    it('param w/ hyphen + leading space before description', () => {
+      let res = comments.parseComment(['/**', ' * @param {string} name -   description', '*/'].join('\n'), {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.eql({
+      assert.equal(res.tags.length, 1);
+      assert.deepEqual(res.tags[0], {
         title: 'param',
         type: {
           type: 'NameExpression',
@@ -798,156 +810,156 @@ describe('parse tag', function() {
       });
     });
 
-    it('description and param separated by blank line', function() {
-      var res = comments.parseComment(
+    it('description and param separated by blank line', () => {
+      let res = comments.parseComment(
         ['/**', ' * Description', ' * blah blah blah', ' *', ' * @param {string} name description', '*/'].join('\n'),
         {
           unwrap: true
         }
       );
 
-      res.description.should.eql('Description\nblah blah blah');
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'param');
-      res.tags[0].should.have.property('name', 'name');
-      res.tags[0].should.have.property('type');
-      res.tags[0].type.should.eql({
+      assert.deepEqual(res.description, 'Description\nblah blah blah');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'param'));
+      assert(hasProperty(res.tags[0], 'name', 'name'));
+      assert(hasProperty(res.tags[0], 'type'));
+      assert.deepEqual(res.tags[0].type, {
         type: 'NameExpression',
         name: 'string'
       });
-      res.tags[0].should.have.property('description', 'description');
+      assert(hasProperty(res.tags[0], 'description', 'description'));
     });
 
-    it('regular block comment instead of jsdoc-style block comment', function() {
-      var res = comments.parseComment(['/*', ' * Description', ' * blah blah blah', '*/'].join('\n'), {
+    it('regular block comment instead of jsdoc-style block comment', () => {
+      let res = comments.parseComment(['/*', ' * Description', ' * blah blah blah', '*/'].join('\n'), {
         unwrap: true
       });
 
-      res.description.should.eql('Description\nblah blah blah');
+      assert.deepEqual(res.description, 'Description\nblah blah blah');
     });
 
-    it('augments', function() {
-      var res = comments.parseComment('/** @augments */', {
+    it('augments', () => {
+      let res = comments.parseComment('/** @augments */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
+      assert.equal(res.tags.length, 1);
     });
 
-    it('augments with name', function() {
-      var res = comments.parseComment('/** @augments ClassName */', {
+    it('augments with name', () => {
+      let res = comments.parseComment('/** @augments ClassName */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'augments');
-      res.tags[0].should.have.property('name', 'ClassName');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'augments'));
+      assert(hasProperty(res.tags[0], 'name', 'ClassName'));
     });
 
-    it('augments with type', function() {
-      var res = comments.parseComment('/** @augments {ClassName} */', {
+    it('augments with type', () => {
+      let res = comments.parseComment('/** @augments {ClassName} */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'augments');
-      res.tags[0].should.have.property('type', {
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'augments'));
+      assert(hasProperty(res.tags[0], 'type', {
         type: 'NameExpression',
         name: 'ClassName'
-      });
+      }));
     });
 
-    it('augments with name', function() {
-      var res = comments.parseComment('/** @augments ClassName.OK */', {
+    it('augments with name', () => {
+      let res = comments.parseComment('/** @augments ClassName.OK */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'augments');
-      res.tags[0].should.have.property('name', 'ClassName.OK');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'augments'));
+      assert(hasProperty(res.tags[0], 'name', 'ClassName.OK'));
     });
 
-    it('extends', function() {
-      var res = comments.parseComment('/** @extends */', {
+    it('extends', () => {
+      let res = comments.parseComment('/** @extends */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
+      assert.equal(res.tags.length, 1);
     });
 
-    it('extends with name', function() {
-      var res = comments.parseComment('/** @extends ClassName */', {
+    it('extends with name', () => {
+      let res = comments.parseComment('/** @extends ClassName */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'extends');
-      res.tags[0].should.have.property('name', 'ClassName');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'extends'));
+      assert(hasProperty(res.tags[0], 'name', 'ClassName'));
     });
 
-    it('extends with type', function() {
-      var res = comments.parseComment('/** @extends {ClassName} */', {
+    it('extends with type', () => {
+      let res = comments.parseComment('/** @extends {ClassName} */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'extends');
-      res.tags[0].should.have.property('type', {
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'extends'));
+      assert(hasProperty(res.tags[0], 'type', {
         type: 'NameExpression',
         name: 'ClassName'
-      });
+      }));
     });
 
-    it('extends with namepath', function() {
-      var res = comments.parseComment('/** @extends ClassName.OK */', {
+    it('extends with namepath', () => {
+      let res = comments.parseComment('/** @extends ClassName.OK */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'extends');
-      res.tags[0].should.have.property('name', 'ClassName.OK');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'extends'));
+      assert(hasProperty(res.tags[0], 'name', 'ClassName.OK'));
     });
 
-    it('extends with namepath', function() {
-      var res = comments.parseComment('/** @extends module:path/ClassName~OK */', {
+    it('extends with namepath', () => {
+      let res = comments.parseComment('/** @extends module:path/ClassName~OK */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'extends');
-      res.tags[0].should.have.property('name', 'module:path/ClassName~OK');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'extends'));
+      assert(hasProperty(res.tags[0], 'name', 'module:path/ClassName~OK'));
     });
 
-    it('prop', function() {
-      var res = comments.parseComment(['/**', ' * @prop {string} thingName - does some stuff', '*/'].join('\n'), {
+    it('prop', () => {
+      let res = comments.parseComment(['/**', ' * @prop {string} thingName - does some stuff', '*/'].join('\n'), {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'prop');
-      res.tags[0].should.have.property('description', 'does some stuff');
-      res.tags[0].type.should.have.property('name', 'string');
-      res.tags[0].should.have.property('name', 'thingName');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'prop'));
+      assert(hasProperty(res.tags[0], 'description', 'does some stuff'));
+      assert(hasProperty(res.tags[0].type, 'name', 'string'));
+      assert(hasProperty(res.tags[0], 'name', 'thingName'));
     });
 
-    it('prop without type', function() {
-      var res = comments.parseComment(['/**', ' * @prop thingName - does some stuff', '*/'].join('\n'), {
+    it('prop without type', () => {
+      let res = comments.parseComment(['/**', ' * @prop thingName - does some stuff', '*/'].join('\n'), {
         unwrap: true
       });
-      res.tags.should.have.length(0);
+      assert.equal(res.tags.length, 0);
     });
 
-    it('property', function() {
-      var res = comments.parseComment(['/**', ' * @property {string} thingName - does some stuff', '*/'].join('\n'), {
+    it('property', () => {
+      let res = comments.parseComment(['/**', ' * @property {string} thingName - does some stuff', '*/'].join('\n'), {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'property');
-      res.tags[0].should.have.property('description', 'does some stuff');
-      res.tags[0].type.should.have.property('name', 'string');
-      res.tags[0].should.have.property('name', 'thingName');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'property'));
+      assert(hasProperty(res.tags[0], 'description', 'does some stuff'));
+      assert(hasProperty(res.tags[0].type, 'name', 'string'));
+      assert(hasProperty(res.tags[0], 'name', 'thingName'));
     });
 
-    it('property without type', function() {
-      var res = comments.parseComment(['/**', ' * @property thingName - does some stuff', '*/'].join('\n'), {
+    it('property without type', () => {
+      let res = comments.parseComment(['/**', ' * @property thingName - does some stuff', '*/'].join('\n'), {
         unwrap: true
       });
 
-      res.tags.should.have.length(0);
+      assert.equal(res.tags.length, 0);
     });
 
-    it('property with optional type', function() {
-      var res = comments.parseComment(
+    it('property with optional type', () => {
+      let res = comments.parseComment(
         ['/**', '* testtypedef', '* @typedef {object} abc', '* @property {String} [val] value description', '*/'].join(
           '\n'
         ),
@@ -957,431 +969,431 @@ describe('parse tag', function() {
         }
       );
 
-      res.tags[1].should.have.property('title', 'property');
-      res.tags[1].should.have.property('type');
-      res.tags[1]['type'].should.have.property('type', 'OptionalType');
+      assert(hasProperty(res.tags[1], 'title', 'property'));
+      assert(hasProperty(res.tags[1], 'type'));
+      assert(hasProperty(res.tags[1]['type'], 'type', 'OptionalType'));
     });
 
-    it('property with nested name', function() {
-      var res = comments.parseComment(
+    it('property with nested name', () => {
+      let res = comments.parseComment(
         ['/**', ' * @property {string} thingName.name - does some stuff', '*/'].join('\n'),
         {
           unwrap: true
         }
       );
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'property');
-      res.tags[0].should.have.property('description', 'does some stuff');
-      res.tags[0].type.should.have.property('name', 'string');
-      res.tags[0].should.have.property('name', 'thingName.name');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'property'));
+      assert(hasProperty(res.tags[0], 'description', 'does some stuff'));
+      assert(hasProperty(res.tags[0].type, 'name', 'string'));
+      assert(hasProperty(res.tags[0], 'name', 'thingName.name'));
     });
 
-    it('throws', function() {
-      var res = comments.parseComment(['/**', ' * @throws {Error} if something goes wrong', ' */'].join('\n'), {
+    it('throws', () => {
+      let res = comments.parseComment(['/**', ' * @throws {Error} if something goes wrong', ' */'].join('\n'), {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'throws');
-      res.tags[0].should.have.property('description', 'if something goes wrong');
-      res.tags[0].type.should.have.property('name', 'Error');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'throws'));
+      assert(hasProperty(res.tags[0], 'description', 'if something goes wrong'));
+      assert(hasProperty(res.tags[0].type, 'name', 'Error'));
     });
 
-    it('throws without type', function() {
-      var res = comments.parseComment(['/**', ' * @throws if something goes wrong', ' */'].join('\n'), {
+    it('throws without type', () => {
+      let res = comments.parseComment(['/**', ' * @throws if something goes wrong', ' */'].join('\n'), {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'throws');
-      res.tags[0].should.have.property('description', 'if something goes wrong');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'throws'));
+      assert(hasProperty(res.tags[0], 'description', 'if something goes wrong'));
     });
 
-    it('kind', function() {
-      var res = comments.parseComment('/** @kind class */', {
+    it('kind', () => {
+      let res = comments.parseComment('/** @kind class */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'kind');
-      res.tags[0].should.have.property('kind', 'class');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'kind'));
+      assert(hasProperty(res.tags[0], 'kind', 'class'));
     });
 
-    it('kind error', function() {
-      var res = comments.parseComment('/** @kind ng */', {
+    it('kind error', () => {
+      let res = comments.parseComment('/** @kind ng */', {
         unwrap: true,
         recoverable: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('errors');
-      res.tags[0].errors.should.have.length(1);
-      res.tags[0].errors[0].should.equal("Invalid kind name 'ng'");
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'errors'));
+      assert.equal(res.tags[0].errors.length, 1);
+      assert.equal(res.tags[0].errors[0], "Invalid kind name 'ng'");
     });
 
-    it('todo', function() {
-      var res = comments.parseComment('/** @todo Write the documentation */', {
+    it('todo', () => {
+      let res = comments.parseComment('/** @todo Write the documentation */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'todo');
-      res.tags[0].should.have.property('description', 'Write the documentation');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'todo'));
+      assert(hasProperty(res.tags[0], 'description', 'Write the documentation'));
     });
 
-    it('typedef', function() {
-      var res = comments.parseComment('/** @typedef {Object} NumberLike */', {
+    it('typedef', () => {
+      let res = comments.parseComment('/** @typedef {Object} NumberLike */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('type');
-      res.tags[0].type.should.eql({
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'type'));
+      assert.deepEqual(res.tags[0].type, {
         type: 'NameExpression',
         name: 'Object'
       });
-      res.tags[0].should.have.property('name', 'NumberLike');
+      assert(hasProperty(res.tags[0], 'name', 'NumberLike'));
     });
 
-    it('summary', function() {
+    it('summary', () => {
       // japanese lang
-      var res = comments.parseComment('/** @summary ゆるゆり3期おめでとー */', {
+      let res = comments.parseComment('/** @summary ゆるゆり3期おめでとー */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'summary');
-      res.tags[0].should.have.property('description', 'ゆるゆり3期おめでとー');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'summary'));
+      assert(hasProperty(res.tags[0], 'description', 'ゆるゆり3期おめでとー'));
     });
 
-    it('variation', function() {
-      var res = comments.parseComment('/** @variation 42 */', {
+    it('variation', () => {
+      let res = comments.parseComment('/** @variation 42 */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'variation');
-      res.tags[0].should.have.property('variation', 42);
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'variation'));
+      assert(hasProperty(res.tags[0], 'variation', 42));
     });
 
-    it('variation error', function() {
-      var res = comments.parseComment('/** @variation Animation */', {
+    it('variation error', () => {
+      let res = comments.parseComment('/** @variation Animation */', {
         unwrap: true,
         recoverable: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('errors');
-      res.tags[0].errors.should.have.length(1);
-      res.tags[0].errors[0].should.equal("Invalid variation 'Animation'");
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'errors'));
+      assert.equal(res.tags[0].errors.length, 1);
+      assert.equal(res.tags[0].errors[0], "Invalid variation 'Animation'");
     });
 
-    it('access', function() {
-      var res = comments.parseComment('/** @access public */', {
+    it('access', () => {
+      let res = comments.parseComment('/** @access public */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'access');
-      res.tags[0].should.have.property('access', 'public');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'access'));
+      assert(hasProperty(res.tags[0], 'access', 'public'));
     });
 
-    it('access error', function() {
-      var res = comments.parseComment('/** @access ng */', {
+    it('access error', () => {
+      let res = comments.parseComment('/** @access ng */', {
         unwrap: true,
         recoverable: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('errors');
-      res.tags[0].errors.should.have.length(1);
-      res.tags[0].errors[0].should.equal("Invalid access name 'ng'");
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'errors'));
+      assert.equal(res.tags[0].errors.length, 1);
+      assert.equal(res.tags[0].errors[0], "Invalid access name 'ng'");
     });
 
-    it('public', function() {
-      var res = comments.parseComment('/** @public */', {
+    it('public', () => {
+      let res = comments.parseComment('/** @public */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'public');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'public'));
     });
 
-    it('public type and description', function() {
-      var res = comments.parseComment('/** @public {number} ok */', {
+    it('public type and description', () => {
+      let res = comments.parseComment('/** @public {number} ok */', {
         unwrap: true,
         recoverable: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'public');
-      res.tags[0].should.have.property('description', 'ok');
-      res.tags[0].should.have.property('type');
-      res.tags[0].type.should.eql({
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'public'));
+      assert(hasProperty(res.tags[0], 'description', 'ok'));
+      assert(hasProperty(res.tags[0], 'type'));
+      assert.deepEqual(res.tags[0].type, {
         type: 'NameExpression',
         name: 'number'
       });
     });
 
-    it('protected', function() {
-      var res = comments.parseComment('/** @protected */', {
+    it('protected', () => {
+      let res = comments.parseComment('/** @protected */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'protected');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'protected'));
     });
 
-    it('protected type and description', function() {
-      var res = comments.parseComment('/** @protected {number} ok */', {
+    it('protected type and description', () => {
+      let res = comments.parseComment('/** @protected {number} ok */', {
         unwrap: true,
         recoverable: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'protected');
-      res.tags[0].should.have.property('description', 'ok');
-      res.tags[0].should.have.property('type');
-      res.tags[0].type.should.eql({
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'protected'));
+      assert(hasProperty(res.tags[0], 'description', 'ok'));
+      assert(hasProperty(res.tags[0], 'type'));
+      assert.deepEqual(res.tags[0].type, {
         type: 'NameExpression',
         name: 'number'
       });
     });
 
-    it('private', function() {
-      var res = comments.parseComment('/** @private */', {
+    it('private', () => {
+      let res = comments.parseComment('/** @private */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'private');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'private'));
     });
 
-    it('private type and description', function() {
-      var res = comments.parseComment('/** @private {number} ok */', {
+    it('private type and description', () => {
+      let res = comments.parseComment('/** @private {number} ok */', {
         unwrap: true,
         recoverable: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'private');
-      res.tags[0].should.have.property('description', 'ok');
-      res.tags[0].should.have.property('type');
-      res.tags[0].type.should.eql({
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'private'));
+      assert(hasProperty(res.tags[0], 'description', 'ok'));
+      assert(hasProperty(res.tags[0], 'type'));
+      assert.deepEqual(res.tags[0].type, {
         type: 'NameExpression',
         name: 'number'
       });
     });
 
-    it('readonly', function() {
-      var res = comments.parseComment('/** @readonly */', {
+    it('readonly', () => {
+      let res = comments.parseComment('/** @readonly */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'readonly');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'readonly'));
     });
 
-    it('readonly error', function() {
-      var res = comments.parseComment('/** @readonly ng */', {
+    it('readonly error', () => {
+      let res = comments.parseComment('/** @readonly ng */', {
         unwrap: true,
         recoverable: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('errors');
-      res.tags[0].errors.should.have.length(1);
-      res.tags[0].errors[0].should.equal("Unknown content 'ng'");
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'errors'));
+      assert.equal(res.tags[0].errors.length, 1);
+      assert.equal(res.tags[0].errors[0], "Unknown content 'ng'");
     });
 
-    it('requires', function() {
-      var res = comments.parseComment('/** @requires */', {
+    it('requires', () => {
+      let res = comments.parseComment('/** @requires */', {
         unwrap: true
       });
-      res.tags.should.have.length(0);
+      assert.equal(res.tags.length, 0);
     });
 
-    it('requires with module name', function() {
-      var res = comments.parseComment('/** @requires name.path */', {
+    it('requires with module name', () => {
+      let res = comments.parseComment('/** @requires name.path */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'requires');
-      res.tags[0].should.have.property('name', 'name.path');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'requires'));
+      assert(hasProperty(res.tags[0], 'name', 'name.path'));
     });
 
-    it('global', function() {
-      var res = comments.parseComment('/** @global */', {
+    it('global', () => {
+      let res = comments.parseComment('/** @global */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'global');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'global'));
     });
 
-    it('global error', function() {
-      var res = comments.parseComment('/** @global ng */', {
+    it('global error', () => {
+      let res = comments.parseComment('/** @global ng */', {
         unwrap: true,
         recoverable: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('errors');
-      res.tags[0].errors.should.have.length(1);
-      res.tags[0].errors[0].should.equal("Unknown content 'ng'");
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'errors'));
+      assert.equal(res.tags[0].errors.length, 1);
+      assert.equal(res.tags[0].errors[0], "Unknown content 'ng'");
     });
 
-    it('inner', function() {
-      var res = comments.parseComment('/** @inner */', {
+    it('inner', () => {
+      let res = comments.parseComment('/** @inner */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'inner');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'inner'));
     });
 
-    it('inner error', function() {
-      var res = comments.parseComment('/** @inner ng */', {
+    it('inner error', () => {
+      let res = comments.parseComment('/** @inner ng */', {
         unwrap: true,
         recoverable: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('errors');
-      res.tags[0].errors.should.have.length(1);
-      res.tags[0].errors[0].should.equal("Unknown content 'ng'");
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'errors'));
+      assert.equal(res.tags[0].errors.length, 1);
+      assert.equal(res.tags[0].errors[0], "Unknown content 'ng'");
     });
 
-    it('instance', function() {
-      var res = comments.parseComment('/** @instance */', {
+    it('instance', () => {
+      let res = comments.parseComment('/** @instance */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'instance');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'instance'));
     });
 
-    it('instance error', function() {
-      var res = comments.parseComment('/** @instance ng */', {
+    it('instance error', () => {
+      let res = comments.parseComment('/** @instance ng */', {
         unwrap: true,
         recoverable: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('errors');
-      res.tags[0].errors.should.have.length(1);
-      res.tags[0].errors[0].should.equal("Unknown content 'ng'");
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'errors'));
+      assert.equal(res.tags[0].errors.length, 1);
+      assert.equal(res.tags[0].errors[0], "Unknown content 'ng'");
     });
 
-    it('since', function() {
-      var res = comments.parseComment('/** @since 1.2.1 */', {
+    it('since', () => {
+      let res = comments.parseComment('/** @since 1.2.1 */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'since');
-      res.tags[0].should.have.property('description', '1.2.1');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'since'));
+      assert(hasProperty(res.tags[0], 'description', '1.2.1'));
     });
 
-    it('static', function() {
-      var res = comments.parseComment('/** @static */', {
+    it('static', () => {
+      let res = comments.parseComment('/** @static */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'static');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'static'));
     });
 
-    it('static error', function() {
-      var res = comments.parseComment('/** @static ng */', {
+    it('static error', () => {
+      let res = comments.parseComment('/** @static ng */', {
         unwrap: true,
         recoverable: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('errors');
-      res.tags[0].errors.should.have.length(1);
-      res.tags[0].errors[0].should.equal("Unknown content 'ng'");
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'errors'));
+      assert.equal(res.tags[0].errors.length, 1);
+      assert.equal(res.tags[0].errors[0], "Unknown content 'ng'");
     });
 
-    it('this', function() {
-      var res = comments.parseComment(['/**', ' * @this thingName', '*/'].join('\n'), {
+    it('this', () => {
+      let res = comments.parseComment(['/**', ' * @this thingName', '*/'].join('\n'), {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'this');
-      res.tags[0].should.have.property('name', 'thingName');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'this'));
+      assert(hasProperty(res.tags[0], 'name', 'thingName'));
     });
 
-    it('this with namepath', function() {
-      var res = comments.parseComment(['/**', ' * @this thingName.name', '*/'].join('\n'), {
+    it('this with namepath', () => {
+      let res = comments.parseComment(['/**', ' * @this thingName.name', '*/'].join('\n'), {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'this');
-      res.tags[0].should.have.property('name', 'thingName.name');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'this'));
+      assert(hasProperty(res.tags[0], 'name', 'thingName.name'));
     });
 
-    it('this with name expression', function() {
-      var res = comments.parseComment(['/**', ' * @this {thingName.name}', '*/'].join('\n'), {
+    it('this with name expression', () => {
+      let res = comments.parseComment(['/**', ' * @this {thingName.name}', '*/'].join('\n'), {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'this');
-      res.tags[0].should.have.property('name', 'thingName.name');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'this'));
+      assert(hasProperty(res.tags[0], 'name', 'thingName.name'));
     });
 
-    it('this error with type application', function() {
-      var res = comments.parseComment(['/**', ' * @this {Array<string>}', '*/'].join('\n'), {
+    it('this error with type application', () => {
+      let res = comments.parseComment(['/**', ' * @this {Array<string>}', '*/'].join('\n'), {
         unwrap: true,
         recoverable: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'this');
-      res.tags[0].should.have.property('errors');
-      res.tags[0].errors.should.have.length(1);
-      res.tags[0].errors[0].should.equal('Invalid name for this');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'this'));
+      assert(hasProperty(res.tags[0], 'errors'));
+      assert.equal(res.tags[0].errors.length, 1);
+      assert.equal(res.tags[0].errors[0], 'Invalid name for this');
     });
 
-    it('this error', function() {
-      var res = comments.parseComment(['/**', ' * @this', '*/'].join('\n'), {
+    it('this error', () => {
+      let res = comments.parseComment(['/**', ' * @this', '*/'].join('\n'), {
         unwrap: true,
         recoverable: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'this');
-      res.tags[0].should.have.property('errors');
-      res.tags[0].errors.should.have.length(1);
-      res.tags[0].errors[0].should.equal('Missing or invalid tag name');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'this'));
+      assert(hasProperty(res.tags[0], 'errors'));
+      assert.equal(res.tags[0].errors.length, 1);
+      assert.equal(res.tags[0].errors[0], 'Missing or invalid tag name');
     });
 
-    it('var', function() {
-      var res = comments.parseComment('/** @var */', {
+    it('var', () => {
+      let res = comments.parseComment('/** @var */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'var');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'var'));
     });
 
-    it('var with name', function() {
-      var res = comments.parseComment('/** @var thingName.name */', {
+    it('var with name', () => {
+      let res = comments.parseComment('/** @var thingName.name */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'var');
-      res.tags[0].should.have.property('name', 'thingName.name');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'var'));
+      assert(hasProperty(res.tags[0], 'name', 'thingName.name'));
     });
 
-    it('var with type', function() {
-      var res = comments.parseComment('/** @var {Object} thingName.name */', {
+    it('var with type', () => {
+      let res = comments.parseComment('/** @var {Object} thingName.name */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'var');
-      res.tags[0].should.have.property('name', 'thingName.name');
-      res.tags[0].should.have.property('type');
-      res.tags[0].type.should.eql({
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'var'));
+      assert(hasProperty(res.tags[0], 'name', 'thingName.name'));
+      assert(hasProperty(res.tags[0], 'type'));
+      assert.deepEqual(res.tags[0].type, {
         type: 'NameExpression',
         name: 'Object'
       });
     });
 
-    it('version', function() {
-      var res = comments.parseComment('/** @version 1.2.1 */', {
+    it('version', () => {
+      let res = comments.parseComment('/** @version 1.2.1 */', {
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'version');
-      res.tags[0].should.have.property('description', '1.2.1');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'version'));
+      assert(hasProperty(res.tags[0], 'description', '1.2.1'));
     });
 
-    it('incorrect name', function() {
-      var res = comments.parseComment('/** @name thingName#%name */', {
+    it('incorrect name', () => {
+      let res = comments.parseComment('/** @name thingName#%name */', {
         unwrap: true
       });
 
       // name does not accept type
-      res.tags.should.have.length(0);
-      res.should.eql({
+      assert.equal(res.tags.length, 0);
+      assert.deepEqual(res, {
         description: '',
         tags: []
       });
     });
 
-    it('string literal property', function() {
-      var res = comments.parseComment(
+    it('string literal property', () => {
+      let res = comments.parseComment(
         ['/**', ' * @typedef {Object} comment', " * @property {('public'|'protected'|'private')} access", '*/'].join(
           '\n'
         ),
@@ -1390,93 +1402,93 @@ describe('parse tag', function() {
         }
       );
 
-      res.tags.should.have.length(2);
-      res.tags[1].should.have.property('title', 'property');
-      res.tags[1].should.have.property('name', 'access');
-      res.tags[1].type.should.have.property('type', 'UnionType');
-      res.tags[1].type.elements.should.have.length(3);
-      res.tags[1].type.elements.should.containEql({
+      assert.equal(res.tags.length, 2);
+      assert(hasProperty(res.tags[1], 'title', 'property'));
+      assert(hasProperty(res.tags[1], 'name', 'access'));
+      assert(hasProperty(res.tags[1].type, 'type', 'UnionType'));
+      assert.equal(res.tags[1].type.elements.length, 3);
+      containEqual(res.tags[1].type.elements, {
         type: 'StringLiteralType',
         value: 'public'
       });
-      res.tags[1].type.elements.should.containEql({
+      containEqual(res.tags[1].type.elements, {
         type: 'StringLiteralType',
         value: 'private'
       });
-      res.tags[1].type.elements.should.containEql({
+      containEqual(res.tags[1].type.elements, {
         type: 'StringLiteralType',
         value: 'protected'
       });
     });
 
-    it('numeric literal property', function() {
-      var res = comments.parseComment(
+    it('numeric literal property', () => {
+      let res = comments.parseComment(
         ['/**', ' * @typedef {Object} comment', ' * @property {(-42|1.5|0)} access', '*/'].join('\n'),
         {
           unwrap: true
         }
       );
 
-      res.tags.should.have.length(2);
-      res.tags[1].should.have.property('title', 'property');
-      res.tags[1].should.have.property('name', 'access');
-      res.tags[1].type.should.have.property('type', 'UnionType');
-      res.tags[1].type.elements.should.have.length(3);
-      res.tags[1].type.elements.should.containEql({
+      assert.equal(res.tags.length, 2);
+      assert(hasProperty(res.tags[1], 'title', 'property'));
+      assert(hasProperty(res.tags[1], 'name', 'access'));
+      assert(hasProperty(res.tags[1].type, 'type', 'UnionType'));
+      assert.equal(res.tags[1].type.elements.length, 3);
+      containEqual(res.tags[1].type.elements, {
         type: 'NumericLiteralType',
         value: -42
       });
-      res.tags[1].type.elements.should.containEql({
+      containEqual(res.tags[1].type.elements, {
         type: 'NumericLiteralType',
         value: 1.5
       });
-      res.tags[1].type.elements.should.containEql({
+      containEqual(res.tags[1].type.elements, {
         type: 'NumericLiteralType',
         value: 0
       });
     });
 
-    it('boolean literal property', function() {
-      var res = comments.parseComment(
+    it('boolean literal property', () => {
+      let res = comments.parseComment(
         ['/**', ' * @typedef {Object} comment', ' * @property {(true|false)} access', '*/'].join('\n'),
         {
           unwrap: true
         }
       );
 
-      res.tags.should.have.length(2);
-      res.tags[1].should.have.property('title', 'property');
-      res.tags[1].should.have.property('name', 'access');
-      res.tags[1].type.should.have.property('type', 'UnionType');
-      res.tags[1].type.elements.should.have.length(2);
-      res.tags[1].type.elements.should.containEql({
+      assert.equal(res.tags.length, 2);
+      assert(hasProperty(res.tags[1], 'title', 'property'));
+      assert(hasProperty(res.tags[1], 'name', 'access'));
+      assert(hasProperty(res.tags[1].type, 'type', 'UnionType'));
+      assert.equal(res.tags[1].type.elements.length, 2);
+      containEqual(res.tags[1].type.elements, {
         type: 'BooleanLiteralType',
         value: true
       });
-      res.tags[1].type.elements.should.containEql({
+      containEqual(res.tags[1].type.elements, {
         type: 'BooleanLiteralType',
         value: false
       });
     });
 
-    it('complex union with literal types', function() {
-      var res = comments.parseComment(
+    it('complex union with literal types', () => {
+      let res = comments.parseComment(
         ['/**', ' * @typedef {({ok: true, data: string} | {ok: false, error: Error})} Result', '*/'].join('\n'),
         {
           unwrap: true
         }
       );
 
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'typedef');
-      res.tags[0].should.have.property('name', 'Result');
-      res.tags[0].type.should.have.property('type', 'UnionType');
-      res.tags[0].type.elements.should.have.length(2);
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'typedef'));
+      assert(hasProperty(res.tags[0], 'name', 'Result'));
+      assert(hasProperty(res.tags[0].type, 'type', 'UnionType'));
+      assert.equal(res.tags[0].type.elements.length, 2);
 
       var e0 = res.tags[0].type.elements[0];
-      e0.should.have.property('type', 'RecordType');
-      e0.fields.should.have.length(2);
-      e0.fields.should.containEql({
+      assert(hasProperty(e0, 'type', 'RecordType'));
+      assert.equal(e0.fields.length, 2);
+      containEqual(e0.fields, {
         type: 'FieldType',
         key: 'ok',
         value: {
@@ -1484,7 +1496,7 @@ describe('parse tag', function() {
           value: true
         }
       });
-      e0.fields.should.containEql({
+      containEqual(e0.fields, {
         type: 'FieldType',
         key: 'data',
         value: {
@@ -1494,9 +1506,9 @@ describe('parse tag', function() {
       });
 
       var e1 = res.tags[0].type.elements[1];
-      e1.should.have.property('type', 'RecordType');
-      e1.fields.should.have.length(2);
-      e1.fields.should.containEql({
+      assert(hasProperty(e1, 'type', 'RecordType'));
+      assert.equal(e1.fields.length, 2);
+      containEqual(e1.fields, {
         type: 'FieldType',
         key: 'ok',
         value: {
@@ -1504,7 +1516,7 @@ describe('parse tag', function() {
           value: false
         }
       });
-      e1.fields.should.containEql({
+      containEqual(e1.fields, {
         type: 'FieldType',
         key: 'error',
         value: {
@@ -1515,10 +1527,10 @@ describe('parse tag', function() {
     });
   });
 
-  describe('parseType', function() {
-    it('union type closure-compiler extended', function() {
+  describe('parseType', () => {
+    it('union type closure-compiler extended', () => {
       var type = comments.parseType('string|number');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'UnionType',
         elements: [
           {
@@ -1533,17 +1545,17 @@ describe('parse tag', function() {
       });
     });
 
-    it('empty union type', function() {
+    it('empty union type', () => {
       var type = comments.parseType('()');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'UnionType',
         elements: []
       });
     });
 
-    it('comma last array type', function() {
+    it('comma last array type', () => {
       var type = comments.parseType('[string,]');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'ArrayType',
         elements: [
           {
@@ -1554,9 +1566,9 @@ describe('parse tag', function() {
       });
     });
 
-    it('array type of all literal', function() {
+    it('array type of all literal', () => {
       var type = comments.parseType('[*]');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'ArrayType',
         elements: [
           {
@@ -1566,9 +1578,9 @@ describe('parse tag', function() {
       });
     });
 
-    it('array type of nullable literal', function() {
+    it('array type of nullable literal', () => {
       var type = comments.parseType('[?]');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'ArrayType',
         elements: [
           {
@@ -1578,17 +1590,17 @@ describe('parse tag', function() {
       });
     });
 
-    it('comma last record type', function() {
+    it('comma last record type', () => {
       var type = comments.parseType('{,}');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'RecordType',
         fields: []
       });
     });
 
-    it('type application', function() {
+    it('type application', () => {
       var type = comments.parseType('Array.<String>');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'TypeApplication',
         expression: {
           type: 'NameExpression',
@@ -1603,9 +1615,9 @@ describe('parse tag', function() {
       });
     });
 
-    it('type application with NullableLiteral', function() {
+    it('type application with NullableLiteral', () => {
       var type = comments.parseType('Array<?>');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'TypeApplication',
         expression: {
           type: 'NameExpression',
@@ -1619,9 +1631,9 @@ describe('parse tag', function() {
       });
     });
 
-    it('type application with multiple patterns', function() {
+    it('type application with multiple patterns', () => {
       var type = comments.parseType('Array.<String, Number>');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'TypeApplication',
         expression: {
           type: 'NameExpression',
@@ -1640,9 +1652,9 @@ describe('parse tag', function() {
       });
     });
 
-    it('type application without dot', function() {
+    it('type application without dot', () => {
       var type = comments.parseType('Array<String>');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'TypeApplication',
         expression: {
           type: 'NameExpression',
@@ -1657,9 +1669,9 @@ describe('parse tag', function() {
       });
     });
 
-    it('array-style type application', function() {
+    it('array-style type application', () => {
       var type = comments.parseType('String[]');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'TypeApplication',
         expression: {
           type: 'NameExpression',
@@ -1674,18 +1686,18 @@ describe('parse tag', function() {
       });
     });
 
-    it('function type simple', function() {
+    it('function type simple', () => {
       var type = comments.parseType('function()');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'FunctionType',
         params: [],
         result: null
       });
     });
 
-    it('function type with name', function() {
+    it('function type with name', () => {
       var type = comments.parseType('function(a)');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'FunctionType',
         params: [
           {
@@ -1697,9 +1709,9 @@ describe('parse tag', function() {
       });
     });
 
-    it('function type with name and type', function() {
+    it('function type with name and type', () => {
       var type = comments.parseType('function(a:b)');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'FunctionType',
         params: [
           {
@@ -1715,9 +1727,9 @@ describe('parse tag', function() {
       });
     });
 
-    it('function type with optional param', function() {
+    it('function type with optional param', () => {
       var type = comments.parseType('function(a=)');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'FunctionType',
         params: [
           {
@@ -1732,9 +1744,9 @@ describe('parse tag', function() {
       });
     });
 
-    it('function type with optional param name and type', function() {
+    it('function type with optional param name and type', () => {
       var type = comments.parseType('function(a:b=)');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'FunctionType',
         params: [
           {
@@ -1753,9 +1765,9 @@ describe('parse tag', function() {
       });
     });
 
-    it('function type with rest param', function() {
+    it('function type with rest param', () => {
       var type = comments.parseType('function(...a)');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'FunctionType',
         params: [
           {
@@ -1770,9 +1782,9 @@ describe('parse tag', function() {
       });
     });
 
-    it('function type with rest param name and type', function() {
+    it('function type with rest param name and type', () => {
       var type = comments.parseType('function(...a:b)');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'FunctionType',
         params: [
           {
@@ -1791,9 +1803,9 @@ describe('parse tag', function() {
       });
     });
 
-    it('function type with optional rest param', function() {
+    it('function type with optional rest param', () => {
       var type = comments.parseType('function(...a=)');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'FunctionType',
         params: [
           {
@@ -1811,9 +1823,9 @@ describe('parse tag', function() {
       });
     });
 
-    it('function type with optional rest param name and type', function() {
+    it('function type with optional rest param name and type', () => {
       var type = comments.parseType('function(...a:b=)');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'FunctionType',
         params: [
           {
@@ -1835,11 +1847,11 @@ describe('parse tag', function() {
       });
     });
 
-    it('string value in type', function() {
+    it('string value in type', () => {
       var type;
 
       type = comments.parseType("{'ok':String}");
-      type.should.eql({
+      assert.deepEqual(type, {
         fields: [
           {
             key: 'ok',
@@ -1854,7 +1866,7 @@ describe('parse tag', function() {
       });
 
       type = comments.parseType('{"\\r\\n\\t\\u2028\\x20\\u20\\b\\f\\v\\\r\n\\\n\\0\\07\\012\\o":String}');
-      type.should.eql({
+      assert.deepEqual(type, {
         fields: [
           {
             key: '\r\n\t\u2028\x20u20\b\f\v\0\u0007\u000ao',
@@ -1868,15 +1880,15 @@ describe('parse tag', function() {
         type: 'RecordType'
       });
 
-      comments.parseType.bind(comments, '{\'ok":String}').should.throw('unexpected quote');
-      comments.parseType.bind(comments, "{'o\n':String}").should.throw('unexpected quote');
+      assert.throws(() => comments.parseType('{\'ok":String}'), /unexpected quote/);
+      assert.throws(() => comments.parseType("{'o\n':String}"), /unexpected quote/);
     });
 
-    it('number value in type', function() {
+    it('number value in type', () => {
       var type;
 
       type = comments.parseType('{20:String}');
-      type.should.eql({
+      assert.deepEqual(type, {
         fields: [
           {
             key: '20',
@@ -1891,7 +1903,7 @@ describe('parse tag', function() {
       });
 
       type = comments.parseType('{.2:String, 30:Number, 0x20:String}');
-      type.should.eql({
+      assert.deepEqual(type, {
         fields: [
           {
             key: '0.2',
@@ -1922,7 +1934,7 @@ describe('parse tag', function() {
       });
 
       type = comments.parseType('{0X2:String, 0:Number, 100e200:String, 10e-20:Number}');
-      type.should.eql({
+      assert.deepEqual(type, {
         fields: [
           {
             key: '2',
@@ -1960,36 +1972,36 @@ describe('parse tag', function() {
         type: 'RecordType'
       });
 
-      comments.parseType.bind(comments, '{0x:String}').should.throw('unexpected token');
-      comments.parseType.bind(comments, '{0x').should.throw('unexpected token');
-      comments.parseType.bind(comments, '{0xd').should.throw('unexpected token');
-      comments.parseType.bind(comments, '{0x2_:').should.throw('unexpected token');
-      comments.parseType.bind(comments, '{021:').should.throw('unexpected token');
-      comments.parseType.bind(comments, '{021_:').should.throw('unexpected token');
-      comments.parseType.bind(comments, '{021').should.throw('unexpected token');
-      comments.parseType.bind(comments, '{08').should.throw('unexpected token');
-      comments.parseType.bind(comments, '{0y').should.throw('unexpected token');
-      comments.parseType.bind(comments, '{0').should.throw('unexpected token');
-      comments.parseType.bind(comments, '{100e2').should.throw('unexpected token');
-      comments.parseType.bind(comments, '{100e-2').should.throw('unexpected token');
-      comments.parseType.bind(comments, '{100e-200:').should.throw('unexpected token');
-      comments.parseType.bind(comments, '{100e:').should.throw('unexpected token');
-      comments.parseType.bind(comments, 'function(number=, string)').should.throw('not reach to EOF');
+      assert.throws(() => comments.parseType('{0x:String}'), /unexpected token/);
+      assert.throws(() => comments.parseType('{0x'), /unexpected token/);
+      assert.throws(() => comments.parseType('{0xd'), /unexpected token/);
+      assert.throws(() => comments.parseType('{0x2_:'), /unexpected token/);
+      assert.throws(() => comments.parseType('{021:'), /unexpected token/);
+      assert.throws(() => comments.parseType('{021_:'), /unexpected token/);
+      assert.throws(() => comments.parseType('{021'), /unexpected token/);
+      assert.throws(() => comments.parseType('{08'), /unexpected token/);
+      assert.throws(() => comments.parseType('{0y'), /unexpected token/);
+      assert.throws(() => comments.parseType('{0'), /unexpected token/);
+      assert.throws(() => comments.parseType('{100e2'), /unexpected token/);
+      assert.throws(() => comments.parseType('{100e-2'), /unexpected token/);
+      assert.throws(() => comments.parseType('{100e-200:'), /unexpected token/);
+      assert.throws(() => comments.parseType('{100e:'), /unexpected token/);
+      assert.throws(() => comments.parseType('function(number=, string)'), /not reach to EOF/);
     });
 
-    it('dotted type', function() {
+    it('dotted type', () => {
       var type;
       type = comments.parseType('Cocoa.Cappuccino');
-      type.should.eql({
+      assert.deepEqual(type, {
         name: 'Cocoa.Cappuccino',
         type: 'NameExpression'
       });
     });
 
-    it('rest array type', function() {
+    it('rest array type', () => {
       var type;
       type = comments.parseType('[string,...string]');
-      type.should.eql({
+      assert.deepEqual(type, {
         elements: [
           {
             name: 'string',
@@ -2007,10 +2019,10 @@ describe('parse tag', function() {
       });
     });
 
-    it('nullable type', function() {
+    it('nullable type', () => {
       var type;
       type = comments.parseType('string?');
-      type.should.eql({
+      assert.deepEqual(type, {
         expression: {
           name: 'string',
           type: 'NameExpression'
@@ -2020,10 +2032,10 @@ describe('parse tag', function() {
       });
     });
 
-    it('non-nullable type', function() {
+    it('non-nullable type', () => {
       var type;
       type = comments.parseType('string!');
-      type.should.eql({
+      assert.deepEqual(type, {
         expression: {
           name: 'string',
           type: 'NameExpression'
@@ -2033,10 +2045,10 @@ describe('parse tag', function() {
       });
     });
 
-    it('toplevel multiple pipe type', function() {
+    it('toplevel multiple pipe type', () => {
       var type;
       type = comments.parseType('string|number|Test');
-      type.should.eql({
+      assert.deepEqual(type, {
         elements: [
           {
             name: 'string',
@@ -2055,62 +2067,62 @@ describe('parse tag', function() {
       });
     });
 
-    it('string literal type', function() {
+    it('string literal type', () => {
       var type;
       type = comments.parseType('"Hello, World"');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'StringLiteralType',
         value: 'Hello, World'
       });
     });
 
-    it('numeric literal type', function() {
+    it('numeric literal type', () => {
       var type;
       type = comments.parseType('32');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'NumericLiteralType',
         value: 32
       });
       type = comments.parseType('-142.42');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'NumericLiteralType',
         value: -142.42
       });
     });
 
-    it('boolean literal type', function() {
+    it('boolean literal type', () => {
       var type;
       type = comments.parseType('true');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'BooleanLiteralType',
         value: true
       });
       type = comments.parseType('false');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'BooleanLiteralType',
         value: false
       });
     });
 
-    it('illegal tokens', function() {
-      comments.parseType.bind(comments, '.').should.throw('unexpected token');
-      comments.parseType.bind(comments, '.d').should.throw('unexpected token');
-      comments.parseType.bind(comments, '(').should.throw('unexpected token');
-      comments.parseType.bind(comments, 'Test.').should.throw('unexpected token');
+    it('illegal tokens', () => {
+      assert.throws(() => comments.parseType('.'), /unexpected token/);
+      assert.throws(() => comments.parseType('.d'), /unexpected token/);
+      assert.throws(() => comments.parseType('('), /unexpected token/);
+      assert.throws(() => comments.parseType('Test.'), /unexpected token/);
     });
   });
 
-  describe('parseParamType', function() {
-    it('question', function() {
+  describe('parseParamType', () => {
+    it('question', () => {
       var type = comments.parseParamType('?');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'NullableLiteral'
       });
     });
 
-    it('question option', function() {
+    it('question option', () => {
       var type = comments.parseParamType('?=');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'OptionalType',
         expression: {
           type: 'NullableLiteral'
@@ -2118,9 +2130,9 @@ describe('parse tag', function() {
       });
     });
 
-    it('function option parameters former', function() {
+    it('function option parameters former', () => {
       var type = comments.parseParamType('function(?, number)');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'FunctionType',
         params: [
           {
@@ -2135,9 +2147,9 @@ describe('parse tag', function() {
       });
     });
 
-    it('function option parameters latter', function() {
+    it('function option parameters latter', () => {
       var type = comments.parseParamType('function(number, ?)');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'FunctionType',
         params: [
           {
@@ -2152,9 +2164,9 @@ describe('parse tag', function() {
       });
     });
 
-    it('function type union', function() {
+    it('function type union', () => {
       var type = comments.parseParamType('function(): ?|number');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'UnionType',
         elements: [
           {
@@ -2173,106 +2185,116 @@ describe('parse tag', function() {
     });
   });
 
-  describe('invalid', function() {
-    it('empty union pipe', function() {
-      comments.parseType.bind(comments, '(|)').should.throw();
-      comments.parseType.bind(comments, '(string|)').should.throw();
-      comments.parseType.bind(comments, '(string||)').should.throw();
+  describe('invalid', () => {
+    it('empty union pipe', () => {
+      assert.throws(() => {
+        comments.parseType('(|)').should.throw();
+      });
+      assert.throws(() => {
+        comments.parseType('(string|)').should.throw();
+      });
+      assert.throws(() => {
+        comments.parseType('(string||)').should.throw();
+      });
     });
 
-    it('comma only array type', function() {
-      comments.parseType.bind(comments, '[,]').should.throw();
+    it('comma only array type', () => {
+      assert.throws(() => {
+        comments.parseType('[,]').should.throw();
+      });
     });
 
-    it('comma only record type', function() {
-      comments.parseType.bind(comments, '{,,}').should.throw();
+    it('comma only record type', () => {
+      assert.throws(() => {
+        comments.parseType('{,,}').should.throw();
+      });
     });
 
-    it('incorrect bracket', function() {
-      comments.parseParamType.bind(comments, 'int[').should.throw();
+    it('incorrect bracket', () => {
+      assert.throws(() => {
+        comments.parseParamType('int[').should.throw();
+      });
     });
   });
 
-  describe('tags option', function() {
-    it('only param', function() {
-      var res = comments.parseComment(['/**', ' * @const @const', ' * @param {String} y', ' */'].join('\n'), {
+  describe('tags option', () => {
+    it('only param', () => {
+      let res = comments.parseComment(['/**', ' * @const @const', ' * @param {String} y', ' */'].join('\n'), {
         tags: ['param'],
         unwrap: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'param');
-      res.tags[0].should.have.property('name', 'y');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'param'));
+      assert(hasProperty(res.tags[0], 'name', 'y'));
     });
 
-    it('param and type', function() {
-      var res = comments.parseComment(
+    it('param and type', () => {
+      let res = comments.parseComment(
         ['/**', ' * @const x', ' * @param {String} y', ' * @type {String} ', ' */'].join('\n'),
         {
           tags: ['param', 'type'],
           unwrap: true
         }
       );
-      res.tags.should.have.length(2);
-      res.tags[0].should.have.property('title', 'param');
-      res.tags[0].should.have.property('name', 'y');
-      res.tags[1].should.have.property('title', 'type');
-      res.tags[1].should.have.property('type');
-      res.tags[1].type.should.have.property('name', 'String');
+      assert.equal(res.tags.length, 2);
+      assert(hasProperty(res.tags[0], 'title', 'param'));
+      assert(hasProperty(res.tags[0], 'name', 'y'));
+      assert(hasProperty(res.tags[1], 'title', 'type'));
+      assert(hasProperty(res.tags[1], 'type'));
+      assert(hasProperty(res.tags[1].type, 'name', 'String'));
     });
   });
 
-  describe('invalid tags', function() {
-    it('bad tag 1', function() {
-      comments.parse
-        .bind(comments, ['/**', ' * @param {String} hucairz', ' */'].join('\n'), {
+  describe('invalid tags', () => {
+    it('bad tag 1', () => {
+      assert.throws(() => {
+        comments.parse(['/**', ' * @param {String} hucairz', ' */'].join('\n'), {
           tags: 1,
           unwrap: true
-        })
-        .should.throw();
+        });
+      });
     });
 
-    it('bad tag 2', function() {
-      comments.parse
-        .bind(comments, ['/**', ' * @param {String} hucairz', ' */'].join('\n'), {
+    it('bad tag 2', () => {
+      assert.throws(() => {
+        comments.parse(['/**', ' * @param {String} hucairz', ' */'].join('\n'), {
           tags: ['a', 1],
           unwrap: true
-        })
-        .should.throw();
+        });
+      });
     });
   });
 
-  describe('optional params', function() {
+  describe('optional params', () => {
     // should fail since sloppy option not set
-    it('failure 0', function() {
-      comments
-        .parseComment(['/**', ' * @param {String} [val]', ' */'].join('\n'), {
-          unwrap: true
-        })
-        .should.eql({
-          description: '',
-          tags: []
-        });
+    it('failure 0', () => {
+      assert.deepEqual(comments.parseComment(['/**', ' * @param {String} [val]', ' */'].join('\n'), {
+        unwrap: true
+      }), {
+        description: '',
+        tags: []
+      });
     });
 
-    it('failure 1', function() {
-      comments
+    it('failure 1', () => {
+      assert.deepEqual(comments
         .parseComment(['/**', ' * @param [val', ' */'].join('\n'), {
           unwrap: true,
           sloppy: true
         })
-        .should.eql({
+        , {
           description: '',
           tags: []
         });
     });
 
-    it('success 1', function() {
-      comments
+    it('success 1', () => {
+      assert.deepEqual(comments
         .parseComment(['/**', ' * @param {String} [val]', ' */'].join('\n'), {
           unwrap: true,
           sloppy: true
         })
-        .should.eql({
+        , {
           description: '',
           tags: [
             {
@@ -2291,13 +2313,13 @@ describe('parse tag', function() {
         });
     });
 
-    it('success 2', function() {
-      comments
+    it('success 2', () => {
+      assert.deepEqual(comments
         .parseComment(['/**', ' * @param {String=} val', ' */'].join('\n'), {
           unwrap: true,
           sloppy: true
         })
-        .should.eql({
+        , {
           description: '',
           tags: [
             {
@@ -2316,13 +2338,13 @@ describe('parse tag', function() {
         });
     });
 
-    it('success 3', function() {
-      comments
+    it('success 3', () => {
+      assert.deepEqual(comments
         .parseComment(['/**', ' * @param {String=} [val=abc] some description', ' */'].join('\n'), {
           unwrap: true,
           sloppy: true
         })
-        .should.eql({
+        , {
           description: '',
           tags: [
             {
@@ -2342,13 +2364,13 @@ describe('parse tag', function() {
         });
     });
 
-    it('success 4', function() {
-      comments
+    it('success 4', () => {
+      assert.deepEqual(comments
         .parseComment(['/**', ' * @param {String=} [val = abc] some description', ' */'].join('\n'), {
           unwrap: true,
           sloppy: true
         })
-        .should.eql({
+        , {
           description: '',
           tags: [
             {
@@ -2368,13 +2390,13 @@ describe('parse tag', function() {
         });
     });
 
-    it('default string', function() {
-      comments
+    it('default string', () => {
+      assert.deepEqual(comments
         .parseComment(['/**', ' * @param {String} [val="foo"] some description', ' */'].join('\n'), {
           unwrap: true,
           sloppy: true
         })
-        .should.eql({
+        , {
           description: '',
           tags: [
             {
@@ -2394,13 +2416,13 @@ describe('parse tag', function() {
         });
     });
 
-    it('default string surrounded by whitespace', function() {
-      comments
+    it('default string surrounded by whitespace', () => {
+      assert.deepEqual(comments
         .parseComment(['/**', " * @param {String} [val=   'foo'  ] some description", ' */'].join('\n'), {
           unwrap: true,
           sloppy: true
         })
-        .should.eql({
+        , {
           description: '',
           tags: [
             {
@@ -2420,13 +2442,13 @@ describe('parse tag', function() {
         });
     });
 
-    it('should preserve whitespace in default string', function() {
-      comments
+    it('should preserve whitespace in default string', () => {
+      assert.deepEqual(comments
         .parseComment(['/**', ' * @param {String} [val=   "   foo"  ] some description', ' */'].join('\n'), {
           unwrap: true,
           sloppy: true
         })
-        .should.eql({
+        , {
           description: '',
           tags: [
             {
@@ -2446,13 +2468,13 @@ describe('parse tag', function() {
         });
     });
 
-    it('default array', function() {
-      comments
+    it('default array', () => {
+      assert.deepEqual(comments
         .parseComment(['/**', " * @param {String} [val=['foo']] some description", ' */'].join('\n'), {
           unwrap: true,
           sloppy: true
         })
-        .should.eql({
+        , {
           description: '',
           tags: [
             {
@@ -2472,13 +2494,13 @@ describe('parse tag', function() {
         });
     });
 
-    it('default array', function() {
-      comments
+    it('default array', () => {
+      assert.deepEqual(comments
         .parseComment(['/**', " * @param {String} [val=['foo']] some description", ' */'].join('\n'), {
           unwrap: true,
           sloppy: true
         })
-        .should.eql({
+        , {
           description: '',
           tags: [
             {
@@ -2498,13 +2520,13 @@ describe('parse tag', function() {
         });
     });
 
-    it('default array within white spaces', function() {
-      comments
+    it('default array within white spaces', () => {
+      assert.deepEqual(comments
         .parseComment(['/**', " * @param {String} [val = [ 'foo' ]] some description", ' */'].join('\n'), {
           unwrap: true,
           sloppy: true
         })
-        .should.eql({
+        , {
           description: '',
           tags: [
             {
@@ -2524,8 +2546,8 @@ describe('parse tag', function() {
         });
     });
 
-    it('line numbers', function() {
-      var res = comments.parseComment(
+    it('line numbers', () => {
+      let res = comments.parseComment(
         [
           '/**',
           ' * @constructor',
@@ -2542,14 +2564,14 @@ describe('parse tag', function() {
         }
       );
 
-      res.tags[0].should.have.property('lineNumber', 1);
-      res.tags[1].should.have.property('lineNumber', 2);
-      res.tags[2].should.have.property('lineNumber', 3);
-      res.tags[3].should.have.property('lineNumber', 5);
+      assert(hasProperty(res.tags[0], 'lineNumber', 1));
+      assert(hasProperty(res.tags[1], 'lineNumber', 2));
+      assert(hasProperty(res.tags[2], 'lineNumber', 3));
+      assert(hasProperty(res.tags[3], 'lineNumber', 5));
     });
 
-    it('example caption', function() {
-      var res = comments.parseComment(
+    it('example caption', () => {
+      let res = comments.parseComment(
         ['/**', ' * @example <caption>hi</caption>', " * f('blah'); // => undefined", ' */'].join('\n'),
         {
           unwrap: true,
@@ -2557,12 +2579,12 @@ describe('parse tag', function() {
         }
       );
 
-      res.tags[0].description.should.eql("f('blah'); // => undefined");
-      res.tags[0].caption.should.eql('hi');
+      assert.deepEqual(res.tags[0].description, "f('blah'); // => undefined");
+      assert.deepEqual(res.tags[0].caption, 'hi');
     });
 
-    it('should handle \\r\\n line endings correctly', function() {
-      var res = comments.parseComment(
+    it('should handle \\r\\n line endings correctly', () => {
+      let res = comments.parseComment(
         [
           '/**',
           ' * @param {string} foo',
@@ -2578,44 +2600,44 @@ describe('parse tag', function() {
         }
       );
 
-      res.tags[0].should.have.property('lineNumber', 1);
-      res.tags[1].should.have.property('lineNumber', 2);
-      res.tags[2].should.have.property('lineNumber', 4);
+      assert(hasProperty(res.tags[0], 'lineNumber', 1));
+      assert(hasProperty(res.tags[1], 'lineNumber', 2));
+      assert(hasProperty(res.tags[2], 'lineNumber', 4));
     });
   });
 
-  describe('optional properties', function() {
+  describe('optional properties', () => {
     // should fail since sloppy option not set
-    it('failure 0', function() {
-      comments
+    it('failure 0', () => {
+      assert.deepEqual(comments
         .parseComment(['/**', ' * @property {String} [val] some description', ' */'].join('\n'), {
           unwrap: true
         })
-        .should.eql({
+        , {
           description: '',
           tags: []
         });
     });
 
-    it('failure 1', function() {
-      comments
+    it('failure 1', () => {
+      assert.deepEqual(comments
         .parseComment(['/**', ' * @property [val', ' */'].join('\n'), {
           unwrap: true,
           sloppy: true
         })
-        .should.eql({
+        , {
           description: '',
           tags: []
         });
     });
 
-    it('success 1', function() {
-      comments
+    it('success 1', () => {
+      assert.deepEqual(comments
         .parseComment(['/**', ' * @property {String} [val]', ' */'].join('\n'), {
           unwrap: true,
           sloppy: true
         })
-        .should.eql({
+        , {
           description: '',
           tags: [
             {
@@ -2634,13 +2656,13 @@ describe('parse tag', function() {
         });
     });
 
-    it('success 2', function() {
-      comments
+    it('success 2', () => {
+      assert.deepEqual(comments
         .parseComment(['/**', ' * @property {String=} val', ' */'].join('\n'), {
           unwrap: true,
           sloppy: true
         })
-        .should.eql({
+        , {
           description: '',
           tags: [
             {
@@ -2659,13 +2681,13 @@ describe('parse tag', function() {
         });
     });
 
-    it('success 3', function() {
-      comments
+    it('success 3', () => {
+      assert.deepEqual(comments
         .parseComment(['/**', ' * @property {String=} [val=abc] some description', ' */'].join('\n'), {
           unwrap: true,
           sloppy: true
         })
-        .should.eql({
+        , {
           description: '',
           tags: [
             {
@@ -2685,13 +2707,13 @@ describe('parse tag', function() {
         });
     });
 
-    it('success 4', function() {
-      comments
+    it('success 4', () => {
+      assert.deepEqual(comments
         .parseComment(['/**', ' * @property {String=} [val = abc] some description', ' */'].join('\n'), {
           unwrap: true,
           sloppy: true
         })
-        .should.eql({
+        , {
           description: '',
           tags: [
             {
@@ -2711,13 +2733,13 @@ describe('parse tag', function() {
         });
     });
 
-    it('default string', function() {
-      comments
+    it('default string', () => {
+      assert.deepEqual(comments
         .parseComment(['/**', ' * @property {String} [val="foo"] some description', ' */'].join('\n'), {
           unwrap: true,
           sloppy: true
         })
-        .should.eql({
+        , {
           description: '',
           tags: [
             {
@@ -2737,13 +2759,13 @@ describe('parse tag', function() {
         });
     });
 
-    it('default string surrounded by whitespace', function() {
-      comments
+    it('default string surrounded by whitespace', () => {
+       assert.deepEqual(comments
         .parseComment(['/**', " * @property {String} [val=   'foo'  ] some description", ' */'].join('\n'), {
           unwrap: true,
           sloppy: true
         })
-        .should.eql({
+       , {
           description: '',
           tags: [
             {
@@ -2763,13 +2785,13 @@ describe('parse tag', function() {
         });
     });
 
-    it('should preserve whitespace in default string', function() {
-      comments
+    it('should preserve whitespace in default string', () => {
+      assert.deepEqual(comments
         .parseComment(['/**', ' * @property {String} [val=   "   foo"  ] some description', ' */'].join('\n'), {
           unwrap: true,
           sloppy: true
         })
-        .should.eql({
+        , {
           description: '',
           tags: [
             {
@@ -2789,13 +2811,13 @@ describe('parse tag', function() {
         });
     });
 
-    it('default array', function() {
-      comments
+    it('default array', () => {
+      assert.deepEqual(comments
         .parseComment(['/**', " * @property {String} [val=['foo']] some description", ' */'].join('\n'), {
           unwrap: true,
           sloppy: true
         })
-        .should.eql({
+        , {
           description: '',
           tags: [
             {
@@ -2815,13 +2837,13 @@ describe('parse tag', function() {
         });
     });
 
-    it('default array within white spaces', function() {
-      comments
+    it('default array within white spaces', () => {
+      assert.deepEqual(comments
         .parseComment(['/**', " * @property {String} [val = [ 'foo' ]] some description", ' */'].join('\n'), {
           unwrap: true,
           sloppy: true
         })
-        .should.eql({
+        , {
           description: '',
           tags: [
             {
@@ -2842,164 +2864,164 @@ describe('parse tag', function() {
     });
   });
 
-  describe('recovery tests', function() {
-    it('params 2', function() {
-      var res = comments.parseComment(['@param f', '@param {string} f2'].join('\n'), {
+  describe('recovery tests', () => {
+    it('params 2', () => {
+      let res = comments.parseComment(['@param f', '@param {string} f2'].join('\n'), {
         recoverable: true
       });
 
       // ensure both parameters are OK
-      res.tags.should.have.length(2);
-      res.tags[0].should.have.property('title', 'param');
-      res.tags[0].should.have.property('type', null);
-      res.tags[0].should.have.property('name', 'f');
+      assert.equal(res.tags.length, 2);
+      assert(hasProperty(res.tags[0], 'title', 'param'));
+      assert(hasProperty(res.tags[0], 'type', null));
+      assert(hasProperty(res.tags[0], 'name', 'f'));
 
-      res.tags[1].should.have.property('title', 'param');
-      res.tags[1].should.have.property('type');
-      res.tags[1].type.should.have.property('name', 'string');
-      res.tags[1].type.should.have.property('type', 'NameExpression');
-      res.tags[1].should.have.property('name', 'f2');
+      assert(hasProperty(res.tags[1], 'title', 'param'));
+      assert(hasProperty(res.tags[1], 'type'));
+      assert(hasProperty(res.tags[1].type, 'name', 'string'));
+      assert(hasProperty(res.tags[1].type, 'type', 'NameExpression'));
+      assert(hasProperty(res.tags[1], 'name', 'f2'));
     });
 
-    it('params 2', function() {
-      var res = comments.parseComment(['@param string f', '@param {string} f2'].join('\n'), {
+    it('params 2', () => {
+      let res = comments.parseComment(['@param string f', '@param {string} f2'].join('\n'), {
         recoverable: true
       });
 
       // ensure first parameter is OK even with invalid type name
-      res.tags.should.have.length(2);
-      res.tags[0].should.have.property('title', 'param');
-      res.tags[0].should.have.property('type', null);
-      res.tags[0].should.have.property('name', 'string');
-      res.tags[0].should.have.property('description', 'f');
+      assert.equal(res.tags.length, 2);
+      assert(hasProperty(res.tags[0], 'title', 'param'));
+      assert(hasProperty(res.tags[0], 'type', null));
+      assert(hasProperty(res.tags[0], 'name', 'string'));
+      assert(hasProperty(res.tags[0], 'description', 'f'));
 
-      res.tags[1].should.have.property('title', 'param');
-      res.tags[1].should.have.property('type');
-      res.tags[1].type.should.have.property('name', 'string');
-      res.tags[1].type.should.have.property('type', 'NameExpression');
-      res.tags[1].should.have.property('name', 'f2');
+      assert(hasProperty(res.tags[1], 'title', 'param'));
+      assert(hasProperty(res.tags[1], 'type'));
+      assert(hasProperty(res.tags[1].type, 'name', 'string'));
+      assert(hasProperty(res.tags[1].type, 'type', 'NameExpression'));
+      assert(hasProperty(res.tags[1], 'name', 'f2'));
     });
 
-    it('return 1', function() {
-      var res = comments.parseComment(['@returns'].join('\n'), {
+    it('return 1', () => {
+      let res = comments.parseComment(['@returns'].join('\n'), {
         recoverable: true
       });
 
       // return tag should exist
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'returns');
-      res.tags[0].should.have.property('type', null);
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'returns'));
+      assert(hasProperty(res.tags[0], 'type', null));
     });
-    it('return 2', function() {
-      var res = comments.parseComment(['@returns', '@param {string} f2'].join('\n'), {
+    it('return 2', () => {
+      let res = comments.parseComment(['@returns', '@param {string} f2'].join('\n'), {
         recoverable: true
       });
 
       // return tag should exist as well as next tag
-      res.tags.should.have.length(2);
-      res.tags[0].should.have.property('title', 'returns');
-      res.tags[0].should.have.property('type', null);
+      assert.equal(res.tags.length, 2);
+      assert(hasProperty(res.tags[0], 'title', 'returns'));
+      assert(hasProperty(res.tags[0], 'type', null));
 
-      res.tags[1].should.have.property('title', 'param');
-      res.tags[1].should.have.property('type');
-      res.tags[1].type.should.have.property('name', 'string');
-      res.tags[1].type.should.have.property('type', 'NameExpression');
-      res.tags[1].should.have.property('name', 'f2');
+      assert(hasProperty(res.tags[1], 'title', 'param'));
+      assert(hasProperty(res.tags[1], 'type'));
+      assert(hasProperty(res.tags[1].type, 'name', 'string'));
+      assert(hasProperty(res.tags[1].type, 'type', 'NameExpression'));
+      assert(hasProperty(res.tags[1], 'name', 'f2'));
     });
 
-    it('return no type', function() {
-      var res = comments.parseComment(['@return a value'].join('\n'));
+    it('return no type', () => {
+      let res = comments.parseComment(['@return a value'].join('\n'));
 
       // return tag should exist
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'return');
-      res.tags[0].should.have.property('type', null);
-      res.tags[0].should.have.property('description', 'a value');
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'return'));
+      assert(hasProperty(res.tags[0], 'type', null));
+      assert(hasProperty(res.tags[0], 'description', 'a value'));
     });
 
-    it('extra @ 1', function() {
-      var res = comments.parseComment(['@', '@returns', '@param {string} f2'].join('\n'), {
+    it('extra @ 1', () => {
+      let res = comments.parseComment(['@', '@returns', '@param {string} f2'].join('\n'), {
         recoverable: true
       });
 
       // empty tag name shouldn't affect subsequent tags
-      res.tags.should.have.length(3);
-      res.tags[0].should.have.property('title', '');
-      res.tags[0].should.not.have.property('type');
+      assert.equal(res.tags.length, 3);
+      assert(hasProperty(res.tags[0], 'title', ''));
+      assert(!res.tags[0].hasOwnProperty('type'));
 
-      res.tags[1].should.have.property('title', 'returns');
-      res.tags[1].should.have.property('type', null);
+      assert(hasProperty(res.tags[1], 'title', 'returns'));
+      assert(hasProperty(res.tags[1], 'type', null));
 
-      res.tags[2].should.have.property('title', 'param');
-      res.tags[2].should.have.property('type');
-      res.tags[2].type.should.have.property('name', 'string');
-      res.tags[2].type.should.have.property('type', 'NameExpression');
-      res.tags[2].should.have.property('name', 'f2');
+      assert(hasProperty(res.tags[2], 'title', 'param'));
+      assert(hasProperty(res.tags[2], 'type'));
+      assert(hasProperty(res.tags[2].type, 'name', 'string'));
+      assert(hasProperty(res.tags[2].type, 'type', 'NameExpression'));
+      assert(hasProperty(res.tags[2], 'name', 'f2'));
     });
 
-    it('extra @ 2', function() {
-      var res = comments.parseComment(['@ invalid name', '@param {string} f2'].join('\n'), {
+    it('extra @ 2', () => {
+      let res = comments.parseComment(['@ invalid name', '@param {string} f2'].join('\n'), {
         recoverable: true
       });
 
       // empty tag name shouldn't affect subsequent tags
-      res.tags.should.have.length(2);
-      res.tags[0].should.have.property('title', '');
-      res.tags[0].should.not.have.property('type');
-      res.tags[0].should.not.have.property('name');
-      res.tags[0].should.have.property('description', 'invalid name');
+      assert.equal(res.tags.length, 2);
+      assert(hasProperty(res.tags[0], 'title', ''));
+      assert(!res.tags[0].hasOwnProperty('type'));
+      assert(!res.tags[0].hasOwnProperty('name'));
+      assert(hasProperty(res.tags[0], 'description', 'invalid name'));
 
-      res.tags[1].should.have.property('title', 'param');
-      res.tags[1].should.have.property('type');
-      res.tags[1].type.should.have.property('name', 'string');
-      res.tags[1].type.should.have.property('type', 'NameExpression');
-      res.tags[1].should.have.property('name', 'f2');
+      assert(hasProperty(res.tags[1], 'title', 'param'));
+      assert(hasProperty(res.tags[1], 'type'));
+      assert(hasProperty(res.tags[1].type, 'name', 'string'));
+      assert(hasProperty(res.tags[1].type, 'type', 'NameExpression'));
+      assert(hasProperty(res.tags[1], 'name', 'f2'));
     });
 
-    it('invalid tag 1', function() {
-      var res = comments.parseComment(['@111 invalid name', '@param {string} f2'].join('\n'), {
+    it('invalid tag 1', () => {
+      let res = comments.parseComment(['@111 invalid name', '@param {string} f2'].join('\n'), {
         recoverable: true
       });
 
       // invalid tag name shouldn't affect subsequent tags
-      res.tags.should.have.length(2);
-      res.tags[0].should.have.property('title', '111');
-      res.tags[0].should.not.have.property('type');
-      res.tags[0].should.not.have.property('name');
-      res.tags[0].should.have.property('description', 'invalid name');
+      assert.equal(res.tags.length, 2);
+      assert(hasProperty(res.tags[0], 'title', '111'));
+      assert(!res.tags[0].hasOwnProperty('type'));
+      assert(!res.tags[0].hasOwnProperty('name'));
+      assert(hasProperty(res.tags[0], 'description', 'invalid name'));
 
-      res.tags[1].should.have.property('title', 'param');
-      res.tags[1].should.have.property('type');
-      res.tags[1].type.should.have.property('name', 'string');
-      res.tags[1].type.should.have.property('type', 'NameExpression');
-      res.tags[1].should.have.property('name', 'f2');
+      assert(hasProperty(res.tags[1], 'title', 'param'));
+      assert(hasProperty(res.tags[1], 'type'));
+      assert(hasProperty(res.tags[1].type, 'name', 'string'));
+      assert(hasProperty(res.tags[1].type, 'type', 'NameExpression'));
+      assert(hasProperty(res.tags[1], 'name', 'f2'));
     });
 
-    it('invalid tag 1', function() {
-      var res = comments.parseComment(['@111', '@param {string} f2'].join('\n'), {
+    it('invalid tag 1', () => {
+      let res = comments.parseComment(['@111', '@param {string} f2'].join('\n'), {
         recoverable: true
       });
 
       // invalid tag name shouldn't affect subsequent tags
-      res.tags.should.have.length(2);
-      res.tags[0].should.have.property('title', '111');
-      res.tags[0].should.not.have.property('type');
-      res.tags[0].should.not.have.property('name');
-      res.tags[0].should.have.property('description', null);
+      assert.equal(res.tags.length, 2);
+      assert(hasProperty(res.tags[0], 'title', '111'));
+      assert(!res.tags[0].hasOwnProperty('type'));
+      assert(!res.tags[0].hasOwnProperty('name'));
+      assert(hasProperty(res.tags[0], 'description', null));
 
-      res.tags[1].should.have.property('title', 'param');
-      res.tags[1].should.have.property('type');
-      res.tags[1].type.should.have.property('name', 'string');
-      res.tags[1].type.should.have.property('type', 'NameExpression');
-      res.tags[1].should.have.property('name', 'f2');
+      assert(hasProperty(res.tags[1], 'title', 'param'));
+      assert(hasProperty(res.tags[1], 'type'));
+      assert(hasProperty(res.tags[1].type, 'name', 'string'));
+      assert(hasProperty(res.tags[1].type, 'type', 'NameExpression'));
+      assert(hasProperty(res.tags[1], 'name', 'f2'));
     });
 
-    it('should not crash on bad type in @param without name', function() {
-      var res = comments.parseComment('@param {Function(DOMNode)}', {
+    it('should not crash on bad type in @param without name', () => {
+      let res = comments.parseComment('@param {Function(DOMNode)}', {
         recoverable: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.eql({
+      assert.equal(res.tags.length, 1);
+      assert.deepEqual(res.tags[0], {
         description: null,
         errors: ['not reach to EOF', 'Missing or invalid tag name'],
         name: null,
@@ -3008,13 +3030,13 @@ describe('parse tag', function() {
       });
     });
 
-    it('should not crash on bad type in @param in sloppy mode', function() {
-      var res = comments.parseComment('@param {int[} [x]', {
+    it('should not crash on bad type in @param in sloppy mode', () => {
+      let res = comments.parseComment('@param {int[} [x]', {
         sloppy: true,
         recoverable: true
       });
-      res.tags.should.have.length(1);
-      res.tags[0].should.eql({
+      assert.equal(res.tags.length, 1);
+      assert.deepEqual(res.tags[0], {
         description: null,
         errors: ['expected an array-style type declaration (int[])'],
         name: 'x',
@@ -3024,9 +3046,9 @@ describe('parse tag', function() {
     });
   });
 
-  describe('@ mark contained descriptions', function() {
-    it('comment description #10', function() {
-      var res = comments.parseComment(
+  describe('@ mark contained descriptions', () => {
+    it('comment description #10', () => {
+      let res = comments.parseComment(
         [
           '/**',
           ' * Prevents the default action. It is equivalent to',
@@ -3063,9 +3085,8 @@ describe('parse tag', function() {
       ]);
     });
 
-    it('tag description', function() {
-      comments
-        .parseComment(
+    it('tag description', () => {
+      assert.deepEqual(comments.parseComment(
           [
             '/**',
             ' * Prevents the default action. It is equivalent to',
@@ -3077,10 +3098,10 @@ describe('parse tag', function() {
           {
             unwrap: true,
             sloppy: true
-          }
-        )
-        .should.eql({
+          })
+        , {
           description: 'Prevents the default action. It is equivalent to',
+          inlineTags: [],
           tags: [
             {
               title: 'param',
@@ -3101,53 +3122,53 @@ describe('parse tag', function() {
     });
   });
 
-  describe('function', function() {
-    it('recognize "function" type', function() {
-      var res = comments.parseComment('@param {function} foo description', {});
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'param');
-      res.tags[0].should.have.property('type');
-      res.tags[0].type.should.eql({
+  describe('function', () => {
+    it('recognize "function" type', () => {
+      let res = comments.parseComment('@param {function} foo description', {});
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'param'));
+      assert(hasProperty(res.tags[0], 'type'));
+      assert.deepEqual(res.tags[0].type, {
         name: 'function',
         type: 'NameExpression'
       });
-      res.tags[0].should.have.property('name', 'foo');
-      res.tags[0].should.have.property('description', 'description');
+      assert(hasProperty(res.tags[0], 'name', 'foo'));
+      assert(hasProperty(res.tags[0], 'description', 'description'));
     });
   });
 
-  describe('tagged namepaths', function() {
-    it('recognize module:', function() {
-      var res = comments.parseComment(['@alias module:Foo.bar'].join('\n'), {});
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'alias');
-      res.tags[0].should.have.property('name', 'module:Foo.bar');
-      res.tags[0].should.have.property('description', null);
+  describe('tagged namepaths', () => {
+    it('recognize module:', () => {
+      let res = comments.parseComment(['@alias module:Foo.bar'].join('\n'), {});
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'alias'));
+      assert(hasProperty(res.tags[0], 'name', 'module:Foo.bar'));
+      assert(hasProperty(res.tags[0], 'description', null));
     });
 
-    it('recognize external:', function() {
-      var res = comments.parseComment(['@param {external:Foo.bar} baz description'].join('\n'), {});
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'param');
-      res.tags[0].type.should.eql({
+    it('recognize external:', () => {
+      let res = comments.parseComment(['@param {external:Foo.bar} baz description'].join('\n'), {});
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'param'));
+      assert.deepEqual(res.tags[0].type, {
         name: 'external:Foo.bar',
         type: 'NameExpression'
       });
-      res.tags[0].should.have.property('name', 'baz');
-      res.tags[0].should.have.property('description', 'description');
+      assert(hasProperty(res.tags[0], 'name', 'baz'));
+      assert(hasProperty(res.tags[0], 'description', 'description'));
     });
 
-    it('recognize event:', function() {
-      var res = comments.parseComment(['@function event:Foo.bar'].join('\n'), {});
-      res.tags.should.have.length(1);
-      res.tags[0].should.have.property('title', 'function');
-      res.tags[0].should.have.property('name', 'event:Foo.bar');
-      res.tags[0].should.have.property('description', null);
+    it('recognize event:', () => {
+      let res = comments.parseComment(['@function event:Foo.bar'].join('\n'), {});
+      assert.equal(res.tags.length, 1);
+      assert(hasProperty(res.tags[0], 'title', 'function'));
+      assert(hasProperty(res.tags[0], 'name', 'event:Foo.bar'));
+      assert(hasProperty(res.tags[0], 'description', null));
     });
 
-    it('invalid bogus:', function() {
-      var res = comments.parseComment(['@method bogus:Foo.bar'].join('\n'), {});
-      res.tags.should.have.length(0);
+    it('invalid bogus:', () => {
+      let res = comments.parseComment(['@method bogus:Foo.bar'].join('\n'), {});
+      assert.equal(res.tags.length, 0);
     });
   });
 });

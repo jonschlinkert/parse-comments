@@ -1,7 +1,7 @@
 'use strict';
 
 require('mocha');
-require('should');
+const assert = require('assert');
 const doctrine = require('doctrine');
 
 /**
@@ -11,11 +11,11 @@ const doctrine = require('doctrine');
  * https://github.com/eslint/doctrine/LICENSE.esprima
  */
 
-describe('parse type (doctrine)', function() {
-  describe('parseType', function() {
-    it('union type closure-compiler extended', function() {
+describe('parse type (doctrine)', () => {
+  describe('parseType', () => {
+    it('union type closure-compiler extended', () => {
       let type = doctrine.parseType('string|number');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'UnionType',
         elements: [
           {
@@ -30,17 +30,17 @@ describe('parse type (doctrine)', function() {
       });
     });
 
-    it('empty union type', function() {
+    it('empty union type', () => {
       let type = doctrine.parseType('()');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'UnionType',
         elements: []
       });
     });
 
-    it('comma last array type', function() {
+    it('comma last array type', () => {
       let type = doctrine.parseType('[string,]');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'ArrayType',
         elements: [
           {
@@ -51,9 +51,9 @@ describe('parse type (doctrine)', function() {
       });
     });
 
-    it('array type of all literal', function() {
+    it('array type of all literal', () => {
       let type = doctrine.parseType('[*]');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'ArrayType',
         elements: [
           {
@@ -63,9 +63,9 @@ describe('parse type (doctrine)', function() {
       });
     });
 
-    it('array type of nullable literal', function() {
+    it('array type of nullable literal', () => {
       let type = doctrine.parseType('[?]');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'ArrayType',
         elements: [
           {
@@ -75,17 +75,17 @@ describe('parse type (doctrine)', function() {
       });
     });
 
-    it('comma last record type', function() {
+    it('comma last record type', () => {
       let type = doctrine.parseType('{,}');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'RecordType',
         fields: []
       });
     });
 
-    it('type application', function() {
+    it('type application', () => {
       let type = doctrine.parseType('Array.<String>');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'TypeApplication',
         expression: {
           type: 'NameExpression',
@@ -100,9 +100,9 @@ describe('parse type (doctrine)', function() {
       });
     });
 
-    it('type application with NullableLiteral', function() {
+    it('type application with NullableLiteral', () => {
       let type = doctrine.parseType('Array<?>');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'TypeApplication',
         expression: {
           type: 'NameExpression',
@@ -116,9 +116,9 @@ describe('parse type (doctrine)', function() {
       });
     });
 
-    it('type application with multiple patterns', function() {
+    it('type application with multiple patterns', () => {
       let type = doctrine.parseType('Array.<String, Number>');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'TypeApplication',
         expression: {
           type: 'NameExpression',
@@ -137,9 +137,9 @@ describe('parse type (doctrine)', function() {
       });
     });
 
-    it('type application without dot', function() {
+    it('type application without dot', () => {
       let type = doctrine.parseType('Array<String>');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'TypeApplication',
         expression: {
           type: 'NameExpression',
@@ -154,9 +154,9 @@ describe('parse type (doctrine)', function() {
       });
     });
 
-    it('array-style type application', function() {
+    it('array-style type application', () => {
       let type = doctrine.parseType('String[]');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'TypeApplication',
         expression: {
           type: 'NameExpression',
@@ -171,18 +171,18 @@ describe('parse type (doctrine)', function() {
       });
     });
 
-    it('function type simple', function() {
+    it('function type simple', () => {
       let type = doctrine.parseType('function()');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'FunctionType',
         params: [],
         result: null
       });
     });
 
-    it('function type with name', function() {
+    it('function type with name', () => {
       let type = doctrine.parseType('function(a)');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'FunctionType',
         params: [
           {
@@ -193,9 +193,9 @@ describe('parse type (doctrine)', function() {
         result: null
       });
     });
-    it('function type with name and type', function() {
+    it('function type with name and type', () => {
       let type = doctrine.parseType('function(a:b)');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'FunctionType',
         params: [
           {
@@ -210,9 +210,9 @@ describe('parse type (doctrine)', function() {
         result: null
       });
     });
-    it('function type with optional param', function() {
+    it('function type with optional param', () => {
       let type = doctrine.parseType('function(a=)');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'FunctionType',
         params: [
           {
@@ -226,9 +226,9 @@ describe('parse type (doctrine)', function() {
         result: null
       });
     });
-    it('function type with optional param name and type', function() {
+    it('function type with optional param name and type', () => {
       let type = doctrine.parseType('function(a:b=)');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'FunctionType',
         params: [
           {
@@ -246,9 +246,9 @@ describe('parse type (doctrine)', function() {
         result: null
       });
     });
-    it('function type with rest param', function() {
+    it('function type with rest param', () => {
       let type = doctrine.parseType('function(...a)');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'FunctionType',
         params: [
           {
@@ -262,9 +262,9 @@ describe('parse type (doctrine)', function() {
         result: null
       });
     });
-    it('function type with rest param name and type', function() {
+    it('function type with rest param name and type', () => {
       let type = doctrine.parseType('function(...a:b)');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'FunctionType',
         params: [
           {
@@ -283,9 +283,9 @@ describe('parse type (doctrine)', function() {
       });
     });
 
-    it('function type with optional rest param', function() {
+    it('function type with optional rest param', () => {
       let type = doctrine.parseType('function(...a=)');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'FunctionType',
         params: [
           {
@@ -302,9 +302,9 @@ describe('parse type (doctrine)', function() {
         result: null
       });
     });
-    it('function type with optional rest param name and type', function() {
+    it('function type with optional rest param name and type', () => {
       let type = doctrine.parseType('function(...a:b=)');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'FunctionType',
         params: [
           {
@@ -326,11 +326,11 @@ describe('parse type (doctrine)', function() {
       });
     });
 
-    it('string value in type', function() {
+    it('string value in type', () => {
       let type;
 
       type = doctrine.parseType("{'ok':String}");
-      type.should.eql({
+      assert.deepEqual(type, {
         fields: [
           {
             key: 'ok',
@@ -345,7 +345,7 @@ describe('parse type (doctrine)', function() {
       });
 
       type = doctrine.parseType('{"\\r\\n\\t\\u2028\\x20\\u20\\b\\f\\v\\\r\n\\\n\\0\\07\\012\\o":String}');
-      type.should.eql({
+      assert.deepEqual(type, {
         fields: [
           {
             key: '\r\n\t\u2028\x20u20\b\f\v\0\u0007\u000ao',
@@ -359,13 +359,13 @@ describe('parse type (doctrine)', function() {
         type: 'RecordType'
       });
 
-      doctrine.parseType.bind(doctrine, '{\'ok":String}').should.throw('unexpected quote');
-      doctrine.parseType.bind(doctrine, "{'o\n':String}").should.throw('unexpected quote');
+      assert.throws(() => doctrine.parseType('{\'ok":String}'), /unexpected quote/);
+      assert.throws(() => doctrine.parseType("{'o\n':String}"), /unexpected quote/);
     });
 
-    it('number value in type', function() {
+    it('number value in type', () => {
       let type = doctrine.parseType('{20:String}');
-      type.should.eql({
+      assert.deepEqual(type, {
         fields: [
           {
             key: '20',
@@ -380,7 +380,7 @@ describe('parse type (doctrine)', function() {
       });
 
       type = doctrine.parseType('{.2:String, 30:Number, 0x20:String}');
-      type.should.eql({
+      assert.deepEqual(type, {
         fields: [
           {
             key: '0.2',
@@ -411,7 +411,7 @@ describe('parse type (doctrine)', function() {
       });
 
       type = doctrine.parseType('{0X2:String, 0:Number, 100e200:String, 10e-20:Number}');
-      type.should.eql({
+      assert.deepEqual(type, {
         fields: [
           {
             key: '2',
@@ -449,34 +449,34 @@ describe('parse type (doctrine)', function() {
         type: 'RecordType'
       });
 
-      doctrine.parseType.bind(doctrine, '{0x:String}').should.throw('unexpected token');
-      doctrine.parseType.bind(doctrine, '{0x').should.throw('unexpected token');
-      doctrine.parseType.bind(doctrine, '{0xd').should.throw('unexpected token');
-      doctrine.parseType.bind(doctrine, '{0x2_:').should.throw('unexpected token');
-      doctrine.parseType.bind(doctrine, '{021:').should.throw('unexpected token');
-      doctrine.parseType.bind(doctrine, '{021_:').should.throw('unexpected token');
-      doctrine.parseType.bind(doctrine, '{021').should.throw('unexpected token');
-      doctrine.parseType.bind(doctrine, '{08').should.throw('unexpected token');
-      doctrine.parseType.bind(doctrine, '{0y').should.throw('unexpected token');
-      doctrine.parseType.bind(doctrine, '{0').should.throw('unexpected token');
-      doctrine.parseType.bind(doctrine, '{100e2').should.throw('unexpected token');
-      doctrine.parseType.bind(doctrine, '{100e-2').should.throw('unexpected token');
-      doctrine.parseType.bind(doctrine, '{100e-200:').should.throw('unexpected token');
-      doctrine.parseType.bind(doctrine, '{100e:').should.throw('unexpected token');
-      doctrine.parseType.bind(doctrine, 'function(number=, string)').should.throw('not reach to EOF');
+      assert.throws(() => doctrine.parseType('{0x:String}'), /unexpected token/);
+      assert.throws(() => doctrine.parseType('{0x'), /unexpected token/);
+      assert.throws(() => doctrine.parseType('{0xd'), /unexpected token/);
+      assert.throws(() => doctrine.parseType('{0x2_:'), /unexpected token/);
+      assert.throws(() => doctrine.parseType('{021:'), /unexpected token/);
+      assert.throws(() => doctrine.parseType('{021_:'), /unexpected token/);
+      assert.throws(() => doctrine.parseType('{021'), /unexpected token/);
+      assert.throws(() => doctrine.parseType('{08'), /unexpected token/);
+      assert.throws(() => doctrine.parseType('{0y'), /unexpected token/);
+      assert.throws(() => doctrine.parseType('{0'), /unexpected token/);
+      assert.throws(() => doctrine.parseType('{100e2'), /unexpected token/);
+      assert.throws(() => doctrine.parseType('{100e-2'), /unexpected token/);
+      assert.throws(() => doctrine.parseType('{100e-200:'), /unexpected token/);
+      assert.throws(() => doctrine.parseType('{100e:'), /unexpected token/);
+      assert.throws(() => doctrine.parseType('function(number=, string)'), /not reach to EOF/);
     });
 
-    it('dotted type', function() {
+    it('dotted type', () => {
       let type = doctrine.parseType('Cocoa.Cappuccino');
-      type.should.eql({
+      assert.deepEqual(type, {
         name: 'Cocoa.Cappuccino',
         type: 'NameExpression'
       });
     });
 
-    it('rest array type', function() {
+    it('rest array type', () => {
       let type = doctrine.parseType('[string,...string]');
-      type.should.eql({
+      assert.deepEqual(type, {
         elements: [
           {
             name: 'string',
@@ -494,9 +494,9 @@ describe('parse type (doctrine)', function() {
       });
     });
 
-    it('nullable type', function() {
+    it('nullable type', () => {
       let type = doctrine.parseType('string?');
-      type.should.eql({
+      assert.deepEqual(type, {
         expression: {
           name: 'string',
           type: 'NameExpression'
@@ -506,9 +506,9 @@ describe('parse type (doctrine)', function() {
       });
     });
 
-    it('non-nullable type', function() {
+    it('non-nullable type', () => {
       let type = doctrine.parseType('string!');
-      type.should.eql({
+      assert.deepEqual(type, {
         expression: {
           name: 'string',
           type: 'NameExpression'
@@ -518,9 +518,9 @@ describe('parse type (doctrine)', function() {
       });
     });
 
-    it('toplevel multiple pipe type', function() {
+    it('toplevel multiple pipe type', () => {
       let type = doctrine.parseType('string|number|Test');
-      type.should.eql({
+      assert.deepEqual(type, {
         elements: [
           {
             name: 'string',
@@ -539,59 +539,59 @@ describe('parse type (doctrine)', function() {
       });
     });
 
-    it('string literal type', function() {
+    it('string literal type', () => {
       let type = doctrine.parseType('"Hello, World"');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'StringLiteralType',
         value: 'Hello, World'
       });
     });
 
-    it('numeric literal type', function() {
+    it('numeric literal type', () => {
       let type = doctrine.parseType('32');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'NumericLiteralType',
         value: 32
       });
       type = doctrine.parseType('-142.42');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'NumericLiteralType',
         value: -142.42
       });
     });
 
-    it('boolean literal type', function() {
+    it('boolean literal type', () => {
       let type = doctrine.parseType('true');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'BooleanLiteralType',
         value: true
       });
       type = doctrine.parseType('false');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'BooleanLiteralType',
         value: false
       });
     });
 
-    it('illegal tokens', function() {
-      doctrine.parseType.bind(doctrine, '.').should.throw('unexpected token');
-      doctrine.parseType.bind(doctrine, '.d').should.throw('unexpected token');
-      doctrine.parseType.bind(doctrine, '(').should.throw('unexpected token');
-      doctrine.parseType.bind(doctrine, 'Test.').should.throw('unexpected token');
+    it('illegal tokens', () => {
+      assert.throws(() => doctrine.parseType('.', /unexpected token/));
+      assert.throws(() => doctrine.parseType('.d', /unexpected token/));
+      assert.throws(() => doctrine.parseType('(', /unexpected token/));
+      assert.throws(() => doctrine.parseType('Test.', /unexpected token/));
     });
   });
 
-  describe('parseParamType', function() {
-    it('question', function() {
+  describe('parseParamType', () => {
+    it('question', () => {
       let type = doctrine.parseParamType('?');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'NullableLiteral'
       });
     });
 
-    it('question option', function() {
+    it('question option', () => {
       let type = doctrine.parseParamType('?=');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'OptionalType',
         expression: {
           type: 'NullableLiteral'
@@ -599,9 +599,9 @@ describe('parse type (doctrine)', function() {
       });
     });
 
-    it('function option parameters former', function() {
+    it('function option parameters former', () => {
       let type = doctrine.parseParamType('function(?, number)');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'FunctionType',
         params: [
           {
@@ -616,9 +616,9 @@ describe('parse type (doctrine)', function() {
       });
     });
 
-    it('function option parameters latter', function() {
+    it('function option parameters latter', () => {
       let type = doctrine.parseParamType('function(number, ?)');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'FunctionType',
         params: [
           {
@@ -633,9 +633,9 @@ describe('parse type (doctrine)', function() {
       });
     });
 
-    it('function type union', function() {
+    it('function type union', () => {
       let type = doctrine.parseParamType('function(): ?|number');
-      type.should.eql({
+      assert.deepEqual(type, {
         type: 'UnionType',
         elements: [
           {

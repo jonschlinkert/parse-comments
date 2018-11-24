@@ -15,7 +15,8 @@ $ npm install --save parse-comments
 ## Usage
 
 ```js
-const comments = require('parse-comments');
+const Comments = require('parse-comments');
+const comments = new Comments();
 const ast = comments.parse(str);
 console.log(ast);
 ```
@@ -24,22 +25,19 @@ Parses a comment like this:
 
 ```js
 /**
- * Register a handler function to be called on a node of the given `type`.
- * Override a built-in handler `type`, or register a new type.
+ * Create an instance of `CustomClass` with the given `options`.
  *
- * ```js
- * comments.set('param', function(node) {
- *   // do stuff to node
- * });
- * ```
- * @param {String} `type` The `node.type` to call the handler on. You can override built-in middleware by registering a handler of the same name, or register a handler for rendering a new type.
- * @param {Function} `fn` The handler function
- * @return {Object} Returns the instance for chaining.
+ * @param {String} options
  * @api public
  */
 
-set(type, fn) {
-  // do stuff
+class CustomClass {
+  constructor(options) {
+    this.options = options;
+  }
+  set(type, fn) {
+    // do stuff
+  }
 }
 ```
 
@@ -49,93 +47,252 @@ Into an array of comment objects, like this:
 [
   {
     type: 'BlockComment',
-    val:
-      '\nRegister a handler function to be called on a node of the given `type`.\nOverride a built-in handler `type`, or register a new type.\n\n```js\ncomments.set("param", function(node) {\n  // do stuff to node\n});\n```\n@param {String} `type` The `node.type` to call the handler on. You can override built-in middleware by registering a handler of the same name, or register a handler for rendering a new type.\n@param {Function} `fn` The handler function\n@return {Object} Returns the instance for chaining.\n@api public',
-    range: [0, 549],
-    loc: {
-      start: {
-        line: 1,
-        column: 0
-      },
-      end: {
-        line: 14,
-        column: 3
-      }
-    },
-    codeStart: 551,
+    value: '\nCreate an instance of `CustomClass` with the given `options`.\n\n@param {String} options\n@api public',
+    range: [0, 117],
+    loc: { start: { line: 1, column: 0 }, end: { line: 6, column: 3 } },
+    codeStart: 119,
     raw:
-      '*\n * Register a handler function to be called on a node of the given `type`.\n * Override a built-in handler `type`, or register a new type.\n *\n * ```js\n * comments.set("param", function(node) {\n *   // do stuff to node\n * });\n * ```\n * @param {String} `type` The `node.type` to call the handler on. You can override built-in middleware by registering a handler of the same name, or register a handler for rendering a new type.\n * @param {Function} `fn` The handler function\n * @return {Object} Returns the instance for chaining.\n * @api public\n ',
+      '*\n * Create an instance of `CustomClass` with the given `options`.\n *\n * @param {String} options\n * @api public\n ',
     code: {
       context: {
-        type: 'method',
-        ctor: undefined,
-        name: 'undefinedset',
-        params: ['type', 'fn'],
-        string: 'undefinedset()'
+        type: 'class',
+        ctor: 'CustomClass',
+        name: 'CustomClass',
+        extends: undefined,
+        string: 'new CustomClass()'
       },
-      val: 'set(type, fn) {',
-      range: [551, 566],
-      loc: {
-        start: {
-          line: 16,
-          column: 0
-        },
-        end: {
-          line: 16,
-          column: 15
-        }
-      }
+      value: 'class CustomClass {',
+      range: [119, 138],
+      loc: { start: { line: 8, column: 0 }, end: { line: 8, column: 19 } }
     },
-    description:
-      'Register a handler function to be called on a node of the given `type`.\nOverride a built-in handler `type`, or register a new type.',
+    description: 'Create an instance of `CustomClass` with the given `options`.',
     footer: '',
-    examples: [
-      {
-        type: 'gfm',
-        raw: '```js\ncomments.set("param", function(node) {\n  // do stuff to node\n});\n```',
-        description: '',
-        language: 'js',
-        val: '\ncomments.set("param", function(node) {\n  // do stuff to node\n});\n'
-      }
-    ],
+    examples: [],
     tags: [
       {
         title: 'param',
-        name: 'type',
-        description:
-          'The `node.type` to call the handler on. You can override built-in middleware by registering a handler of the same name, or register a handler for rendering a new type.',
-        type: {
-          type: 'NameExpression',
-          name: 'String'
-        }
+        name: 'options',
+        description: '',
+        type: { type: 'NameExpression', name: 'String' }
       },
-      {
-        title: 'param',
-        name: 'fn',
-        description: 'The handler function',
-        type: {
-          type: 'NameExpression',
-          name: 'Function'
-        }
-      },
-      {
-        title: 'return',
-        name: '',
-        description: 'Returns the instance for chaining.',
-        type: {
-          type: 'NameExpression',
-          name: 'Object'
-        }
-      },
-      {
-        title: 'api',
-        name: 'public',
-        description: ''
-      }
-    ]
+      { title: 'api', name: 'public', description: '' }
+    ],
+    inlineTags: []
   }
 ]
 ```
+
+## API
+
+### [Comments](index.js#L22)
+
+Create an instance of `Comments` with the given `options`.
+
+**Params**
+
+* **{Object}**: options
+
+**Example**
+
+```js
+const Comments = require('parse-comments');
+const comments = new Comments();
+```
+
+Register a parser function of the given `type`
+
+**Params**
+
+* `type` **{string|object}**
+* `fn` **{Function}**
+* `returns` **{Object}**
+
+**Params**
+
+* `fn` **{Function}**: plugin function
+* `returns` **{Object}**: Returns the comments instance for chaining.
+
+**Example**
+
+```js
+// plugin example
+function yourPlugin(options) {
+  return function(comments) {
+    // do stuff
+  };
+}
+// usage
+comments.use(yourPlugin());
+```
+
+**Params**
+
+* `type` **{String}**: The `node.type` to call the handler on. You can override built-in middleware by registering a handler of the same name, or register a handler for rendering a new type.
+* `fn` **{Function}**: The handler function
+* `returns` **{Object}**: Returns the instance for chaining.
+
+**Example**
+
+```js
+comments.set('param', function(node) {
+  // do stuff to node
+});
+```
+
+**Params**
+
+* `type` **{String|Object|Array}**: Handler name(s), or an object of middleware
+* `fn` **{Function}**: Handler function, if `type` is a string or array. Otherwise this argument is ignored.
+* `returns` **{Object}**: Returns the instance for chaining.
+
+**Example**
+
+```js
+comments.before('param', function(node) {
+  // do stuff to node
+});
+
+// or
+comments.before(['param', 'returns'], function(node) {
+  // do stuff to node
+});
+
+// or
+comments.before({
+  param: function(node) {
+    // do stuff to node
+  },
+  returns: function(node) {
+    // do stuff to node
+  }
+});
+```
+
+**Params**
+
+* `type` **{String|Object|Array}**: Handler name(s), or an object of middleware
+* `fn` **{Function}**: Handler function, if `type` is a string or array. Otherwise this argument is ignored.
+* `returns` **{Object}**: Returns the instance for chaining.
+
+**Example**
+
+```js
+comments.after('param', function(node) {
+  // do stuff to node
+});
+
+// or
+comments.after(['param', 'returns'], function(node) {
+  // do stuff to node
+});
+
+// or
+comments.after({
+  param: function(node) {
+    // do stuff to node
+  },
+  returns: function(node) {
+    // do stuff to node
+  }
+});
+```
+
+**Params**
+
+* `javascript` **{String}**: String of javascript
+* `options` **{Object}**
+* `returns` **{Object}**: Returns an object with `description` string, array of `examples`, array of `tags` (strings), and a `footer` if descriptions are defined both before and after tags.
+
+**Example**
+
+```js
+const parser = new ParseComments();
+const tokens = parser.tokenize([string]);
+```
+
+**Params**
+
+* `str` **{String}**: String of javascript
+* `options` **{Object}**
+* `returns` **{Array}**: Array of objects.
+
+**Example**
+
+```js
+const parser = new ParseComments();
+const comments = parser.parse(string);
+```
+
+**Params**
+
+* `str` **{String}**: JavaScript comment
+* `options` **{Object}**
+* `returns` **{Object}**: Parsed comment object
+
+**Example**
+
+```js
+let parser = new ParseComments();
+let comments = parser.parseComment(string);
+```
+
+```js
+
+**Params**
+
+* **{}**: {String}    
+* **{String}**: name    
+* **{String}**: name The name to use for foo ```    
+* **{Object}**: tok Takes a token from    
+* `returns` **{Object}**  
+
+```js
+
+**Params**
+
+* **{}**: {String}
+* **{String}**: name
+* **{String}**: name The name to use for foo ```
+* **{Object}**: tok
+* `returns` **{Object}**
+
+```js
+
+**Params**
+
+* **{}**: {String}    
+* **{}**: {...string}    
+* **{}**: {function(...a)}    
+* **{}**: {function(...a:b)}    
+* **{}**: {String|Array}    
+* **{}**: {(String|Array)}    
+* **{}**: {{foo: bar}}    
+* **{}**: {String[]}    
+* ``` **{Array<String|Function|Array>=}**    
+* **{String}**: value The    
+* `returns` **{Object}**  
+
+```js
+
+**Params**
+
+* **{}**: {String}
+* **{}**: {String|Array}
+* **{}**: {(String|Array)}
+* **{}**: {{foo: bar}} ```
+* **{string}**: str The string to parse
+* `returns` **{object}**
+
+Returns true if the given `comment` is valid. By default, comments
+are considered valid when they begin with `/**`, and do not contain
+`jslint`, `jshint`, `eshint`, or `eslint`. A custom `isValid` function may be
+passed on the constructor options.
+
+**Params**
+
+* `comment` **{Object}**
+* `options` **{Object}**
+* `returns` **{Boolean}**
 
 ## About
 
@@ -174,18 +331,18 @@ $ npm install -g verbose/verb#dev verb-generate-readme && verb
 
 ### Contributors
 
-| **Commits** | **Contributor** | 
-| --- | --- |
-| 35 | [jonschlinkert](https://github.com/jonschlinkert) |
-| 4 | [doowb](https://github.com/doowb) |
+| **Commits** | **Contributor** |  
+| --- | --- |  
+| 35 | [jonschlinkert](https://github.com/jonschlinkert) |  
+| 4  | [doowb](https://github.com/doowb) |  
 
 ### Author
 
 **Jon Schlinkert**
 
-* [LinkedIn Profile](https://linkedin.com/in/jonschlinkert)
 * [GitHub Profile](https://github.com/jonschlinkert)
 * [Twitter Profile](https://twitter.com/jonschlinkert)
+* [LinkedIn Profile](https://linkedin.com/in/jonschlinkert)
 
 ### License
 
@@ -194,4 +351,4 @@ Released under the [MIT License](LICENSE).
 
 ***
 
-_This file was generated by [verb-generate-readme](https://github.com/verbose/verb-generate-readme), v0.6.0, on March 25, 2018._
+_This file was generated by [verb-generate-readme](https://github.com/verbose/verb-generate-readme), v0.8.0, on November 24, 2018._

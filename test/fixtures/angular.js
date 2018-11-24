@@ -1934,7 +1934,7 @@
   // We need to expose `angular.$$minErr` to modules such as `ngResource` that reference it during bootstrap
   angular.$$minErr = angular.$$minErr || minErr;
 
-  return ensure(angular, 'module', function() {
+  return ensure(angular, 'module', () => {
     /** @type {Object.<string, angular.Module>} */
     var modules = {};
 
@@ -2000,7 +2000,7 @@
       if (requires && modules.hasOwnProperty(name)) {
         modules[name] = null;
       }
-      return ensure(modules, name, function() {
+      return ensure(modules, name, () => {
         if (!requires) {
           throw $injectorMinErr('nomod', "Module '{0}' is not available! You either misspelled " +
              'the module name or forgot to load it. If registering a module ensure that you ' +
@@ -4245,7 +4245,7 @@
  *    }];
  *  }
  *
- *  describe('eventTracker', function() {
+ *  describe('eventTracker', () => {
  *    var postSpy;
  *
  *    beforeEach(module(function($provide) {
@@ -5420,7 +5420,7 @@
        * @return {Promise} the animation callback promise
        */
       leave: function(element, options) {
-        return $$animateQueue.push(element, 'leave', prepareAnimateOptions(options), function() {
+        return $$animateQueue.push(element, 'leave', prepareAnimateOptions(options), () => {
           element.remove();
         });
       },
@@ -7206,7 +7206,7 @@
     </div>
    </file>
    <file name="protractor.js" type="protractor">
-     it('should auto compile', function() {
+     it('should auto compile', () => {
        var textarea = $('textarea');
        var output = $('div[compile]');
        // The initial state reads 'Hello Angular'.
@@ -9707,7 +9707,7 @@
  * ## Example:
  *
  * ```js
- *   angular.module('exceptionOverride', []).factory('$exceptionHandler', function() {
+ *   angular.module('exceptionOverride', []).factory('$exceptionHandler', () => {
  *     return function(exception, cause) {
  *       exception.message += ' (caused by "' + cause + '")';
  *       throw exception;
@@ -10649,7 +10649,7 @@
   var sampleJsonpBtn = element(by.id('samplejsonpbtn'));
   var invalidJsonpBtn = element(by.id('invalidjsonpbtn'));
 
-  it('should make an xhr GET request', function() {
+  it('should make an xhr GET request', () => {
     sampleGetBtn.click();
     fetchBtn.click();
     expect(status.getText()).toMatch('200');
@@ -10657,7 +10657,7 @@
   });
 
 // Commented out due to flakes. See https://github.com/angular/angular.js/issues/9185
-// it('should make a JSONP request to angularjs.org', function() {
+// it('should make a JSONP request to angularjs.org', () => {
 //   sampleJsonpBtn.click();
 //   fetchBtn.click();
 //   expect(status.getText()).toMatch('200');
@@ -11087,7 +11087,7 @@
  *
  * ```
  * angular.module('myApp', [])
- * .factory('$xhrFactory', function() {
+ * .factory('$xhrFactory', () => {
  *   return function createXhr(method, url) {
  *     return new window.XMLHttpRequest({mozSystem: true});
  *   };
@@ -11315,7 +11315,7 @@
   });
 
 
-  customInterpolationApp.controller('DemoController', function() {
+  customInterpolationApp.controller('DemoController', () => {
       this.label = "This binding is brought you by // interpolation symbols.";
   });
 </script>
@@ -11324,7 +11324,7 @@
 </div>
 </file>
 <file name="protractor.js" type="protractor">
-  it('should interpolate binding with custom symbols', function() {
+  it('should interpolate binding with custom symbols', () => {
     expect(element(by.binding('demo.label')).getText()).toBe('This binding is brought you by // interpolation symbols.');
   });
 </file>
@@ -11734,7 +11734,7 @@
       *             $scope.blood_2 = 120;
       *           };
       *
-      *           $scope.$on('$destroy', function() {
+      *           $scope.$on('$destroy', () => {
       *             // Make sure that the interval is destroyed too
       *             $scope.stopFight();
       *           });
@@ -11763,7 +11763,7 @@
       *
       *             // listen on DOM destroy (removal) event, and cancel the next UI update
       *             // to prevent updating time after the DOM element was removed.
-      *             element.on('$destroy', function() {
+      *             element.on('$destroy', () => {
       *               $interval.cancel(stopTime);
       *             });
       *           }
@@ -13992,7 +13992,7 @@
         ensureSafeMemberName(ast.name);
         self.if_(self.stage === 'inputs' || self.not(self.getHasOwnProperty('l', ast.name)),
         function() {
-          self.if_(self.stage === 'inputs' || 's', function() {
+          self.if_(self.stage === 'inputs' || 's', () => {
             if (create && create !== 1) {
               self.if_(
                 self.not(self.nonComputedMember('s', ast.name)),
@@ -14010,8 +14010,8 @@
       case AST.MemberExpression:
         left = nameId && (nameId.context = this.nextId()) || this.nextId();
         intoId = intoId || this.nextId();
-        self.recurse(ast.object, left, undefined, function() {
-        self.if_(self.notNull(left), function() {
+        self.recurse(ast.object, left, undefined, () => {
+        self.if_(self.notNull(left), () => {
           if (create && create !== 1) {
             self.addEnsureSafeAssignContext(left);
           }
@@ -14044,7 +14044,7 @@
               nameId.name = ast.property.name;
             }
           }
-        }, function() {
+        }, () => {
           self.assign(intoId, 'undefined');
         });
         recursionFn(intoId);
@@ -14067,8 +14067,8 @@
         right = self.nextId();
         left = {};
         args = [];
-        self.recurse(ast.callee, right, left, function() {
-          self.if_(self.notNull(right), function() {
+        self.recurse(ast.callee, right, left, () => {
+          self.if_(self.notNull(right), () => {
             self.addEnsureSafeFunction(right);
             forEach(ast.arguments, function(expr) {
               self.recurse(expr, self.nextId(), undefined, function(argument) {
@@ -14085,7 +14085,7 @@
             }
             expression = self.ensureSafeObject(expression);
             self.assign(intoId, expression);
-          }, function() {
+          }, () => {
             self.assign(intoId, 'undefined');
           });
           recursionFn(intoId);
@@ -14098,8 +14098,8 @@
         if (!isAssignable(ast.left)) {
         throw $parseMinErr('lval', 'Trying to assign a value to a non l-value');
       }
-        this.recurse(ast.left, undefined, left, function() {
-        self.if_(self.notNull(left.context), function() {
+        this.recurse(ast.left, undefined, left, () => {
+        self.if_(self.notNull(left.context), () => {
           self.recurse(ast.right, right);
           self.addEnsureSafeObject(self.member(left.context, left.name, left.computed));
           self.addEnsureSafeAssignContext(left.context);
@@ -17664,13 +17664,13 @@
  * </file>
  *
  * <file name="protractor.js" type="protractor">
- *   describe('SCE doc demo', function() {
- *     it('should sanitize untrusted values', function() {
+ *   describe('SCE doc demo', () => {
+ *     it('should sanitize untrusted values', () => {
  *       expect(element.all(by.css('.htmlComment')).first().getInnerHtml())
  *           .toBe('<span>Is <i>anyone</i> reading this?</span>');
  *     });
  *
- *     it('should NOT sanitize explicitly trusted values', function() {
+ *     it('should NOT sanitize explicitly trusted values', () => {
  *       expect(element(by.id('explicitlyTrustedHtml')).getInnerHtml()).toBe(
  *           '<span onmouseover="this.textContent=&quot;Explicitly trusted HTML bypasses ' +
  *           'sanitization.&quot;">Hover over this text.</span>');
@@ -18635,7 +18635,7 @@
        </div>
      </file>
      <file name="protractor.js" type="protractor">
-      it('should display the greeting in the input box', function() {
+      it('should display the greeting in the input box', () => {
        element(by.model('greeting')).sendKeys('Hello, E2E Tests');
        // If we click the button it will block the test runner
        // element(':button').click();
@@ -18964,7 +18964,7 @@
          });
        };
 
-       it('should search across all fields when filtering with a string', function() {
+       it('should search across all fields when filtering with a string', () => {
          var searchText = element(by.model('searchText'));
          searchText.clear();
          searchText.sendKeys('m');
@@ -18975,13 +18975,13 @@
          expectFriendNames(['John', 'Julie'], 'friend');
        });
 
-       it('should search in specific fields when filtering with a predicate object', function() {
+       it('should search in specific fields when filtering with a predicate object', () => {
          var searchAny = element(by.model('search.$'));
          searchAny.clear();
          searchAny.sendKeys('i');
          expectFriendNames(['Mary', 'Mike', 'Julie', 'Juliette'], 'friendObj');
        });
-       it('should use a equal comparison when comparator is true', function() {
+       it('should use a equal comparison when comparator is true', () => {
          var searchName = element(by.model('search.name'));
          var strict = element(by.model('strict'));
          searchName.clear();
@@ -19156,12 +19156,12 @@
        </div>
      </file>
      <file name="protractor.js" type="protractor">
-       it('should init with 1234.56', function() {
+       it('should init with 1234.56', () => {
          expect(element(by.id('currency-default')).getText()).toBe('$1,234.56');
          expect(element(by.id('currency-custom')).getText()).toBe('USD$1,234.56');
          expect(element(by.id('currency-no-fractions')).getText()).toBe('USD$1,235');
        });
-       it('should update', function() {
+       it('should update', () => {
          if (browser.params.browser == 'safari') {
            // Safari does not understand the minus key. See
            // https://github.com/angular/protractor/issues/481
@@ -19232,13 +19232,13 @@
        </div>
      </file>
      <file name="protractor.js" type="protractor">
-       it('should format numbers', function() {
+       it('should format numbers', () => {
          expect(element(by.id('number-default')).getText()).toBe('1,234.568');
          expect(element(by.binding('val | number:0')).getText()).toBe('1,235');
          expect(element(by.binding('-val | number:4')).getText()).toBe('-1,234.5679');
        });
 
-       it('should update', function() {
+       it('should update', () => {
          element(by.model('val')).clear();
          element(by.model('val')).sendKeys('3374.333');
          expect(element(by.id('number-default')).getText()).toBe('3,374.333');
@@ -19651,7 +19651,7 @@
           <span>{{'1288323623006' | date:"MM/dd/yyyy 'at' h:mma"}}</span><br>
      </file>
      <file name="protractor.js" type="protractor">
-       it('should format date', function() {
+       it('should format date', () => {
          expect(element(by.binding("1288323623006 | date:'medium'")).getText()).
             toMatch(/Oct 2\d, 2010 \d{1,2}:\d{2}:\d{2} (AM|PM)/);
          expect(element(by.binding("1288323623006 | date:'yyyy-MM-dd HH:mm:ss Z'")).getText()).
@@ -19764,7 +19764,7 @@
        <pre id="custom-spacing">{{ {'name':'value'} | json:4 }}</pre>
      </file>
      <file name="protractor.js" type="protractor">
-       it('should jsonify filtered objects', function() {
+       it('should jsonify filtered objects', () => {
          expect(element(by.id('default-spacing')).getText()).toMatch(/\{\n  "name": ?"value"\n}/);
          expect(element(by.id('custom-spacing')).getText()).toMatch(/\{\n    "name": ?"value"\n}/);
        });
@@ -19865,7 +19865,7 @@
        var limitedLetters = element(by.binding('letters | limitTo:letterLimit'));
        var limitedLongNumber = element(by.binding('longNumber | limitTo:longNumberLimit'));
 
-       it('should limit the number array to first three items', function() {
+       it('should limit the number array to first three items', () => {
          expect(numLimitInput.getAttribute('value')).toBe('3');
          expect(letterLimitInput.getAttribute('value')).toBe('3');
          expect(longNumberLimitInput.getAttribute('value')).toBe('3');
@@ -19875,7 +19875,7 @@
        });
 
        // There is a bug in safari and protractor that doesn't like the minus key
-       // it('should update the output when -3 is entered', function() {
+       // it('should update the output when -3 is entered', () => {
        //   numLimitInput.clear();
        //   numLimitInput.sendKeys('-3');
        //   letterLimitInput.clear();
@@ -19887,7 +19887,7 @@
        //   expect(limitedLongNumber.getText()).toEqual('Output long number: 342');
        // });
 
-       it('should not exceed the maximum size of input array', function() {
+       it('should not exceed the maximum size of input array', () => {
          numLimitInput.clear();
          numLimitInput.sendKeys('100');
          letterLimitInput.clear();
@@ -20330,19 +20330,19 @@
         <a id="link-6" ng-href="{{value}}">link</a> (link, change location)
       </file>
       <file name="protractor.js" type="protractor">
-        it('should execute ng-click but not reload when href without value', function() {
+        it('should execute ng-click but not reload when href without value', () => {
           element(by.id('link-1')).click();
           expect(element(by.model('value')).getAttribute('value')).toEqual('1');
           expect(element(by.id('link-1')).getAttribute('href')).toBe('');
         });
 
-        it('should execute ng-click but not reload when href empty string', function() {
+        it('should execute ng-click but not reload when href empty string', () => {
           element(by.id('link-2')).click();
           expect(element(by.model('value')).getAttribute('value')).toEqual('2');
           expect(element(by.id('link-2')).getAttribute('href')).toBe('');
         });
 
-        it('should execute ng-click and change url when ng-href specified', function() {
+        it('should execute ng-click and change url when ng-href specified', () => {
           expect(element(by.id('link-3')).getAttribute('href')).toMatch(/\/123$/);
 
           element(by.id('link-3')).click();
@@ -20357,19 +20357,19 @@
           }, 5000, 'page should navigate to /123');
         });
 
-        it('should execute ng-click but not reload when href empty string and name specified', function() {
+        it('should execute ng-click but not reload when href empty string and name specified', () => {
           element(by.id('link-4')).click();
           expect(element(by.model('value')).getAttribute('value')).toEqual('4');
           expect(element(by.id('link-4')).getAttribute('href')).toBe('');
         });
 
-        it('should execute ng-click but not reload when no href but name specified', function() {
+        it('should execute ng-click but not reload when no href but name specified', () => {
           element(by.id('link-5')).click();
           expect(element(by.model('value')).getAttribute('value')).toEqual('5');
           expect(element(by.id('link-5')).getAttribute('href')).toBe(null);
         });
 
-        it('should only change url when only ng-href', function() {
+        it('should only change url when only ng-href', () => {
           element(by.model('value')).clear();
           element(by.model('value')).sendKeys('6');
           expect(element(by.id('link-6')).getAttribute('href')).toMatch(/\/6$/);
@@ -20474,7 +20474,7 @@
         <button ng-model="button" ng-disabled="checked">Button</button>
       </file>
       <file name="protractor.js" type="protractor">
-        it('should toggle button', function() {
+        it('should toggle button', () => {
           expect(element(by.css('button')).getAttribute('disabled')).toBeFalsy();
           element(by.model('checked')).click();
           expect(element(by.css('button')).getAttribute('disabled')).toBeTruthy();
@@ -20516,7 +20516,7 @@
         <input id="checkSlave" type="checkbox" ng-checked="master" aria-label="Slave input">
       </file>
       <file name="protractor.js" type="protractor">
-        it('should check both checkBoxes', function() {
+        it('should check both checkBoxes', () => {
           expect(element(by.id('checkSlave')).getAttribute('checked')).toBeFalsy();
           element(by.model('master')).click();
           expect(element(by.id('checkSlave')).getAttribute('checked')).toBeTruthy();
@@ -20551,7 +20551,7 @@
         <input type="text" ng-readonly="checked" value="I'm Angular" aria-label="Readonly field" />
       </file>
       <file name="protractor.js" type="protractor">
-        it('should toggle readonly attr', function() {
+        it('should toggle readonly attr', () => {
           expect(element(by.css('[type="text"]')).getAttribute('readonly')).toBeFalsy();
           element(by.model('checked')).click();
           expect(element(by.css('[type="text"]')).getAttribute('readonly')).toBeTruthy();
@@ -20590,7 +20590,7 @@
         </select>
       </file>
       <file name="protractor.js" type="protractor">
-        it('should select Greetings!', function() {
+        it('should select Greetings!', () => {
           expect(element(by.id('greet')).getAttribute('selected')).toBeFalsy();
           element(by.model('selected')).click();
           expect(element(by.id('greet')).getAttribute('selected')).toBeTruthy();
@@ -20626,7 +20626,7 @@
          </details>
        </file>
        <file name="protractor.js" type="protractor">
-         it('should toggle open', function() {
+         it('should toggle open', () => {
            expect(element(by.id('details')).getAttribute('open')).toBeFalsy();
            element(by.model('open')).click();
            expect(element(by.id('details')).getAttribute('open')).toBeTruthy();
@@ -21177,7 +21177,7 @@
         </form>
       </file>
       <file name="protractor.js" type="protractor">
-        it('should initialize to model', function() {
+        it('should initialize to model', () => {
           var userType = element(by.binding('userType'));
           var valid = element(by.binding('myForm.input.$valid'));
 
@@ -21185,7 +21185,7 @@
           expect(valid.getText()).toContain('true');
         });
 
-        it('should be invalid if empty', function() {
+        it('should be invalid if empty', () => {
           var userType = element(by.binding('userType'));
           var valid = element(by.binding('myForm.input.$valid'));
           var userInput = element(by.model('userType'));
@@ -21240,7 +21240,7 @@
 
               // unregister the preventDefault listener so that we don't not leak memory but in a
               // way that will achieve the prevention of the default action.
-              formElement.on('$destroy', function() {
+              formElement.on('$destroy', () => {
                 $timeout(function() {
                   removeEventListenerFn(formElement[0], 'submit', handleFormSubmission);
                 }, 0, false);
@@ -21262,7 +21262,7 @@
                 setter(scope, controller);
               });
             }
-            formElement.on('$destroy', function() {
+            formElement.on('$destroy', () => {
               controller.$$parentForm.$removeControl(controller);
               setter(scope, undefined);
               extend(controller, nullFormCtrl); //stop propagating child destruction handlers upwards
@@ -21382,12 +21382,12 @@
           var valid = element(by.binding('myForm.input.$valid'));
           var input = element(by.model('example.text'));
 
-          it('should initialize to model', function() {
+          it('should initialize to model', () => {
             expect(text.getText()).toContain('guest');
             expect(valid.getText()).toContain('true');
           });
 
-          it('should be invalid if empty', function() {
+          it('should be invalid if empty', () => {
             input.clear();
             input.sendKeys('');
 
@@ -21395,7 +21395,7 @@
             expect(valid.getText()).toContain('false');
           });
 
-          it('should be invalid if multi word', function() {
+          it('should be invalid if multi word', () => {
             input.clear();
             input.sendKeys('hello world');
 
@@ -21488,18 +21488,18 @@
           browser.executeScript(scr);
         }
 
-        it('should initialize to model', function() {
+        it('should initialize to model', () => {
           expect(value.getText()).toContain('2013-10-22');
           expect(valid.getText()).toContain('myForm.input.$valid = true');
         });
 
-        it('should be invalid if empty', function() {
+        it('should be invalid if empty', () => {
           setInput('');
           expect(value.getText()).toEqual('value =');
           expect(valid.getText()).toContain('myForm.input.$valid = false');
         });
 
-        it('should be invalid if over max', function() {
+        it('should be invalid if over max', () => {
           setInput('2015-01-01');
           expect(value.getText()).toContain('');
           expect(valid.getText()).toContain('myForm.input.$valid = false');
@@ -21591,18 +21591,18 @@
         browser.executeScript(scr);
       }
 
-      it('should initialize to model', function() {
+      it('should initialize to model', () => {
         expect(value.getText()).toContain('2010-12-28T14:57:00');
         expect(valid.getText()).toContain('myForm.input.$valid = true');
       });
 
-      it('should be invalid if empty', function() {
+      it('should be invalid if empty', () => {
         setInput('');
         expect(value.getText()).toEqual('value =');
         expect(valid.getText()).toContain('myForm.input.$valid = false');
       });
 
-      it('should be invalid if over max', function() {
+      it('should be invalid if over max', () => {
         setInput('2015-01-01T23:59:00');
         expect(value.getText()).toContain('');
         expect(valid.getText()).toContain('myForm.input.$valid = false');
@@ -21695,18 +21695,18 @@
         browser.executeScript(scr);
       }
 
-      it('should initialize to model', function() {
+      it('should initialize to model', () => {
         expect(value.getText()).toContain('14:57:00');
         expect(valid.getText()).toContain('myForm.input.$valid = true');
       });
 
-      it('should be invalid if empty', function() {
+      it('should be invalid if empty', () => {
         setInput('');
         expect(value.getText()).toEqual('value =');
         expect(valid.getText()).toContain('myForm.input.$valid = false');
       });
 
-      it('should be invalid if over max', function() {
+      it('should be invalid if over max', () => {
         setInput('23:59:00');
         expect(value.getText()).toContain('');
         expect(valid.getText()).toContain('myForm.input.$valid = false');
@@ -21800,18 +21800,18 @@
         browser.executeScript(scr);
       }
 
-      it('should initialize to model', function() {
+      it('should initialize to model', () => {
         expect(value.getText()).toContain('2013-W01');
         expect(valid.getText()).toContain('myForm.input.$valid = true');
       });
 
-      it('should be invalid if empty', function() {
+      it('should be invalid if empty', () => {
         setInput('');
         expect(value.getText()).toEqual('value =');
         expect(valid.getText()).toContain('myForm.input.$valid = false');
       });
 
-      it('should be invalid if over max', function() {
+      it('should be invalid if over max', () => {
         setInput('2015-W01');
         expect(value.getText()).toContain('');
         expect(valid.getText()).toContain('myForm.input.$valid = false');
@@ -21904,18 +21904,18 @@
         browser.executeScript(scr);
       }
 
-      it('should initialize to model', function() {
+      it('should initialize to model', () => {
         expect(value.getText()).toContain('2013-10');
         expect(valid.getText()).toContain('myForm.input.$valid = true');
       });
 
-      it('should be invalid if empty', function() {
+      it('should be invalid if empty', () => {
         setInput('');
         expect(value.getText()).toEqual('value =');
         expect(valid.getText()).toContain('myForm.input.$valid = false');
       });
 
-      it('should be invalid if over max', function() {
+      it('should be invalid if over max', () => {
         setInput('2015-01');
         expect(value.getText()).toContain('');
         expect(valid.getText()).toContain('myForm.input.$valid = false');
@@ -22013,19 +22013,19 @@
           var valid = element(by.binding('myForm.input.$valid'));
           var input = element(by.model('example.value'));
 
-          it('should initialize to model', function() {
+          it('should initialize to model', () => {
             expect(value.getText()).toContain('12');
             expect(valid.getText()).toContain('true');
           });
 
-          it('should be invalid if empty', function() {
+          it('should be invalid if empty', () => {
             input.clear();
             input.sendKeys('');
             expect(value.getText()).toEqual('value =');
             expect(valid.getText()).toContain('false');
           });
 
-          it('should be invalid if over max', function() {
+          it('should be invalid if over max', () => {
             input.clear();
             input.sendKeys('123');
             expect(value.getText()).toEqual('value =');
@@ -22111,12 +22111,12 @@
           var valid = element(by.binding('myForm.input.$valid'));
           var input = element(by.model('url.text'));
 
-          it('should initialize to model', function() {
+          it('should initialize to model', () => {
             expect(text.getText()).toContain('http://google.com');
             expect(valid.getText()).toContain('true');
           });
 
-          it('should be invalid if empty', function() {
+          it('should be invalid if empty', () => {
             input.clear();
             input.sendKeys('');
 
@@ -22124,7 +22124,7 @@
             expect(valid.getText()).toContain('false');
           });
 
-          it('should be invalid if not url', function() {
+          it('should be invalid if not url', () => {
             input.clear();
             input.sendKeys('box');
 
@@ -22210,19 +22210,19 @@
           var valid = element(by.binding('myForm.input.$valid'));
           var input = element(by.model('email.text'));
 
-          it('should initialize to model', function() {
+          it('should initialize to model', () => {
             expect(text.getText()).toContain('me@example.com');
             expect(valid.getText()).toContain('true');
           });
 
-          it('should be invalid if empty', function() {
+          it('should be invalid if empty', () => {
             input.clear();
             input.sendKeys('');
             expect(text.getText()).toEqual('text =');
             expect(valid.getText()).toContain('false');
           });
 
-          it('should be invalid if not email', function() {
+          it('should be invalid if not email', () => {
             input.clear();
             input.sendKeys('xxx');
 
@@ -22285,7 +22285,7 @@
           Note that `ng-value="specialValue"` sets radio item's value to be the value of `$scope.specialValue`.
         </file>
         <file name="protractor.js" type="protractor">
-          it('should change state', function() {
+          it('should change state', () => {
             var color = element(by.binding('color.name'));
 
             expect(color.getText()).toContain('blue');
@@ -22339,7 +22339,7 @@
           </form>
         </file>
         <file name="protractor.js" type="protractor">
-          it('should change state', function() {
+          it('should change state', () => {
             var value1 = element(by.binding('checkboxModel.value1'));
             var value2 = element(by.binding('checkboxModel.value2'));
 
@@ -22388,7 +22388,7 @@
       composing = true;
     });
 
-    element.on('compositionend', function() {
+    element.on('compositionend', () => {
       composing = false;
       listener();
     });
@@ -22903,13 +22903,13 @@
         var userNameInput = element(by.model('user.name'));
         var userLastInput = element(by.model('user.last'));
 
-        it('should initialize to model', function() {
+        it('should initialize to model', () => {
           expect(user.getText()).toContain('{"name":"guest","last":"visitor"}');
           expect(userNameValid.getText()).toContain('true');
           expect(formValid.getText()).toContain('true');
         });
 
-        it('should be invalid if empty when required', function() {
+        it('should be invalid if empty when required', () => {
           userNameInput.clear();
           userNameInput.sendKeys('');
 
@@ -22918,7 +22918,7 @@
           expect(formValid.getText()).toContain('false');
         });
 
-        it('should be valid if empty when min length is set', function() {
+        it('should be valid if empty when min length is set', () => {
           userLastInput.clear();
           userLastInput.sendKeys('');
 
@@ -22927,7 +22927,7 @@
           expect(formValid.getText()).toContain('true');
         });
 
-        it('should be invalid if less than required min length', function() {
+        it('should be invalid if less than required min length', () => {
           userLastInput.clear();
           userLastInput.sendKeys('xx');
 
@@ -22937,7 +22937,7 @@
           expect(formValid.getText()).toContain('false');
         });
 
-        it('should be invalid if longer than max length', function() {
+        it('should be invalid if longer than max length', () => {
           userLastInput.clear();
           userLastInput.sendKeys('some ridiculously long name');
 
@@ -23015,10 +23015,10 @@
       <file name="protractor.js" type="protractor">
         var favorite = element(by.binding('my.favorite'));
 
-        it('should initialize to model', function() {
+        it('should initialize to model', () => {
           expect(favorite.getText()).toContain('unicorns');
         });
-        it('should bind the values to the inputs', function() {
+        it('should bind the values to the inputs', () => {
           element.all(by.model('my.favorite')).get(0).click();
           expect(favorite.getText()).toContain('pizza');
         });
@@ -23085,7 +23085,7 @@
        </div>
      </file>
      <file name="protractor.js" type="protractor">
-       it('should check ng-bind', function() {
+       it('should check ng-bind', () => {
          var nameInput = element(by.model('name'));
 
          expect(element(by.binding('name')).getText()).toBe('Whirled');
@@ -23147,7 +23147,7 @@
        </div>
      </file>
      <file name="protractor.js" type="protractor">
-       it('should check ng-bind', function() {
+       it('should check ng-bind', () => {
          var salutationElem = element(by.binding('salutation'));
          var salutationInput = element(by.model('salutation'));
          var nameInput = element(by.model('name'));
@@ -23221,7 +23221,7 @@
      </file>
 
      <file name="protractor.js" type="protractor">
-       it('should check ng-bind-html', function() {
+       it('should check ng-bind-html', () => {
          expect(element(by.binding('myHTML')).getText()).toBe(
              'I am an HTMLstring with links! and other stuff');
        });
@@ -23300,7 +23300,7 @@
  *     var counter = element(by.binding('counter'));
  *     var debug = element(by.binding('confirmed'));
  *
- *     it('should evaluate the expression if changing from view', function() {
+ *     it('should evaluate the expression if changing from view', () => {
  *       expect(counter.getText()).toContain('0');
  *
  *       element(by.id('ng-change-example1')).click();
@@ -23309,7 +23309,7 @@
  *       expect(debug.getText()).toContain('true');
  *     });
  *
- *     it('should not evaluate the expression if changing from model', function() {
+ *     it('should not evaluate the expression if changing from model', () => {
  *       element(by.id('ng-change-example2')).click();
 
  *       expect(counter.getText()).toContain('0');
@@ -23541,7 +23541,7 @@
      <file name="protractor.js" type="protractor">
        var ps = element.all(by.css('p'));
 
-       it('should let you toggle the class', function() {
+       it('should let you toggle the class', () => {
 
          expect(ps.first().getAttribute('class')).not.toMatch(/bold/);
          expect(ps.first().getAttribute('class')).not.toMatch(/has-error/);
@@ -23553,14 +23553,14 @@
          expect(ps.first().getAttribute('class')).toMatch(/has-error/);
        });
 
-       it('should let you toggle string example', function() {
+       it('should let you toggle string example', () => {
          expect(ps.get(1).getAttribute('class')).toBe('');
          element(by.model('style')).clear();
          element(by.model('style')).sendKeys('red');
          expect(ps.get(1).getAttribute('class')).toBe('red');
        });
 
-       it('array example should have 3 classes', function() {
+       it('array example should have 3 classes', () => {
          expect(ps.get(2).getAttribute('class')).toBe('');
          element(by.model('style1')).sendKeys('bold');
          element(by.model('style2')).sendKeys('strike');
@@ -23568,7 +23568,7 @@
          expect(ps.get(2).getAttribute('class')).toBe('bold strike red');
        });
 
-       it('array with map example should have 2 classes', function() {
+       it('array with map example should have 2 classes', () => {
          expect(ps.last().getAttribute('class')).toBe('');
          element(by.model('style4')).sendKeys('bold');
          element(by.model('warning')).click();
@@ -23599,7 +23599,7 @@
        }
      </file>
      <file name="protractor.js" type="protractor">
-       it('should check ng-class', function() {
+       it('should check ng-class', () => {
          expect(element(by.css('.base-class')).getAttribute('class')).not.
            toMatch(/my-class/);
 
@@ -23663,7 +23663,7 @@
        }
      </file>
      <file name="protractor.js" type="protractor">
-       it('should check ng-class-odd and ng-class-even', function() {
+       it('should check ng-class-odd and ng-class-even', () => {
          expect(element(by.repeater('name in names').row(0).column('name')).getAttribute('class')).
            toMatch(/odd/);
          expect(element(by.repeater('name in names').row(1).column('name')).getAttribute('class')).
@@ -23711,7 +23711,7 @@
        }
      </file>
      <file name="protractor.js" type="protractor">
-       it('should check ng-class-odd and ng-class-even', function() {
+       it('should check ng-class-odd and ng-class-even', () => {
          expect(element(by.repeater('name in names').row(0).column('name')).getAttribute('class')).
            toMatch(/odd/);
          expect(element(by.repeater('name in names').row(1).column('name')).getAttribute('class')).
@@ -23764,7 +23764,7 @@
         <div id="template2" class="ng-cloak">{{ 'world' }}</div>
      </file>
      <file name="protractor.js" type="protractor">
-       it('should remove the template directive and css class', function() {
+       it('should remove the template directive and css class', () => {
          expect($('#template1').getAttribute('ng-cloak')).
            toBeNull();
          expect($('#template2').getAttribute('ng-cloak')).
@@ -23892,7 +23892,7 @@
  *    };
  *   </file>
  *   <file name="protractor.js" type="protractor">
- *     it('should check controller as', function() {
+ *     it('should check controller as', () => {
  *       var container = element(by.id('ctrl-as-exmpl'));
  *         expect(container.element(by.model('settings.name'))
  *           .getAttribute('value')).toBe('John Smith');
@@ -23975,7 +23975,7 @@
  *   }
  *  </file>
  *  <file name="protractor.js" type="protractor">
- *    it('should check controller', function() {
+ *    it('should check controller', () => {
  *      var container = element(by.id('ctrl-exmpl'));
  *
  *      expect(container.element(by.model('name'))
@@ -24118,7 +24118,7 @@
         </file>
         <file name="script.js">
            angular.module('cspExample', [])
-             .controller('MainController', function() {
+             .controller('MainController', () => {
                 this.counter = 0;
                 this.inc = function() {
                   this.counter++;
@@ -24188,7 +24188,7 @@
             return;
           }
 
-          it('should not report errors when the page is loaded', function() {
+          it('should not report errors when the page is loaded', () => {
             // clear errors so we are not dependent on previous tests
             clearErrors();
             // Need to reload the page as the page is already loaded when
@@ -24199,14 +24199,14 @@
             expectNoErrors();
           });
 
-          it('should evaluate expressions', function() {
+          it('should evaluate expressions', () => {
             expect(counter.getText()).toEqual('0');
             incBtn.click();
             expect(counter.getText()).toEqual('1');
             expectNoErrors();
           });
 
-          it('should throw and report an error when using "eval"', function() {
+          it('should throw and report an error when using "eval"', () => {
             evilBtn.click();
             expect(evilError.getText()).toMatch(/Content Security Policy/);
             expectError(/Content Security Policy/);
@@ -24243,7 +24243,7 @@
       </span>
      </file>
      <file name="protractor.js" type="protractor">
-       it('should check ng-click', function() {
+       it('should check ng-click', () => {
          expect(element(by.binding('count')).getText()).toMatch('0');
          element(by.css('button')).click();
          expect(element(by.binding('count')).getText()).toMatch('1');
@@ -24580,13 +24580,13 @@
       </form>
      </file>
      <file name="protractor.js" type="protractor">
-       it('should check ng-submit', function() {
+       it('should check ng-submit', () => {
          expect(element(by.binding('list')).getText()).toBe('list=[]');
          element(by.css('#submit')).click();
          expect(element(by.binding('list')).getText()).toContain('hello');
          expect(element(by.model('text')).getAttribute('value')).toBe('');
        });
-       it('should ignore empty strings', function() {
+       it('should ignore empty strings', () => {
          expect(element(by.binding('list')).getText()).toBe('list=[]');
          element(by.css('#submit')).click();
          element(by.css('#submit')).click();
@@ -24947,11 +24947,11 @@
       var templateSelect = element(by.model('template'));
       var includeElem = element(by.css('[ng-include]'));
 
-      it('should load template1.html', function() {
+      it('should load template1.html', () => {
         expect(includeElem.getText()).toMatch(/Content of template1.html/);
       });
 
-      it('should load template2.html', function() {
+      it('should load template2.html', () => {
         if (browser.params.browser == 'firefox') {
           // Firefox can't handle using selects
           // See https://github.com/angular/protractor/issues/480
@@ -24962,7 +24962,7 @@
         expect(includeElem.getText()).toMatch(/Content of template2.html/);
       });
 
-      it('should change to blank', function() {
+      it('should change to blank', () => {
         if (browser.params.browser == 'firefox') {
           // Firefox can't handle using selects
           return;
@@ -25079,7 +25079,7 @@
 
               currentScope.$emit('$includeContentLoaded', src);
               scope.$eval(onloadExp);
-            }, function() {
+            }, () => {
               if (thisChangeId === changeCounter) {
                 cleanupLastIncludeContent();
                 scope.$emit('$includeContentError', src);
@@ -25174,7 +25174,7 @@
    </div>
      </file>
      <file name="protractor.js" type="protractor">
-       it('should alias index positions', function() {
+       it('should alias index positions', () => {
          var elements = element.all(by.css('.example-init'));
          expect(elements.get(0).getText()).toBe('list[ 0 ][ 0 ] = a;');
          expect(elements.get(1).getText()).toBe('list[ 0 ][ 1 ] = b;');
@@ -25243,13 +25243,13 @@
  *     var valid = element(by.binding('myForm.namesInput.$valid'));
  *     var error = element(by.css('span.error'));
  *
- *     it('should initialize to model', function() {
+ *     it('should initialize to model', () => {
  *       expect(names.getText()).toContain('["morpheus","neo","trinity"]');
  *       expect(valid.getText()).toContain('true');
  *       expect(error.getCssValue('display')).toBe('none');
  *     });
  *
- *     it('should be invalid if empty', function() {
+ *     it('should be invalid if empty', () => {
  *       listInput.clear();
  *       listInput.sendKeys('');
  *
@@ -25267,7 +25267,7 @@
  *    <pre>{{ list | json }}</pre>
  *   </file>
  *   <file name="protractor.js" type="protractor">
- *     it("should split the text by newlines", function() {
+ *     it("should split the text by newlines", () => {
  *       var listInput = element(by.model('list'));
  *       var output = element(by.binding('list | json'));
  *       listInput.sendKeys('abc\ndef\nghi');
@@ -25491,7 +25491,7 @@ is set to `true`. The parse error is stored in `ngModel.$error.parse`.
               };
 
               // Listen for change events to enable binding
-              element.on('blur keyup change', function() {
+              element.on('blur keyup change', () => {
                 scope.$evalAsync(read);
               });
               read(); // initialize
@@ -25522,7 +25522,7 @@ is set to `true`. The parse error is stored in `ngModel.$error.parse`.
       </form>
     </file>
     <file name="protractor.js" type="protractor">
-    it('should data-bind and become invalid', function() {
+    it('should data-bind and become invalid', () => {
       if (browser.params.browser == 'safari' || browser.params.browser == 'firefox') {
         // SafariDriver can't handle contenteditable
         // and Firefox driver can't clear contenteditables very well
@@ -26413,7 +26413,7 @@ is set to `true`. The parse error is stored in `ngModel.$error.parse`.
             }
           });
 
-          scope.$on('$destroy', function() {
+          scope.$on('$destroy', () => {
             modelCtrl.$$parentForm.$removeControl(modelCtrl);
           });
         },
@@ -26526,7 +26526,7 @@ is set to `true`. The parse error is stored in `ngModel.$error.parse`.
       var input = element(by.model('user.name'));
       var other = element(by.model('user.data'));
 
-      it('should allow custom events', function() {
+      it('should allow custom events', () => {
         input.sendKeys(' Doe');
         input.click();
         expect(model.getText()).toEqual('John');
@@ -26534,7 +26534,7 @@ is set to `true`. The parse error is stored in `ngModel.$error.parse`.
         expect(model.getText()).toEqual('John Doe');
       });
 
-      it('should $rollbackViewValue when model changes', function() {
+      it('should $rollbackViewValue when model changes', () => {
         input.sendKeys(' Doe');
         expect(input.getAttribute('value')).toEqual('John Doe');
         input.sendKeys(protractor.Key.ESCAPE);
@@ -26613,7 +26613,7 @@ is set to `true`. The parse error is stored in `ngModel.$error.parse`.
       if (isDefined(this.$options.updateOn)) {
         this.$options.updateOnDefault = false;
         // extract "default" pseudo-event from list of events that can trigger a model update
-        this.$options.updateOn = trim(this.$options.updateOn.replace(DEFAULT_REGEXP, function() {
+        this.$options.updateOn = trim(this.$options.updateOn.replace(DEFAULT_REGEXP, () => {
           that.$options.updateOnDefault = true;
           return ' ';
         }));
@@ -26757,7 +26757,7 @@ is set to `true`. The parse error is stored in `ngModel.$error.parse`.
         <div ng-non-bindable>Ignored: {{1 + 2}}</div>
       </file>
       <file name="protractor.js" type="protractor">
-       it('should check ng-non-bindable', function() {
+       it('should check ng-non-bindable', () => {
          expect(element(by.binding('1 + 2')).getText()).toContain('3');
          expect(element.all(by.css('div')).last().getText()).toMatch(/1 \+ 2/);
        });
@@ -26983,7 +26983,7 @@ is set to `true`. The parse error is stored in `ngModel.$error.parse`.
         </div>
       </file>
       <file name="protractor.js" type="protractor">
-         it('should check ng-options', function() {
+         it('should check ng-options', () => {
            expect(element(by.binding('{selected_color:myColor}')).getText()).toMatch('red');
            element.all(by.model('myColor')).first().click();
            element.all(by.css('select[ng-model="myColor"] option')).first().click();
@@ -27317,7 +27317,7 @@ is set to `true`. The parse error is stored in `ngModel.$error.parse`.
                 return ngOptions.getTrackByValue(value);
               });
             }
-          }, function() {
+          }, () => {
             ngModelCtrl.$render();
           });
 
@@ -27652,7 +27652,7 @@ is set to `true`. The parse error is stored in `ngModel.$error.parse`.
         </div>
       </file>
       <file name="protractor.js" type="protractor">
-        it('should show correct pluralized string', function() {
+        it('should show correct pluralized string', () => {
           var withoutOffset = element.all(by.css('ng-pluralize')).get(0);
           var withOffset = element.all(by.css('ng-pluralize')).get(1);
           var countInput = element(by.model('personCount'));
@@ -27684,7 +27684,7 @@ is set to `true`. The parse error is stored in `ngModel.$error.parse`.
           expect(withoutOffset.getText()).toEqual('4 people are viewing.');
           expect(withOffset.getText()).toEqual('Igor, Misko and 2 other people are viewing.');
         });
-        it('should show data-bound names', function() {
+        it('should show data-bound names', () => {
           var withOffset = element.all(by.css('ng-pluralize')).get(1);
           var personCount = element(by.model('personCount'));
           var person1 = element(by.model('person1'));
@@ -28052,7 +28052,7 @@ is set to `true`. The parse error is stored in `ngModel.$error.parse`.
     <file name="protractor.js" type="protractor">
       var friends = element.all(by.repeater('friend in friends'));
 
-      it('should render initial data set', function() {
+      it('should render initial data set', () => {
         expect(friends.count()).toBe(10);
         expect(friends.get(0).getText()).toEqual('[1] John who is 25 years old.');
         expect(friends.get(1).getText()).toEqual('[2] Jessie who is 30 years old.');
@@ -28061,7 +28061,7 @@ is set to `true`. The parse error is stored in `ngModel.$error.parse`.
             .toMatch("I have 10 friends. They are:");
       });
 
-       it('should update repeater when filter predicate changes', function() {
+       it('should update repeater when filter predicate changes', () => {
          expect(friends.count()).toBe(10);
 
          element(by.model('q')).sendKeys('ma');
@@ -28448,7 +28448,7 @@ is set to `true`. The parse error is stored in `ngModel.$error.parse`.
       var thumbsUp = element(by.css('span.glyphicon-thumbs-up'));
       var thumbsDown = element(by.css('span.glyphicon-thumbs-down'));
 
-      it('should check ng-show / ng-hide', function() {
+      it('should check ng-show / ng-hide', () => {
         expect(thumbsUp.isDisplayed()).toBeFalsy();
         expect(thumbsDown.isDisplayed()).toBeTruthy();
 
@@ -28609,7 +28609,7 @@ is set to `true`. The parse error is stored in `ngModel.$error.parse`.
       var thumbsUp = element(by.css('span.glyphicon-thumbs-up'));
       var thumbsDown = element(by.css('span.glyphicon-thumbs-down'));
 
-      it('should check ng-show / ng-hide', function() {
+      it('should check ng-show / ng-hide', () => {
         expect(thumbsUp.isDisplayed()).toBeFalsy();
         expect(thumbsDown.isDisplayed()).toBeTruthy();
 
@@ -28673,7 +28673,7 @@ is set to `true`. The parse error is stored in `ngModel.$error.parse`.
      <file name="protractor.js" type="protractor">
        var colorSpan = element(by.css('span'));
 
-       it('should check ng-style', function() {
+       it('should check ng-style', () => {
          expect(colorSpan.getCssValue('color')).toBe('rgba(0, 0, 0, 1)');
          element(by.css('input[value=\'set color\']')).click();
          expect(colorSpan.getCssValue('color')).toBe('rgba(255, 0, 0, 1)');
@@ -28805,14 +28805,14 @@ is set to `true`. The parse error is stored in `ngModel.$error.parse`.
       var switchElem = element(by.css('[ng-switch]'));
       var select = element(by.model('selection'));
 
-      it('should start in settings', function() {
+      it('should start in settings', () => {
         expect(switchElem.getText()).toMatch(/Settings Div/);
       });
-      it('should change to home', function() {
+      it('should change to home', () => {
         select.all(by.css('option')).get(1).click();
         expect(switchElem.getText()).toMatch(/Home Span/);
       });
-      it('should select default', function() {
+      it('should select default', () => {
         select.all(by.css('option')).get(2).click();
         expect(switchElem.getText()).toMatch(/default/);
       });
@@ -28946,7 +28946,7 @@ is set to `true`. The parse error is stored in `ngModel.$error.parse`.
  *     </div>
  *   </file>
  *   <file name="protractor.js" type="protractor">
- *      it('should have transcluded', function() {
+ *      it('should have transcluded', () => {
  *        var titleElement = element(by.model('title'));
  *        titleElement.clear();
  *        titleElement.sendKeys('TITLE');
@@ -28989,7 +28989,7 @@ is set to `true`. The parse error is stored in `ngModel.$error.parse`.
  * </my-button>
  * </file>
  * <file name="protractor.js" type="protractor">
- * it('should have different transclude element content', function() {
+ * it('should have different transclude element content', () => {
  *          expect(element(by.id('fallback')).getText()).toBe('Button1');
  *          expect(element(by.id('modified')).getText()).toBe('Button2');
  *        });
@@ -29039,7 +29039,7 @@ is set to `true`. The parse error is stored in `ngModel.$error.parse`.
  *    }]);
  *   </file>
  *   <file name="protractor.js" type="protractor">
- *      it('should have transcluded the title and the body', function() {
+ *      it('should have transcluded the title and the body', () => {
  *        var titleElement = element(by.model('title'));
  *        titleElement.clear();
  *        titleElement.sendKeys('TITLE');
@@ -29112,7 +29112,7 @@ is set to `true`. The parse error is stored in `ngModel.$error.parse`.
       <div id="tpl-content" ng-include src="currentTpl"></div>
     </file>
     <file name="protractor.js" type="protractor">
-      it('should load template defined inside script tag', function() {
+      it('should load template defined inside script tag', () => {
         element(by.css('#tpl-link')).click();
         expect(element(by.css('#tpl-content')).getText()).toMatch(/Content of the template/);
       });
@@ -29176,7 +29176,7 @@ is set to `true`. The parse error is stored in `ngModel.$error.parse`.
     $element.val(unknownVal);
   };
 
-          $scope.$on('$destroy', function() {
+          $scope.$on('$destroy', () => {
     // disable unknown option so that we don't do work when the whole select is being destroyed
     self.renderUnknownOption = noop;
   });
@@ -29271,7 +29271,7 @@ is set to `true`. The parse error is stored in `ngModel.$error.parse`.
       self.addOption(optionAttrs.value, optionElement);
     }
 
-    optionElement.on('$destroy', function() {
+    optionElement.on('$destroy', () => {
       self.removeOption(optionAttrs.value);
       self.ngModelCtrl.$render();
     });
@@ -29459,7 +29459,7 @@ is set to `true`. The parse error is stored in `ngModel.$error.parse`.
  *       .run(function($rootScope) {
  *         $rootScope.model = { id: 2 };
  *       })
- *       .directive('convertToNumber', function() {
+ *       .directive('convertToNumber', () => {
  *         return {
  *           require: 'ngModel',
  *           link: function(scope, element, attrs, ngModel) {
@@ -29474,7 +29474,7 @@ is set to `true`. The parse error is stored in `ngModel.$error.parse`.
  *       });
  *   </file>
  *   <file name="protractor.js" type="protractor">
- *     it('should initialize to model', function() {
+ *     it('should initialize to model', () => {
  *       var select = element(by.css('select'));
  *       expect(element(by.model('model.id')).$('option:checked').getText()).toEqual('Two');
  *     });
@@ -29514,7 +29514,7 @@ is set to `true`. The parse error is stored in `ngModel.$error.parse`.
       // When the selected item(s) changes we delegate getting the value of the select control
       // to the `readValue` method, which can be changed if the select can have multiple
       // selected values or if the options are being generated by `ngOptions`
-    element.on('change', function() {
+    element.on('change', () => {
         scope.$apply(function() {
           ngModelCtrl.$setViewValue(selectCtrl.readValue());
         });
@@ -29622,7 +29622,7 @@ is set to `true`. The parse error is stored in `ngModel.$error.parse`.
         return !attr.required || !ctrl.$isEmpty(viewValue);
       };
 
-      attr.$observe('required', function() {
+      attr.$observe('required', () => {
         ctrl.$validate();
       });
     }
