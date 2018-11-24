@@ -1,550 +1,609 @@
-/*!
- * parse-comments <https://github.com/jonschlinkert/parse-comments>
- * Substantially changed, but originally based on https://github.com/caolan/scrawl
- *
- * Copyright (c) 2014-2015, Jon Schlinkert.
- * Licensed under the MIT License.
- */
-
 'use strict';
 
-/**
- * Module dependencies
- */
-
-var _ = require('lodash');
-var arrayify = require('arrayify-compact');
-var codeBlocks = require('gfm-code-blocks');
-var extract = require('extract-comments');
-var parseContext = require('parse-code-context');
-var inflect = require('inflection');
-var utils = require('./lib/utils');
-
-function parser (str, opts) {
-  return parser.codeContext(str, opts);
-}
-
-parser.nolinks = [];
-parser.links = {};
+const Emitter = require('events');
+const extract = require('extract-comments');
+const tokenize = require('tokenize-comment');
+const lib = require('./lib');
+const { utils } = lib;
 
 /**
- * Extract code comments, and merge in code context.
+ * Create an instance of `Comments` with the given `options`.
  *
- * @param  {String} `str`
- * @return {Array} Array of comment objects.
+ * ```js
+ * const Comments = require('parse-comments');
+ * const comments = new Comments();
+ * ```
+ * @name Comments
+ * @extends Emitter
+ * @param {Object} options
+ * @api public
  */
 
-parser.codeContext = function (str, opts) {
-  var comments = extract(str);
-  var res = [];
+class Comments extends Emitter {
+  constructor(options) {
+    super();
+    this.options = Object.assign({}, options);
+    this.comments = [];
+    this.ast = {};
+    this.cache = {
+      comments: {},
+      files: {},
+      links: {}
+    };
 
-  for (var key in comments) {
-    if (comments.hasOwnProperty(key)) {
-      var comment = comments[key];
-      var o = parser.parseComment(comment.content, opts);
-      o.comment = comment;
-      o.context = parseContext(comment.code) || {};
-      o.context.begin = comment.codeStart;
-      _.merge(o, parser.parseDescription(o));
-      _.merge(o, parser.parseExamples(o));
-      res.push(o);
+    this.parsers = {};
+    this.tokens = [];
+    this.plugins = {
+      fns: [],
+      middleware: {},
+      before: {},
+      after: {}
+    };
+  }
+
+  /**
+   * Register a parser function of the given `type`
+   *
+   * @param {string|object} `type`
+   * @param {Function} `fn`
+   * @return {Object}
+   * @api public
+   */
+
+  parser(type, fn) {
+    this.parsers[type] = fn;
+    return this;
+  }
+
+  /**
+   * Register a compiler plugin `fn`. Plugin functions should take an
+   * options object, and return a function that takes an instance of
+   * comments.
+   *
+   * ```js
+   * // plugin example
+   * function yourPlugin(options) {
+   *   return function(comments) {
+   *     // do stuff
+   *   };
+   * }
+   * // usage
+   * comments.use(yourPlugin());
+   * ```
+   *
+   * @param {Function} `fn` plugin function
+   * @return {Object} Returns the comments instance for chaining.
+   * @api public
+   */
+
+  use(fn) {
+    this.plugins.fns = this.plugins.fns.concat(fn);
+    return this;
+  }
+
+  /**
+   * Register a handler function to be called on a node of the given `type`.
+   * Override a built-in handler `type`, or register a new type.
+   *
+   * ```js
+   * comments.set('param', function(node) {
+   *   // do stuff to node
+   * });
+   * ```
+   * @param {String} `type` The `node.type` to call the handler on. You can override built-in middleware by registering a handler of the same name, or register a handler for rendering a new type.
+   * @param {Function} `fn` The handler function
+   * @return {Object} Returns the instance for chaining.
+   * @api public
+   */
+
+  set(type, fn) {
+    if (Array.isArray(type)) {
+      for (let i = 0; i < type.length; i++) {
+        this.set(type[i], fn);
+      }
+    } else {
+      this.plugins.middleware[type] = fn;
     }
+    return this;
   }
-  return res;
-};
 
-/**
- * Normalize descriptions.
- *
- * @param  {Object} `comment`
- * @return {Object}
- */
+  /**
+   * Register a handler that will be called by the compiler on every node
+   * of the given `type`, _before other middleware are called_ on that node.
+   *
+   * ```js
+   * comments.before('param', function(node) {
+   *   // do stuff to node
+   * });
+   *
+   * // or
+   * comments.before(['param', 'returns'], function(node) {
+   *   // do stuff to node
+   * });
+   *
+   * // or
+   * comments.before({
+   *   param: function(node) {
+   *     // do stuff to node
+   *   },
+   *   returns: function(node) {
+   *     // do stuff to node
+   *   }
+   * });
+   * ```
+   * @param {String|Object|Array} `type` Handler name(s), or an object of middleware
+   * @param {Function} `fn` Handler function, if `type` is a string or array. Otherwise this argument is ignored.
+   * @return {Object} Returns the instance for chaining.
+   * @api public
+   */
 
-parser.normalizeDesc = function (comment) {
-  var o = {};
-
-  // strip trailing whitespace from description
-  comment.description = utils.trimRight(comment.description);
-
-  // separate heading from description
-  o = parser.splitHeading(comment.description);
-
-  // Extract headings from comments
-  comment.description = o.desc.join('\n\n');
-  comment.heading = o.heading;
-
-  // Extract leads from comments
-  var parsedDesc = parser.parseLead(comment.description);
-  comment.lead = parsedDesc.lead;
-  comment.description = parsedDesc.desc;
-  return comment;
-};
-
-/**
- * Parse code examples from a `comment.description`.
- *
- * @param  {Object} `comment`
- * @return {Object}
- */
-
-parser.parseDescription = function (comment) {
-  // strip trailing whitespace from description
-  if (comment.description) {
-    _.merge(comment, parser.normalizeDesc(comment));
-    comment.heading = comment.heading || {};
+  before(type, fn) {
+    let before = this.plugins.before;
+    if (utils.isObject(type)) {
+      for (let key of Object.keys(type)) {
+        this.before(key, type[key]);
+      }
+    } else if (Array.isArray(type)) {
+      for (let key of type) this.before(key, fn);
+    } else {
+      before[type] = before[type] || [];
+      before[type].push(fn);
+    }
+    return this;
   }
-  var heading = parser.normalizeHeading(comment);
-  comment = _.merge({}, comment, heading);
 
-  // @example tags, strip trailing whitespace
-  if (comment.example) {
-    comment.example = utils.trimRight(comment.example);
+  /**
+   * Register a handler that will be called by the compiler on every node
+   * of the given `type`, _after other middleware are called_ on that node.
+   *
+   * ```js
+   * comments.after('param', function(node) {
+   *   // do stuff to node
+   * });
+   *
+   * // or
+   * comments.after(['param', 'returns'], function(node) {
+   *   // do stuff to node
+   * });
+   *
+   * // or
+   * comments.after({
+   *   param: function(node) {
+   *     // do stuff to node
+   *   },
+   *   returns: function(node) {
+   *     // do stuff to node
+   *   }
+   * });
+   * ```
+   * @param {String|Object|Array} `type` Handler name(s), or an object of middleware
+   * @param {Function} `fn` Handler function, if `type` is a string or array. Otherwise this argument is ignored.
+   * @return {Object} Returns the instance for chaining.
+   * @api public
+   */
+
+  after(type, fn) {
+    let after = this.plugins.after;
+    if (utils.isObject(type)) {
+      for (let key of Object.keys(type)) {
+        this.after(key, type[key]);
+      }
+    } else if (Array.isArray(type)) {
+      for (let key of type) this.after(key, fn);
+    } else {
+      after[type] = after[type] || [];
+      after[type].push(fn);
+    }
+    return this;
   }
-  return comment;
-};
 
-/**
- * Parse code examples from a `comment.description`.
- *
- * @param  {Object} `comment`
- * @return {Object}
- */
+  /**
+   * Run plugin functions on a node of the given `type`.
+   *
+   * @param {String} `type` Either `before` or `after`
+   * @param {Object} `compiler` Snapdragon compiler instance
+   * @return {Function} Returns a function that takes a `node`. Any plugins registered for that `node.type` will be run on the node.
+   */
 
-parser.parseExamples = function (comment) {
-  comment.examples = codeBlocks(comment.description) || [];
-  return comment;
-};
+  run(type, compiler) {
+    let plugins = this.plugins[type];
 
-/**
- * Parse the parameters from a string.
- *
- * @param  {String} `param`
- * @return {Object}
- */
+    return node => {
+      let fns = plugins[node.type] || [];
 
-parser.parseParams = function (param) {
-  var re = /(?:^\{([^\}]+)\}\s+)?(?:\[([\S]+)\]\s*)?(?:`([\S]+)`\s*)?([\s\S]*)?/;
-  if (typeof param !== 'string') return {};
-  var match = param.match(re);
-  var params = {
-    type: match[1],
-    name: match[3] || '',
-    description: (match[4] || '').replace(/^\s*-\s*/, '')
-  };
-  if (match[2]) {
-    parser.parseSubprop(match, params);
+      for (let fn of fns) {
+        if (typeof fn !== 'function') {
+          let err = new TypeError('expected plugin to be a function:' + fn);
+          err.node = node;
+          err.type = type;
+          throw err;
+        }
+        node = fn.call(compiler, node) || node;
+      }
+      return node;
+    };
   }
-  return params;
-};
 
-/**
- * Parse the subproperties from parameters.
- *
- * @param  {String} `param`
- * @return {Object}
- */
+  /**
+   * Tokenize a single javascript comment.
+   *
+   * ```js
+   * const parser = new ParseComments();
+   * const tokens = parser.tokenize([string]);
+   * ```
+   * @param {String} `javascript` String of javascript
+   * @param {Object} `options`
+   * @return {Object} Returns an object with `description` string, array of `examples`, array of `tags` (strings), and a `footer` if descriptions are defined both before and after tags.
+   * @api public
+   */
 
-parser.parseSubprop = function (match, params) {
-  var subprop = match[2];
-  if (/\./.test(subprop)) {
-    var parts = subprop.split('.');
-    var def = parts[1].split('=');
-    params.name = def[0];
-    params['default'] = def[1] || null;
-    subprop = parts[0];
+  tokenize(input, options) {
+    let opts = Object.assign({}, this.options, options);
+    // this only needs to be roughly correct. the tokenizer is smarter
+    let isComment = str => /^(\s*\/\*|\*\s*@| {4,})/gm.test(str);
+    if (opts.stripStars === void 0 && input && !isComment(input)) {
+      opts.stripStars = false;
+    }
+    return tokenize(input, opts);
   }
-  params.parent = subprop;
-  return params;
-};
 
-/**
- * Parse the parameters from a string.
- *
- * @param  {String} `param`
- * @return {Object}
- */
+  /**
+   * Extracts and parses code comments from the given `str` of JavaScript.
+   *
+   * ```js
+   * const parser = new ParseComments();
+   * const comments = parser.parse(string);
+   * ```
+   * @param {String} `str` String of javascript
+   * @param {Object} `options`
+   * @return {Array} Array of objects.
+   * @api public
+   */
 
-parser.mergeSubprops = function (c, subprop) {
-  if (c.hasOwnProperty(subprop) && typeof c[subprop] === 'object') {
-    var o = {};
-
-    c[subprop].forEach(function (child) {
-      o[child.parent] = o[child.parent] || [];
-      o[child.parent].push(child);
-      delete child.parent;
+  parse(str, options) {
+    this.ast = this.extract(str.toString(), options, comment => {
+      return this.parseComment(comment, options);
     });
-
-    if (c.hasOwnProperty('params')) {
-      c.params = c.params.map(function (param) {
-        if (o[param.name]) {
-          param[subprop] = o[param.name];
-        }
-        return param;
-      });
-    }
+    return this.ast;
   }
-  return c;
-};
 
-/**
- * Parse `@return` comments.
- *
- * @param  {String} `str`
- * @return {Object}
- */
+  /**
+   * Parse a single code comment.
+   *
+   * ```js
+   * let parser = new ParseComments();
+   * let comments = parser.parseComment(string);
+   * ```
+   * @param {String} `str` JavaScript comment
+   * @param {Object} `options`
+   * @return {Object} Parsed comment object
+   * @api public
+   */
 
-parser.parseReturns = function (str) {
-  var match = /^\{([^\}]+)\}/.exec(str);
-  return match && match[1];
-};
+  parseComment(comment, options) {
+    let opts = Object.assign({}, this.options, options);
+    let parsers = Object.assign({}, this.plugins.middleware, opts.parse);
 
-/**
- * Parse the "lead" from a description.
- *
- * @param  {String} `str`
- * @return {Object}
- */
+    if (typeof parsers.comment === 'function') {
+      comment = parsers.comment.call(this, comment, opts);
 
-parser.parseLead = function (str) {
-  var re = /^([\s\S]+?)(?:\n\n)/;
+    } else if (typeof comment === 'string') {
+      comment = this.parse.apply(this, arguments)[0];
 
-  var lead = '';
-  var description = str.replace(re, function (match, a) {
-    lead += a.split('\n').join(' ');
-    return match.replace(a, '');
-  });
-
-  return {
-    desc: description,
-    lead: lead
-  };
-};
-
-/**
- * Parse the method name from a string.
- *
- * @param  {String} `str`
- * @return {Object}
- */
-
-parser.parseHeading = function (str) {
-  var re = /(#{1,6})\s+(\.?[\s\S]+?)(?:(\([\s\S]+\)?)|$)/;
-  var match = str.match(re);
-  if (match) {
-    return {
-      level: match[1].split('').length,
-      text: match[2].trim()
-    };
-  }
-};
-
-/**
- * Parse the method name from a string.
- *
- * @param  {String} `str`
- * @return {Object}
- */
-
-parser.splitHeading = function (str) {
-  var lines = str.split('\n\n');
-  var obj = {}, non = [];
-  lines.forEach(function (line) {
-    if (/^#/.test(line)) {
-      obj = parser.parseHeading(line);
     } else {
-      non.push(line);
+      let tok = this.tokenize(comment.value, opts);
+      this.tokens.push(tok);
+
+      comment = Object.assign({}, comment, tok);
+      lib.normalize.examples(comment, opts);
+      comment.tags = this.parseTags(comment, options);
+
+      // let name = get(comment, 'code.context.name');
+      // if (name) {
+      //   set(this.cache, name, comment);
+      // }
     }
-  });
-  return {heading: obj, desc: non};
-};
 
-/**
- * Normalize the title based on the given fields.
- *
- * @param  {String} `obj`
- * @return {Object}
- */
+    // parse inline tags
+    if (comment.description) {
+      let inline = this.parseInlineTags(comment.description, opts);
+      comment.description = inline.value;
+      comment.inlineTags = inline.tags;
+    }
 
-parser.normalizeHeading = function (obj) {
-  var o = obj || {};
-  obj.context = obj.context || {};
+    // optionally format comment object
+    if (opts.format === true) {
+      comment = lib.format.call(this, comment, opts);
+    }
 
-  o.name = obj.name || obj.context.name || null;
-  o.heading = o.heading || {};
-  o.heading.level = o.heading.level || 2;
-
-  if (o.name && o.name === 'exports') {
-    o.name = null;
+    this.emit('comment', comment);
+    return comment;
   }
 
-  // @method tags
-  if (o.hasOwnProperty('method')) {
-    o.type = 'method';
+  /**
+   * Parses a single tag from a code comment. For example, each of the following
+   * lines is a single tag
+   *
+   * ```js
+   * @constructor
+   * @param {String}
+   * @param {String} name
+   * @param {String} name The name to use for foo
+   * ```
+   *
+   * @param {Object} tok Takes a token from
+   * @return {Object}
+   * @api public
+   */
+
+  parseTags(comment, options) {
+    let opts = Object.assign({}, this.options, options);
+    let parsers = Object.assign({}, this.plugins.middleware, opts.parse);
+    let tags = [];
+
+    if (typeof parsers.parseTags === 'function') {
+      return parsers.parseTags.call(this, comment, opts);
+    }
+
+    for (let raw of comment.tags) {
+      let tag = this.parseTag(raw, opts);
+      if (tag) {
+        utils.define(tag, 'rawType', tag.rawType);
+        utils.define(tag, 'raw', raw);
+        tags.push(tag);
+      }
+    }
+
+    return tags;
   }
 
-  // @class tags
-  if (o.hasOwnProperty('class')) {
-    o.type = 'class';
-    o.heading.level = 1;
-  } else {
-    o.heading.level = 2;
+  /**
+   * Parses a single tag from a code comment. For example, each of the following
+   * lines is a single tag
+   *
+   * ```js
+   * @constructor
+   * @param {String}
+   * @param {String} name
+   * @param {String} name The name to use for foo
+   * ```
+   * @param {Object} tok
+   * @return {Object}
+   * @api public
+   */
+
+  parseTag(tok, options) {
+    let opts = Object.assign({}, this.options, options);
+    let parsers = Object.assign({}, this.plugins.middleware, opts.parse);
+    let tag;
+
+    if (typeof tok === 'string') {
+      tok = { raw: tok, value: tok };
+    }
+
+    if (typeof parsers.tag === 'function') {
+      return parsers.tag.call(this, tok.raw, opts);
+    }
+
+    try {
+      tag = lib.parse.tag(tok);
+    } catch (err) {
+      if (opts.strict) throw err;
+      return null;
+    }
+
+    if (!tag || tag.rawType && !lib.allows.type(tok)) {
+      return null;
+    }
+
+    if (tag.rawType) {
+      tag.type = this.parseType(tag.rawType.slice(1, -1), tag, options);
+    }
+
+    if (tag && lib.expects.type(tag) && !tag.type) {
+      if (opts.strict === true) {
+        return null;
+      }
+      tag.type = null;
+    }
+
+    tag = lib.normalize.tag(tag, opts);
+    if (!tag) {
+      return null;
+    }
+
+    tag = lib.validate.tag(tag, opts);
+    if (!tag) {
+      return null;
+    }
+
+    if (tag.description) {
+      let inline = this.parseInlineTags(tag.description, opts);
+      tag.description = inline.value;
+      tag.inlineTags = inline.tags;
+    }
+
+    return tag;
   }
 
-  var heading = o.name || o.class || o.method || '';
-  // Strip backticks from headings
-  o.heading.text = stripBackticks(o.heading.text, heading);
-  o.name = o.name || o.heading.text || '';
+  /**
+   * Parses the types from a single tag. Supports any type from jsdoc, falling
+   * back on types from Google's Closure Compiler when not defined by jsdoc.
+   *
+   * ```js
+   * @param {String}
+   * @param {...string}
+   * @param {function(...a)}
+   * @param {function(...a:b)}
+   * @param {String|Array}
+   * @param {(String|Array)}
+   * @param {{foo: bar}}
+   * @param {String[]}
+   * @param {Array<String|Function|Array>=}
+   * ```
+   * @param {String} value The
+   * @return {Object}
+   * @api public
+   */
 
-  // optionally prefix prototype methods with `.`
-  if (o.context && o.context.type &&
-    /(?:prototype )?(?:method|property)/.test(o.context.type)) {
-    o.heading.prefix = '.';
+  parseInlineTags(str, options) {
+    if (typeof str !== 'string') {
+      throw new TypeError('expected a string');
+    }
+
+    let opts = { ...this.options, ...options };
+    let parsers = { ...this.plugins.middleware, ...opts.parse };
+
+    if (typeof parsers.inlineTag === 'function') {
+      return parsers.inlineTag.call(this, str, opts);
+    }
+
+    return lib.parse.inline(str, opts);
   }
 
-  if (/^[A-Z]/.test(o.name)) {
-    o.type = 'class';
-  }
-  return o;
-};
+  /**
+   * Parses the types from a single tag.
+   *
+   * ```js
+   * @param {String}
+   * @param {String|Array}
+   * @param {(String|Array)}
+   * @param {{foo: bar}}
+   * ```
+   * @param {string} str The string to parse
+   * @return {object}
+   * @api public
+   */
 
-function stripBackticks(text, heading) {
-  var str = (text || heading).trim();
-  return str.replace(/^[`.]|`$/gm, '');
+  parseType(str, tag, options) {
+    if (typeof str !== 'string') {
+      throw new TypeError('expected a string');
+    }
+
+    let opts = { ...this.options, ...options };
+    let parsers = { ...this.plugins.middleware, ...opts.parse };
+
+    if (typeof parsers.type === 'function') {
+      return parsers.type.call(this, str, tag, opts);
+    }
+
+    let ast = lib.parse.type(str, tag, opts);
+    return ast.value;
+  }
+
+  parseParamType(str, options) {
+    if (typeof str !== 'string') {
+      throw new TypeError('expected a string');
+    }
+
+    let opts = { ...this.options, ...options };
+    let parsers = { ...this.plugins.middleware, ...opts.parse };
+
+    if (typeof parsers.paramType === 'function') {
+      return parsers.paramType.call(this, str, opts);
+    }
+
+    return str;
+  }
+
+  decorate(name, obj) {
+    let fn = this.decorators[name];
+    if (typeof fn === 'function') {
+      fn.call(this, obj);
+    }
+  }
+
+  extract(str, options, fn) {
+    if (typeof options === 'function') {
+      fn = options;
+      options = {};
+    }
+
+    let comments = [];
+    let opts = Object.assign({}, this.options, options);
+    let res = [];
+
+    if (typeof opts.extract === 'function') {
+      comments = [].concat(opts.extract.call(this, str, opts) || []);
+    } else {
+      comments = extract.block(str, opts);
+    }
+
+    for (let i = 0; i < comments.length; i++) {
+      if (this.isValid(comments[i], options) === false) {
+        continue;
+      }
+
+      let comment = this.preprocess(comments[i], options);
+      if (typeof fn === 'function') {
+        comment = fn.call(this, comment) || comment;
+      }
+      res.push(comment);
+    }
+
+    return res;
+  }
+
+  preprocess(comment, options) {
+    let opts = Object.assign({}, this.options, options);
+
+    if (typeof opts.preprocess === 'function') {
+      return opts.preprocess.call(this, comment, opts);
+    }
+
+    let obj = utils.copyNode(comment);
+    obj.code = utils.copyNode(comment.code);
+    obj.code.context = utils.copyNode(comment.code.context);
+    return obj;
+  }
+
+  /**
+   * Returns true if the given `comment` is valid. By default, comments
+   * are considered valid when they begin with `/**`, and do not contain
+   * `jslint`, `jshint`, `eshint`, or `eslint`. A custom `isValid` function may be
+   * passed on the constructor options.
+   *
+   * @param {Object} `comment`
+   * @param {Object} `options`
+   * @return {Boolean}
+   * @api public
+   */
+
+  isValid(comment, options) {
+    if (!utils.isObject(comment)) {
+      throw new TypeError('expected comment to be an object');
+    }
+
+    let opts = Object.assign({}, this.options, options);
+    if (typeof opts.isValid === 'function') {
+      return opts.isValid(comment);
+    }
+
+    if (!utils.isValidBlockComment(comment, options)) {
+      return false;
+    }
+
+    if (opts.protected === false && utils.isProtectedComment(comment.raw)) {
+      return false;
+    }
+
+    return !utils.isConfigComment(comment.value);
+  }
+
+  static parse(str, options) {
+    let comments = new Comments(options);
+    return comments.parse(str);
+  }
+
+  static parseType(str, options) {
+    let comments = new Comments(options);
+    return comments.parseType(str);
+  }
 }
 
 /**
- * Parse sub-headings from a string.
- *
- * @param  {String} `str`
- * @return {Object}
+ * Expose `Comments`
+ * @type {Constructor}
  */
 
-parser.parseSubHeading = function (str) {
-  var re = /^\*\*([\s\S]+?):?\*\*(?!\*)/;
-  var match = str.match(re);
-  if (match) {
-    return match[1];
-  }
-};
-
-/**
- * Parse links.
- *
- * @param  {String} `str`
- * @return {Object}
- */
-
-parser.parseLink = function (str) {
-  var re = /^!?\[((?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\(\s*<?([\s\S]*?)>?(?:\s+['"]([\s\S]*?)['"])?\s*\)/;
-  var match = str.match(re);
-  if (match) {
-    return {
-      text: match[1],
-      url: match[2],
-      alt: match[3]
-    };
-  }
-};
-
-/**
- * Parse nolinks.
- *
- * @param  {String} `str`
- * @return {Object}
- */
-
-parser.parseNolink = function (str) {
-  var nolink = /^!?\[((?:\[[^\]]*\]|[^\[\]])*)\]/;
-  var ref = /^!?\[((?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\s*\[([^\]]*)\]/;
-  var match;
-  if (match = str.match(nolink)) {
-    return match[0];
-  } else if (match = str.match(ref)) {
-    return match[0];
-  }
-  return null;
-};
-
-/**
- * Extract links
- *
- * @param {Object} `c` Comment object.
- * @param {String} `line`
- */
-
-parser.extractLinks = function (c, line) {
-  var href = parser.parseLink(line);
-  if (href) {
-    parser.links[href.text] = href;
-  }
-
-  var nolink = parser.parseNolink(line);
-  if (nolink) {
-    parser.nolinks.push(nolink);
-  }
-
-  c.subheads = c.subheads || [];
-  var subhead = parser.parseSubHeading(line);
-  if (subhead) {
-    c.subheads.push(subhead);
-  }
-};
-
-/**
- * Parse `@tags`.
- *
- * @param  {Object} `comment` A comment object.
- * @param  {Object} `options`
- * @return {Object}
- */
-
-parser.parseTags = function (comment, options) {
-  var opts = options || {};
-
-  // parse @param tags (`singular: plural`)
-  var props = _.merge({
-    'return': 'returns',
-    param   : 'params',
-    property: 'properties',
-    option  : 'options'
-  }, opts.subprops);
-
-  props = _.omit(props, ['api', 'constructor', 'class', 'static', 'type']);
-
-  Object.keys(props).forEach(function (key) {
-    var value = props[key];
-    if (comment[key]) {
-
-      var arr = comment[key] || [];
-      comment[value] = arrayify(arr).map(function (str) {
-        return parser.parseParams(str);
-      });
-    }
-  });
-  return comment;
-};
-
-/**
- * Parse comments from the given `content` string with the
- * specified `options.`
- *
- * @param  {String} `content`
- * @param  {Object} `options`
- * @return {Object}
- */
-
-parser.parseComment = function (content, options) {
-  var opts = options || {};
-  var afterNewLine = false;
-  var afterTags = false;
-  var props = [];
-  var lastTag;
-  var i = 0;
-
-  var lines = content.split('\n');
-  var comment = lines.reduce(function (c, str) {
-    // strip leading asterisks
-    var line = utils.stripStars(str);
-    if (/\s*@/.test(line)) {
-      line = line.replace(/^\s+/, '');
-    }
-
-    if (line) {
-      parser.extractLinks(c, line);
-
-      var match = line.match(/^(\s*@[\S]+)\s*(.*)/);
-      if (match) {
-        afterTags = true;
-        var tagname = match[1].replace(/@/, '');
-        props.push(tagname);
-
-        var tagvalue = match[2].replace(/^\s+/, '');
-        lastTag = tagname;
-        if (c.hasOwnProperty(tagname)) {
-          // tag already exists
-          if (!Array.isArray(c[tagname])) {
-            c[tagname] = [c[tagname]];
-          }
-
-          c[tagname].push(tagvalue);
-        } else {
-          // new tag
-          c[tagname] = tagvalue || true;
-        }
-      } else if (lastTag && !afterNewLine) {
-        var val = line.replace(/^\s+/, '');
-        if (Array.isArray(c[lastTag])) {
-          c[lastTag][c[lastTag].length - 1] += ' ' + val;
-        } else {
-          c[lastTag] += ' ' + val;
-        }
-      } else {
-        lastTag = null;
-        if (!afterTags) {
-          if (c.description) {
-            c.description += '\n' + line;
-          } else {
-            c.description = line;
-          }
-        } else {
-          if (c.example) {
-            c.example += '\n' + line;
-          } else {
-            c.example = line;
-          }
-        }
-      }
-      afterNewLine = false;
-    } else {
-      afterNewLine = true;
-      if (!afterTags) {
-        if (c.description) {
-          c.description += '\n' + line;
-        }
-      } else {
-        if (c.example) {
-          c.example += '\n' + line;
-        }
-      }
-    }
-    i++;
-    return c;
-  }, {});
-
-  var singular = _.keys(opts.subprops);
-  var plural = _.values(opts.subprops);
-
-  var diff = _.difference(props, singular).filter(function (prop) {
-    return prop !== 'param' &&
-      prop !== 'constructor' &&
-      prop !== 'return' &&
-      prop !== 'static' &&
-      prop !== 'class' &&
-      prop !== 'type' &&
-      prop !== 'api';
-  });
-
-  var pluralized = diff.map(function (name) {
-    return inflect.pluralize(name);
-  });
-
-  singular = _.union(diff, singular);
-  plural = _.union([], pluralized, plural);
-
-  var comments = this.parseTags(comment, {
-    subprops: _.zipObject(singular, plural)
-  });
-
-  // Pass custom subprops (plural/arrays)
-  plural.forEach(function (prop) {
-    this.mergeSubprops(comments, prop);
-  }.bind(this));
-
-  return comments;
-};
-
-/**
- * Expose `parser`
- */
-
-module.exports = parser;
+module.exports = Comments;

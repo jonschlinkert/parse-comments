@@ -1,8 +1,16 @@
 sudo: false
+os:
+  - linux
+  - osx
+  - windows
 language: node_js
 node_js:
-  - "0.10"
-  - "0.12"
-  - "iojs"
-git:
-  depth: 10
+  - node
+  - '11'
+  - '10'
+  - '9'
+  - '8'
+  - '7'
+  - '6'
+  - '5'
+  - '4'
