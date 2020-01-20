@@ -236,27 +236,21 @@ let parser = new ParseComments();
 let comments = parser.parseComment(string);
 ```
 
-```js
-
 **Params**
 
 * **{}**: {String}    
 * **{String}**: name    
-* **{String}**: name The name to use for foo ```    
+* **{String}**: name The name to use for foo    
 * **{Object}**: tok Takes a token from    
 * `returns` **{Object}**  
-
-```js
 
 **Params**
 
 * **{}**: {String}
 * **{String}**: name
-* **{String}**: name The name to use for foo ```
+* **{String}**: name The name to use for foo
 * **{Object}**: tok
 * `returns` **{Object}**
-
-```js
 
 **Params**
 
@@ -268,18 +262,16 @@ let comments = parser.parseComment(string);
 * **{}**: {(String|Array)}    
 * **{}**: {{foo: bar}}    
 * **{}**: {String[]}    
-* ``` **{Array<String|Function|Array>=}**    
+* **{Array<String|Function|Array>=}**    
 * **{String}**: value The    
 * `returns` **{Object}**  
-
-```js
 
 **Params**
 
 * **{}**: {String}
 * **{}**: {String|Array}
 * **{}**: {(String|Array)}
-* **{}**: {{foo: bar}} ```
+* **{}**: {{foo: bar}}
 * **{string}**: str The string to parse
 * `returns` **{object}**
 
