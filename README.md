@@ -99,104 +99,6 @@ const Comments = require('parse-comments');
 const comments = new Comments();
 ```
 
-Register a parser function of the given `type`
-
-**Params**
-
-* `type` **{string|object}**
-* `fn` **{Function}**
-* `returns` **{Object}**
-
-**Params**
-
-* `fn` **{Function}**: plugin function
-* `returns` **{Object}**: Returns the comments instance for chaining.
-
-**Example**
-
-```js
-// plugin example
-function yourPlugin(options) {
-  return function(comments) {
-    // do stuff
-  };
-}
-// usage
-comments.use(yourPlugin());
-```
-
-**Params**
-
-* `type` **{String}**: The `node.type` to call the handler on. You can override built-in middleware by registering a handler of the same name, or register a handler for rendering a new type.
-* `fn` **{Function}**: The handler function
-* `returns` **{Object}**: Returns the instance for chaining.
-
-**Example**
-
-```js
-comments.set('param', function(node) {
-  // do stuff to node
-});
-```
-
-**Params**
-
-* `type` **{String|Object|Array}**: Handler name(s), or an object of middleware
-* `fn` **{Function}**: Handler function, if `type` is a string or array. Otherwise this argument is ignored.
-* `returns` **{Object}**: Returns the instance for chaining.
-
-**Example**
-
-```js
-comments.before('param', function(node) {
-  // do stuff to node
-});
-
-// or
-comments.before(['param', 'returns'], function(node) {
-  // do stuff to node
-});
-
-// or
-comments.before({
-  param: function(node) {
-    // do stuff to node
-  },
-  returns: function(node) {
-    // do stuff to node
-  }
-});
-```
-
-**Params**
-
-* `type` **{String|Object|Array}**: Handler name(s), or an object of middleware
-* `fn` **{Function}**: Handler function, if `type` is a string or array. Otherwise this argument is ignored.
-* `returns` **{Object}**: Returns the instance for chaining.
-
-**Example**
-
-```js
-comments.after('param', function(node) {
-  // do stuff to node
-});
-
-// or
-comments.after(['param', 'returns'], function(node) {
-  // do stuff to node
-});
-
-// or
-comments.after({
-  param: function(node) {
-    // do stuff to node
-  },
-  returns: function(node) {
-    // do stuff to node
-  }
-});
-```
-
 **Params**
 
 * `javascript` **{String}**: String of javascript
@@ -236,57 +138,71 @@ let parser = new ParseComments();
 let comments = parser.parseComment(string);
 ```
 
+**Params**
+
+* **{Object}**: tok Takes a token from
+* `returns` **{Object}**
+
+**Example**
+
 ```js
+// @constructor
+// @param {String}
+// @param {String} name
+// @param {String} name The name to use for foo
+```
 
 **Params**
 
-* **{}**: {String}    
-* **{String}**: name    
-* **{String}**: name The name to use for foo ```    
-* **{Object}**: tok Takes a token from    
-* `returns` **{Object}**  
-
-```js
-
-**Params**
-
-* **{}**: {String}
-* **{String}**: name
-* **{String}**: name The name to use for foo ```
 * **{Object}**: tok
 * `returns` **{Object}**
 
+**Example**
+
 ```js
+// @constructor
+// @param {String}
+// @param {String} name
+// @param {String} name The name to use for foo
+```
 
 **Params**
 
-* **{}**: {String}    
-* **{}**: {...string}    
-* **{}**: {function(...a)}    
-* **{}**: {function(...a:b)}    
-* **{}**: {String|Array}    
-* **{}**: {(String|Array)}    
-* **{}**: {{foo: bar}}    
-* **{}**: {String[]}    
-* ``` **{Array<String|Function|Array>=}**    
-* **{String}**: value The    
-* `returns` **{Object}**  
+* **{String}**: value The
+* `returns` **{Object}**
+
+**Example**
 
 ```js
+// @param {String}
+// @param {...string}
+// @param {function(...a)}
+// @param {function(...a:b)}
+// @param {String|Array}
+// @param {(String|Array)}
+// @param {{foo: bar}}
+// @param {String[]}
+// @param {Array<String|Function|Array>=}
+```
 
 **Params**
 
-* **{}**: {String}
-* **{}**: {String|Array}
-* **{}**: {(String|Array)}
-* **{}**: {{foo: bar}} ```
 * **{string}**: str The string to parse
 * `returns` **{object}**
 
-Returns true if the given `comment` is valid. By default, comments
-are considered valid when they begin with `/**`, and do not contain
-`jslint`, `jshint`, `eshint`, or `eslint`. A custom `isValid` function may be
-passed on the constructor options.
+**Example**
+
+```js
+// @param {String}
+// @param {String|Array}
+// @param {(String|Array)}
+// @param {{foo: bar}}
+```
+
+Returns true if the given `comment` is valid (meaning the comment
+may be parsed). Comments are considered valid when they begin with
+`/**`, and do not contain `jslint`, `jshint`, `eshint`, or `eslint`.
+A custom `isValid` function may be passed on the constructor options.
 
 **Params**
 
@@ -333,7 +249,7 @@ $ npm install -g verbose/verb#dev verb-generate-readme && verb
 
 | **Commits** | **Contributor** |  
 | --- | --- |  
-| 35 | [jonschlinkert](https://github.com/jonschlinkert) |  
+| 73 | [jonschlinkert](https://github.com/jonschlinkert) |  
 | 4  | [doowb](https://github.com/doowb) |  
 
 ### Author
@@ -346,9 +262,9 @@ $ npm install -g verbose/verb#dev verb-generate-readme && verb
 
 ### License
 
-Copyright © 2018, [Jon Schlinkert](https://github.com/jonschlinkert).
+Copyright © 2020, [Jon Schlinkert](https://github.com/jonschlinkert).
 Released under the [MIT License](LICENSE).
 
 ***
 
-_This file was generated by [verb-generate-readme](https://github.com/verbose/verb-generate-readme), v0.8.0, on November 24, 2018._
+_This file was generated by [verb-generate-readme](https://github.com/verbose/verb-generate-readme), v0.8.0, on January 25, 2020._
