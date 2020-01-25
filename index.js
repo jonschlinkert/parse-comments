@@ -125,10 +125,10 @@ class Comments extends Emitter {
    * lines is a single tag
    *
    * ```js
-   * @constructor
-   * @param {String}
-   * @param {String} name
-   * @param {String} name The name to use for foo
+   * // @constructor
+   * // @param {String} 
+   * // @param {String} name
+   * // @param {String} name The name to use for foo
    * ```
    *
    * @param {Object} tok Takes a token from
@@ -162,10 +162,10 @@ class Comments extends Emitter {
    * lines is a single tag
    *
    * ```js
-   * @constructor
-   * @param {String}
-   * @param {String} name
-   * @param {String} name The name to use for foo
+   * // @constructor
+   * // @param {String}
+   * // @param {String} name
+   * // @param {String} name The name to use for foo
    * ```
    * @param {Object} tok
    * @return {Object}
@@ -231,15 +231,15 @@ class Comments extends Emitter {
    * back on types from Google's Closure Compiler when not defined by jsdoc.
    *
    * ```js
-   * @param {String}
-   * @param {...string}
-   * @param {function(...a)}
-   * @param {function(...a:b)}
-   * @param {String|Array}
-   * @param {(String|Array)}
-   * @param {{foo: bar}}
-   * @param {String[]}
-   * @param {Array<String|Function|Array>=}
+   * // @param {String}
+   * // @param {...string}
+   * // @param {function(...a)}
+   * // @param {function(...a:b)}
+   * // @param {String|Array}
+   * // @param {(String|Array)}
+   * // @param {{foo: bar}}
+   * // @param {String[]}
+   * // @param {Array<String|Function|Array>=}
    * ```
    * @param {String} value The
    * @return {Object}
@@ -265,10 +265,10 @@ class Comments extends Emitter {
    * Parses the types from a single tag.
    *
    * ```js
-   * @param {String}
-   * @param {String|Array}
-   * @param {(String|Array)}
-   * @param {{foo: bar}}
+   * // @param {String}
+   * // @param {String|Array}
+   * // @param {(String|Array)}
+   * // @param {{foo: bar}}
    * ```
    * @param {string} str The string to parse
    * @return {object}
